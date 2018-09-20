@@ -105,7 +105,7 @@ protected:
 	///
 	///@return 对象列表
 	///
-	std::vector<CDrawObject*> & GeBindedObjects();
+	std::vector<CDrawObject*> & GetBindedObjects();
 	///
 	///取得自身绑定的对象列表
 	///
@@ -138,11 +138,12 @@ public:  //IObjectObserver directive
 	///
 	///IObjectObserver接口重载
 	///
-	virtual void notifyAttribtesChanged(CDrawObject *changedObject, unsigned int attributeIndex, ATTR_VALUE & newVal, ATTR_VALUE & oldVal);
+	virtual void notifyAttributesChanged(CDrawObject *changedObject, unsigned int attributeIndex, ATTR_VALUE & newVal, ATTR_VALUE & oldVal);
     virtual void notifyRevert(CDrawObject *pChanged, int &action );
 
     //IVisaulized
-    Gdiplus::Image* GetPicture( int  width, int  height, Gdiplus::Color background=Gdiplus::Color::Transparent, int flag=GET_PIC_FLAG_ASPECT | GET_PIC_POS_HCENTER | GET_PIC_POS_VCENTER );
+    Gdiplus::Image* GetPicture(int width, int height, Gdiplus::Color background = Gdiplus::Color::Transparent,
+                               int flag = GET_PIC_FLAG_ASPECT | GET_PIC_POS_HCENTER | GET_PIC_POS_VCENTER);
 
 	///
 	///将本对象绑定到目标对象

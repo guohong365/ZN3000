@@ -7,8 +7,9 @@
 #include "../libzn/SignalBuffer.h"
 #include "../libzn/Sampler.h"
 #include "../libzn/ZNDLoader.h"
-#include "../libzn/patient.h"
+#include "../libzn/Record.h"
 #include "../libDrawObject/UIHelper.h"
+#include "../libzn/SimSampler.h"
 
 #define GRID_LARGE_INTERVAL 10.0f
 #define GRID_SMALL_INTERVAL 1.0f
@@ -58,8 +59,8 @@ float maxData;
 	pBuffer->setLength(ZND_DATA_SIZE);
 	pBuffer->setName(_T("导纳微分波"));
 
-	_pCavase=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
-	_pCavase->AddWave(pBuffer, 50);
+	_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
+	_pCanvas->AddWave(pBuffer, 50);
 	if(part==0)
 	{
 		pBuffer=new WAVE_BUFFER_TYPE(ZND_DATA_SIZE, _zndFileBuffer.zndData[part].sampleInterval);
@@ -69,7 +70,7 @@ float maxData;
 		pBuffer->setLength(ZND_DATA_SIZE);
 		pBuffer->setName(_T("心电"));
 
-		_pCavase->AddWave(pBuffer, 50);
+		_pCanvas->AddWave(pBuffer, 50);
 	}
 	//else
 	//{
@@ -86,7 +87,7 @@ float maxData;
 
 CMainBaseCtrl::~CMainBaseCtrl()
 {
-	delete _pCavase;
+	delete _pCanvas;
 	_MemBitmap.DeleteObject();
 }
 
@@ -140,7 +141,7 @@ void CMainBaseCtrl::OnPaint()
 	LARGE_INTEGER begin;
 	LARGE_INTEGER end;
 	QueryPerformanceCounter(&begin);
-	_pCavase->Draw(graph);
+	_pCanvas->Draw(graph);
 	dc.BitBlt(0,0,rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
 	memDC.SelectObject(pOldBitmap);
 	QueryPerformanceCounter(&end);
@@ -153,8 +154,8 @@ void CMainBaseCtrl::OnSize(UINT nType, int cx, int cy)
 	CDialog::OnSize(nType, cx, cy);
 	CUICoordinateHelper::GetHelper().DPtoLP(&sz, 1);
 	//_pCavase->SetSize(Gdiplus::Size(cx/_screenInfo.GetDpmmX()*10, cy/_screenInfo.GetDpmmY()* 10));
-	_pCavase->SetSize(Gdiplus::Size(sz.cx, sz.cy));
-	_pCavase->PrepareCanvas(cx, cy);
+	_pCanvas->SetSize(Gdiplus::Size(sz.cx, sz.cy));
+	_pCanvas->PrepareCanvas(cx, cy);
 	//CPaintDC dc(this);
 	//_MemBitmap.DeleteObject();
 	//_MemBitmap.CreateCompatibleBitmap(&dc, cx, cy);
@@ -189,9 +190,9 @@ void CMainBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 		{
 			QueryPerformanceCounter(&_current);
 			int count=(int)((double)( _current.QuadPart - _last.QuadPart)/_frequency.QuadPart * 1000 )/2;
-			for(int i = 0; i< _pCavase->GetWaveCount(); i++)
+			for(int i = 0; i< _pCanvas->GetWaveCount(); i++)
 			{
-				_pCavase->GetWave(i)->GetWaveBuffer()->setLength(_pCavase->GetWave(i)->GetWaveBuffer()->getLength() + count);
+				_pCanvas->GetWave(i)->GetWaveBuffer()->setLength(_pCanvas->GetWave(i)->GetWaveBuffer()->getLength() + count);
 			}
 		}
 		QueryPerformanceCounter(&_last);

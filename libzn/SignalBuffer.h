@@ -51,53 +51,30 @@ class SignalBuffer
 public:
 	template<typename ValueType2>
 	explicit SignalBuffer(const SignalBuffer<ValueType2>& buffer);
-
-	SignalBuffer(size_t size, double simpleFrequency, LPCTSTR szName = _T(""));
+	explicit SignalBuffer(size_t size);
 
 	SIZE_T getLength() const;
-	void setLength(SIZE_T length)
-	{
-		_length=length;
-	}
+	void setLength(SIZE_T length);
 	SIZE_T getSize() const;
-
-	DOUBLE getSampleRate() const;
-
 	ValueType* getBuffer();
 	const ValueType* getBuffer() const;
 	ValueType operator[](int index) const;
-
 	ValueType& operator[](int index);
-
 	void append(ValueType val);
-
 	ValueType maxValue();
-
 	ValueType minValue();
-
 	void normalize();
-
 	bool isNormalized() const;
-
 	void scale(DOUBLE scale);
-
 	void clear();
-
 	~SignalBuffer();
 
 	template <typename ValueType2>
 	SignalBuffer<ValueType>& operator =(const SignalBuffer<ValueType2>& buffer);
-	const CString& getName() const;
-	void setName(LPCTSTR str)
-	{
-		_name=str;
-	}
-
 private:
+	SignalBuffer();
 	template <typename ValueType1>
-	static void copy(const SignalBuffer<ValueType1>& source, SignalBuffer<ValueType>& dest);
-	CString _name;
-	double _sampleFrequency;
+	static void _copy(const SignalBuffer<ValueType1>& source, SignalBuffer<ValueType>& dest);	
 	SIZE_T _size;
 	SIZE_T _length;
 	ValueType * _pBuffer;
@@ -109,16 +86,12 @@ template <typename ValueType2>
 SignalBuffer<ValueType>::SignalBuffer(const SignalBuffer<ValueType2>& buffer)
 	:_pBuffer(nullptr)
 {
-	copy(buffer, *this);
+	_copy(buffer, *this);
 }
 
 template <typename ValueType>
-SignalBuffer<ValueType>::SignalBuffer(const size_t size, const DOUBLE simpleFrequency, const LPCTSTR szName): _name(szName)
-                                                                                                   , _sampleFrequency(
-	                                                                                                   simpleFrequency)
-                                                                                                   , _size(size)
-                                                                                                   , _length(0)
-                                                                                                   , _normalized(false)
+SignalBuffer<ValueType>::SignalBuffer(const size_t size)
+	: _size(size)
 {
 	ASSERT(_size > 0);
 	_pBuffer = new ValueType[_size];
@@ -131,15 +104,15 @@ SIZE_T SignalBuffer<ValueType>::getLength() const
 }
 
 template <typename ValueType>
-SIZE_T SignalBuffer<ValueType>::getSize() const
+void SignalBuffer<ValueType>::setLength(SIZE_T length)
 {
-	return _size;
+	_length = length;
 }
 
 template <typename ValueType>
-DOUBLE SignalBuffer<ValueType>::getSampleRate() const
+SIZE_T SignalBuffer<ValueType>::getSize() const
 {
-	return _sampleFrequency;
+	return _size;
 }
 
 template <typename ValueType>
@@ -228,8 +201,8 @@ bool SignalBuffer<ValueType>::isNormalized() const
 template <typename ValueType>
 void SignalBuffer<ValueType>::scale(DOUBLE scale)
 {
-	const SIZE_T begin = _length >= _size ? _length % _size : 0;
-	for (SIZE_T i = begin; i < _length; i++)
+	const auto begin = _length >= _size ? _length % _size : 0;
+	for (auto i = begin; i < _length; i++)
 	{
 		_pBuffer[i % _size] = _pBuffer[i % _size] * scale;
 	}
@@ -258,19 +231,13 @@ template <typename ValueType>
 template <typename ValueType2>
 SignalBuffer<ValueType>& SignalBuffer<ValueType>::operator=(const SignalBuffer<ValueType2>& buffer)
 {
-	copy(buffer, *this);
+	_copy(buffer, *this);
 	return *this;
 }
 
 template <typename ValueType>
-const CString& SignalBuffer<ValueType>::getName() const
-{
-	return _name;
-}
-
-template <typename ValueType>
 template <typename ValueType1>
-void SignalBuffer<ValueType>::copy(const SignalBuffer<ValueType1>& source, SignalBuffer<ValueType>& dest)
+void SignalBuffer<ValueType>::_copy(const SignalBuffer<ValueType1>& source, SignalBuffer<ValueType>& dest)
 {
 	if (dest._pBuffer && dest._size != source.getSize())
 	{
@@ -284,7 +251,5 @@ void SignalBuffer<ValueType>::copy(const SignalBuffer<ValueType1>& source, Signa
 	}
 	dest._normalized = source.isNormalized();
 	dest._length = source.getLength();
-	dest._sampleFrequency = source.getSampleRate();
-	dest._name = source.getName();
 	copyBuffer(dest._pBuffer, source.getBuffer(), source.getLength());
 }

@@ -2,6 +2,7 @@
 
 #include "../libDrawObject/DrawObject.h"
 #include "SignalBuffer.h"
+#include "SignalChannelImpl.h"
 
 class WaveDrawer:public CDrawObject
 {
@@ -13,29 +14,24 @@ class WaveDrawer:public CDrawObject
 	int _waveHeight;
 
 	//data
-	SignalBuffer<long> * _pWaveBuffer;
+	SignalChannel * _pSignalChannel;
 	int _totalSampleCount;
 	float _sampleDotSpacing;
-	void initialize();
+	void _initialize();
 public:
 	WaveDrawer();
 
-	WaveDrawer(SignalBuffer<long> * pWaveBuffer, const Gdiplus::Point &pt, const Gdiplus::Size & size )
-	:CDrawObject(pWaveBuffer->getName(), pt, size)
-		,_pWaveBuffer(pWaveBuffer)
-	{
-		initialize();
-	}
+	WaveDrawer(SignalChannel* pChannel, const Gdiplus::Point& pt, const Gdiplus::Size& size);
+
+	virtual ~WaveDrawer();
 	
-	virtual ~WaveDrawer(void);
-	
-	SignalBuffer<long> * GetWaveBuffer() const
+	SignalChannel * getChannelBuffer() const
 	{
-		return _pWaveBuffer;
+		return _pSignalChannel;
 	}
-	void SetWaveBuffer(SignalBuffer<long> * pBuffer)
+	void setChannelBuffer(SignalChannel * pBuffer)
 	{
-		_pWaveBuffer=pBuffer;
+		_pSignalChannel=pBuffer;
 	}
 
 	virtual void SetVelocity(float velocity)

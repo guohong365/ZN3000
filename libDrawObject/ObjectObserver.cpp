@@ -12,7 +12,7 @@ void IObjectObserver::notifyChildDeleted( CDrawObject *changedObject, CDrawObjec
 {
 }
 
-void IObjectObserver::notifyAttribtesChanged( CDrawObject *changedObject, UINT attributeIndex,ATTR_VALUE & newVal, ATTR_VALUE & oldVal )
+void IObjectObserver::notifyAttributesChanged( CDrawObject *changedObject, UINT attributeIndex,ATTR_VALUE & newVal, ATTR_VALUE & oldVal )
 {
 
 }

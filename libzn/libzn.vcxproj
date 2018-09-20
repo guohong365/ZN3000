@@ -75,18 +75,17 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnnotationImpl.h" />
     <ClInclude Include="DataLoader.h" />
-    <ClInclude Include="RecordInfo.h" />
+    <ClInclude Include="Record.h" />
+    <ClInclude Include="SignalChannelImpl.h" />
     <ClInclude Include="ZnEdfFile.h" />
-    <ClInclude Include="EdfPlusWriter.h" />
     <ClInclude Include="EdfReader.h" />
     <ClInclude Include="EdfWriter.h" />
     <ClInclude Include="Packet.h" />
-    <ClInclude Include="patient.h" />
-    <ClInclude Include="PatientInfo.h" />
     <ClInclude Include="RecordReader.h" />
     <ClInclude Include="RecordWriter.h" />
-    <ClInclude Include="RheographyRecord.h" />
+    <ClInclude Include="RheographyRecordImpl.h" />
     <ClInclude Include="SampleController.h" />
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="ScpLoader.h" />
@@ -102,15 +101,16 @@
     <ClInclude Include="ZNDData.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnnotationImpl.cpp" />
     <ClCompile Include="EdfReader.cpp" />
     <ClCompile Include="EdfWriter.cpp" />
-    <ClCompile Include="PatientInfo.cpp" />
     <ClCompile Include="RecordReader.cpp" />
     <ClCompile Include="RecordWriter.cpp" />
-    <ClCompile Include="RheographyRecord.cpp" />
+    <ClCompile Include="RheographyRecordImpl.cpp" />
     <ClCompile Include="ScpLoader.cpp" />
     <ClCompile Include="SerialPort.cpp" />
     <ClCompile Include="SerialPortSampler.cpp" />
+    <ClCompile Include="SignalChannelImpl.cpp" />
     <ClCompile Include="SimSampler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

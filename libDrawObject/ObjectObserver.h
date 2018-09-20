@@ -85,7 +85,7 @@ public:
 	 * \see
 	 * Separate items with the '|' character.
 	 */
-	virtual void notifyAttribtesChanged(CDrawObject *changedObject, UINT attributeIndex, ATTR_VALUE &newVal,  ATTR_VALUE & oldVal );
+	virtual void notifyAttributesChanged(CDrawObject *changedObject, UINT attributeIndex, ATTR_VALUE &newVal,  ATTR_VALUE & oldVal );
 	/*!
 	 * \brief
 	 * 对象顺序改变响应

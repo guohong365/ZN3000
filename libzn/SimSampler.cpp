@@ -2,14 +2,18 @@
 #include "SimSampler.h"
 #include <cmath>
 
-SimSampler::SimSampler( ISimSampleGenerator * pCallBack, size_t count)
+SimSampler::SimSampler( SimSampleGenerator * pCallBack, size_t count)
 :_pCallBack(pCallBack)
 {
 	ASSERT(_pCallBack);
-	_pHeartBuffer=new SignalBuffer<unsigned short>(count, 0.002, _T("心电"));
-	_pCallBack->generator(_pHeartBuffer->getBuffer(), count, 2);
-	_pAdmittanceBuffer=new SignalBuffer<unsigned short>(count, 0.002, _T("微分"));
-	_pCallBack->generator(_pAdmittanceBuffer->getBuffer(), count, 2);
+	_pHeartBuffer=new SignalChannelImpl(count);
+	_pHeartBuffer->setSampleFrequency(500);
+	_pHeartBuffer->setLabel(_T("心电"));
+	_pCallBack->generator(_pHeartBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
+	_pAdmittanceBuffer=new SignalChannelImpl(count);
+	_pAdmittanceBuffer->setSampleFrequency(500);
+	_pAdmittanceBuffer->setLabel(_T("微分"));
+	_pCallBack->generator(_pAdmittanceBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
 }
 
 

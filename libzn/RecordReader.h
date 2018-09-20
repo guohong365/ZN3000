@@ -1,6 +1,6 @@
 #pragma once
-#include <istream>
-#include "RheographyRecord.h"
+#include "Record.h"
+
 class RecordReader
 {
 	FILE* _pFile;

@@ -1900,7 +1900,7 @@ void CDrawObject::OnTextVertChanged()
 	Notify(DNM_TEXT_VERT_CHANGED);
 }
 
-std::vector<CDrawObject*> & CDrawObject::GeBindedObjects()
+std::vector<CDrawObject*> & CDrawObject::GetBindedObjects()
 {
 	return _bindedObjects;
 }
@@ -2024,7 +2024,7 @@ CDrawObject * CDrawObject::_findObjectByName( DRAW_OBJECT_LIST &objects, const C
 	return NULL;
 }
 
-void CDrawObject::notifyAttribtesChanged( CDrawObject *changedObject, unsigned int attributeIndex, ATTR_VALUE  &newVal, ATTR_VALUE &oldVal )
+void CDrawObject::notifyAttributesChanged( CDrawObject *changedObject, unsigned int attributeIndex, ATTR_VALUE  &newVal, ATTR_VALUE &oldVal )
 {
 	ASSERT(this==changedObject);
 	CString strVal;

@@ -1,5 +1,4 @@
 #pragma once
-#include "PatientInfo.h"
 
 #define EDF_VERSION '0'
 #define ZN_EXTENSION_IDENTIFY "ZN"
@@ -37,8 +36,6 @@ class EdfHeader
 {
 public:
 	CString ZnVersion;
-	PatientInfo PatientInfo;
-
 	int StartDateYear;
 	int _startDateMonth;
 	int _startDateDay;

@@ -9,7 +9,7 @@
 
 class CZN2000ViewDoc : public CDocument
 {
-	RheographyRecord _record;
+	RheographyRecordImpl _record;
 protected: // 仅从序列化创建
 	CZN2000ViewDoc();
 	DECLARE_DYNCREATE(CZN2000ViewDoc)

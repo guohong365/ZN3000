@@ -2,17 +2,17 @@
 
 #include "Sampler.h"
 #include "SignalBuffer.h"
+#include "SignalChannelImpl.h"
 
 
-class ISimSampleGenerator
+class SimSampleGenerator
 {
 public:
-	virtual ~ISimSampleGenerator(){};
-
-	virtual void generator(void * pBuffer, size_t count, size_t sample_size, int N=1)=0;
+	virtual ~SimSampleGenerator(){};
+	virtual void generator(void * pBuffer, size_t count, size_t sample_size, int N)=0;
 };
 
-class SineSampleGenerator:public ISimSampleGenerator
+class SineSampleGenerator:public SimSampleGenerator
 {
 public:
 	virtual void generator(void *pBuffer, size_t count, size_t sample_size, int N = 1);
@@ -21,12 +21,12 @@ public:
 class SimSampler:public ISampler
 {
 public:
-	SimSampler(ISimSampleGenerator * pCallBack, size_t count);
+	SimSampler(SimSampleGenerator * pCallBack, size_t count);
 	virtual ~SimSampler();
 	virtual bool begin(){ return true;};
 	virtual void stop(){};
 private:
-	ISimSampleGenerator * _pCallBack;
-	SignalBuffer<unsigned short> * _pHeartBuffer;
-	SignalBuffer<unsigned short> * _pAdmittanceBuffer;
+	SimSampleGenerator * _pCallBack;
+	SignalChannel * _pHeartBuffer;
+	SignalChannel * _pAdmittanceBuffer;
 };

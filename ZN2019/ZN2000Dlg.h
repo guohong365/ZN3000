@@ -21,7 +21,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
-	PatientInfo _patientInfo;
+	PatientImpl _patientInfo;
 	DWORD _dwState;
 // 实现
 protected:

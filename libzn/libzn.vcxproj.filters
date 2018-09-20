@@ -30,22 +30,13 @@
     <ClInclude Include="ScpLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RheographyRecord.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="EdfReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PatientInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Sampler.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SampleController.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="patient.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SignalBuffer.h">
@@ -75,9 +66,6 @@
     <ClInclude Include="Packet.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="EdfPlusWriter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="RecordReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -90,7 +78,16 @@
     <ClInclude Include="ZnEdfFile.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RecordInfo.h">
+    <ClInclude Include="Record.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AnnotationImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RheographyRecordImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SignalChannelImpl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,9 +107,6 @@
     <ClCompile Include="ScpLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="RheographyRecord.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="EdfReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -125,9 +119,6 @@
     <ClCompile Include="SimSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="PatientInfo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="RecordReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -135,6 +126,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EdfWriter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AnnotationImpl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RheographyRecordImpl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SignalChannelImpl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

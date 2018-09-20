@@ -1,5 +1,5 @@
 #pragma once
-#include "RheographyRecord.h"
+#include "Record.h"
 
 class RecordWriter
 {

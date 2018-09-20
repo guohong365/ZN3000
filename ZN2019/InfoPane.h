@@ -1,5 +1,5 @@
 #pragma once
-#include "../libzn/patient.h"
+#include "../libzn/Record.h"
 
 // CInfoPane ¶Ô»°¿ò
 
@@ -14,12 +14,12 @@ class CInfoPane : public CDialog
 	Gdiplus::Brush *_pInfoBrush;
 	Gdiplus::Font *_pInfoFont;
 
-	IPatient * _pPatient;
+	RheographyRecord * _pRecord;
 public:
 	explicit CInfoPane(CWnd* pParent = nullptr);   
 	virtual ~CInfoPane();
 
-	void SetPatient(IPatient* pPatient);
+	void SetRecord(RheographyRecord* pPatient);
 
 	void RefreshInfo();
 

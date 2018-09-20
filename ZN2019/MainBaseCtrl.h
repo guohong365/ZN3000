@@ -3,7 +3,6 @@
 #include "../libzn/WaveBackgronud.h"
 #include "../libzn/WaveDrawer.h"
 #include "../libzn/WaveCanvas.h"
-#include "../libzn/RheographyRecord.h"
 
 
 // CMainBaseCtrl 对话框
@@ -11,17 +10,6 @@
 class CMainBaseCtrl : public CDialog, public ISampleController
 {
 	DECLARE_DYNAMIC(CMainBaseCtrl)
-	WaveBackground _backbround;
-	WaveDrawer* _pWaveDrawer;
-	WaveCanvas *_pCavase;
-
-	LARGE_INTEGER _last;
-	LARGE_INTEGER _current;
-	LARGE_INTEGER _frequency;
-
-	CBitmap  _MemBitmap;
-
-	RheographyRecord *_pRecordBuffer;
 
 public:
 	CMainBaseCtrl(CWnd* pParent = NULL);   // 标准构造函数
@@ -47,5 +35,17 @@ public:
 	virtual void stop();
 
 	virtual void start();
+private:
+	WaveBackground _background;
+	WaveDrawer* _pWaveDrawer;
+	WaveCanvas *_pCanvas;
+
+	LARGE_INTEGER _last;
+	LARGE_INTEGER _current;
+	LARGE_INTEGER _frequency;
+
+	CBitmap  _MemBitmap;
+
+	RheographyRecord *_pRecordBuffer;
 
 };

@@ -100,7 +100,7 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_infoPane.MoveWindow(&rect, TRUE);
 	_InfoPaneFrame.ShowWindow(SW_HIDE);
 	_infoPane.ShowWindow(SW_SHOW);
-	_infoPane.SetPatient(&_patientInfo);
+	_infoPane.SetRecord(&_patientInfo);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
