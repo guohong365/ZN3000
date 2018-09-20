@@ -122,7 +122,7 @@ void WaveCanvas::PrepareCanvas( int dx, int dy )
 			_waveDrawers[i]->GetPosition().X - 10, _waveDrawers[i]->GetSize().Height,
 			_pWaveBackground->GetPosition().X + _pWaveBackground->GetBaseline(i));
 	}
-	DrawHorizontalLabel(graph);
+	DrawHorizLabel(graph);
 }
 
 void WaveCanvas::DrawLabel( Gdiplus::Graphics &graph, int x, int y, int width, int height, int baseline )
@@ -155,26 +155,26 @@ void WaveCanvas::DrawLabel( Gdiplus::Graphics &graph, int x, int y, int width, i
 	}
 }
 
-void WaveCanvas::DrawHorizontalLabel(Gdiplus::Graphics & graph)
+void WaveCanvas::DrawHorizLabel(Gdiplus::Graphics & graph)
 {
-	if(_waveDrawers.empty())return;
+
 	Gdiplus::SolidBrush brush(Gdiplus::Color::LightGreen);
 	Gdiplus::RectF layout(0, _pWaveBackground->GetPosition().Y + _pWaveBackground->GetSize().Height + 10, 
-		1000,(GetSize().Height - _pWaveBackground->GetSize().Height/2.0f));
+		1000,(GetSize().Height - _pWaveBackground->GetSize().Height/2));
 
 	Gdiplus::StringFormat stringFormat;
 	stringFormat.SetLineAlignment(Gdiplus::StringAlignmentNear);
 	stringFormat.SetAlignment(Gdiplus::StringAlignmentCenter);
-	const float hInc= static_cast<float>(500.0f)/_waveDrawers[0]->GetVelocity();
-	const int hStep= _pWaveBackground->GetSize().Width / 500;
+	float hInc= static_cast<float>(500.0f)/_waveDrawers[0]->GetVelocity();
+	int hStep= _pWaveBackground->GetSize().Width / 500;
 	float t;
-	CString strLabel;
+	CString strLebel;
 	for(int i=0; i< hStep; i++)
 	{
 		t=hInc * i;
 		layout.X = _pWaveBackground->GetPosition().X + i * 500 - 500;
-		strLabel.Format(_T("%2.2f"), t);
-		graph.DrawString(strLabel, strLabel.GetLength(), _pFont,layout, &stringFormat, &brush);
+		strLebel.Format(_T("%2.2f"), t);
+		graph.DrawString(strLebel, strLebel.GetLength(), _pFont,layout, &stringFormat, &brush);
 	}
 	layout.X = _pWaveBackground->GetPosition().X + _pWaveBackground->GetSize().Width;
 	stringFormat.SetAlignment(Gdiplus::StringAlignmentNear);

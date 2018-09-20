@@ -19,9 +19,9 @@
 IMPLEMENT_DYNAMIC(CMainBaseCtrl, CDialog)
 
 CMainBaseCtrl::CMainBaseCtrl(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD, pParent), _pWaveDrawer(nullptr), _currentPart(PART_NONE)
+	: CDialog(IDD, pParent), _pWaveDrawer(nullptr), _currentPart(PART_NONE), _pRecord(nullptr)
 {
-	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));	
+	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
 }
 
 CMainBaseCtrl::~CMainBaseCtrl()
@@ -118,6 +118,11 @@ void CMainBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 BOOL CMainBaseCtrl::OnEraseBkgnd( CDC* /*pDC*/ )
 {
 	return TRUE;
+}
+
+void CMainBaseCtrl::SetRecord(RheographyRecord* pRecord)
+{
+	_pRecord = pRecord;
 }
 
 void CMainBaseCtrl::stop()

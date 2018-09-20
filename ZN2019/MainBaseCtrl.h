@@ -1,15 +1,15 @@
 #pragma once
-#include "../libzn/SampleController.h"
 #include "../libzn/WaveBackgronud.h"
 #include "../libzn/WaveDrawer.h"
 #include "../libzn/WaveCanvas.h"
 #include "../libzn/ZnRecord.h"
 #include "resource.h"
+#include "../libzn/SampleController.h"
 
 
 // CMainBaseCtrl ¶Ô»°¿ò
 
-class CMainBaseCtrl : public CDialog, public ISampleController
+class CMainBaseCtrl : public CDialog, public SampleController
 {
 	DECLARE_DYNAMIC(CMainBaseCtrl)
 
@@ -33,16 +33,16 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-
-	virtual void stop();
+	void SetRecord(RheographyRecord* pRecord);
 
 	virtual void start();
+	virtual void stop();
 private:
 	WaveBackground _background;
 	WaveDrawer* _pWaveDrawer;
 	WaveCanvas *_pCanvas;
 	CBitmap  _memBitmap;
 	PartId _currentPart;
-	ZnRecordImpl _record;
+	RheographyRecord* _pRecord;
 
 };

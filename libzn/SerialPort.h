@@ -27,6 +27,7 @@ public:
 	DWORD write(LPVOID lpBytes, DWORD length) const;
 
 	void close();
+	void clear() const;
 private:
 	HANDLE _handle;
 	CString _portName;

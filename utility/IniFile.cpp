@@ -4,12 +4,11 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-int CIniFile::IsSection(const TCHAR *buf)
+int CIniFile::isSection(const TCHAR *buf)
 {
-	size_t i;
 	if(buf[0]==_T('['))
 	{
-		for(i=1; i< _tcslen(buf); i++)
+		for(size_t i = 1; i< _tcslen(buf); i++)
 		{
 			if(buf[i]==_T(']'))
 				return 1;
@@ -17,13 +16,13 @@ int CIniFile::IsSection(const TCHAR *buf)
 	}
 	return 0;
 }
-int CIniFile::IsComment(const TCHAR *buf)
+int CIniFile::isComment(const TCHAR *buf)
 {
 	if(buf[0]==_T(';'))
 		return 1;
 	return 0;
 }
-void CIniFile::PhaseSection(const TCHAR *buf, SECTION &section)
+void CIniFile::phaseSection(const TCHAR *buf, ConfigSection &section) const
 {
 	const TCHAR *end=buf;
 	int found=0;
@@ -48,9 +47,8 @@ void CIniFile::PhaseSection(const TCHAR *buf, SECTION &section)
 	}
 }
 
-long CIniFile::PhaseItem(const TCHAR* buf, ITEM &item)
+long CIniFile::phaseItem(const TCHAR* buf, ConfigItemImpl &item) const
 {
-	const TCHAR* start;
 	const TCHAR* end=buf;
 	int found=0;
 	while(*end!=_T(';') && *end!=0)
@@ -67,7 +65,7 @@ long CIniFile::PhaseItem(const TCHAR* buf, ITEM &item)
 		_tcsncpy_s(item.ItemName, buf, end-buf);
 		item.ItemName[end-buf]=0;
 		Trim(item.ItemName);
-		start=end+1;
+		const TCHAR* start = end + 1;
 		while(*end!=_T(';')&& *end!=0)
 		{
 			end++;
@@ -91,35 +89,33 @@ long CIniFile::PhaseItem(const TCHAR* buf, ITEM &item)
 	return 0;
 }
 
-SECTION *CIniFile::FindSection(const TCHAR *SectionName)
+ConfigSection *CIniFile::findSection(const TCHAR *sectionName)
 {
-	SECTION *psec;
-	size_t i;
-	for(i=0; i<m_IniItems.size(); i++)
+	for(size_t i = 0; i<_iniItems.size(); i++)
 	{
-		psec=dynamic_cast<SECTION *>(m_IniItems[i]);
-		if(psec)
+		ConfigSection* pSection = dynamic_cast<ConfigSection *>(_iniItems[i]);
+		if(pSection)
 		{
-			if(!_tcsicmp(SectionName, psec->SectionName))
-				return psec;
+			if(!_tcsicmp(sectionName, pSection->SectionName))
+				return pSection;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
-const TCHAR* CIniFile::GetSectionComment(const TCHAR *Section)
+const TCHAR* CIniFile::GetSectionComment(const TCHAR *section)
 {
-	SECTION *psec=FindSection(Section);
-	if(psec)
+	ConfigSection *pSection=findSection(section);
+	if(pSection)
 	{
-		psec->Comment;
+		return pSection->Comment;
 	}
 	return _T("");
 }
 
-const TCHAR* CIniFile::GetItemComment(const TCHAR *Section, const TCHAR *itemName)
+const TCHAR* CIniFile::GetItemComment(const TCHAR *section, const TCHAR *itemName)
 {
-	ITEM *item=FindItem(Section, itemName);
+	ConfigItemImpl *item=findItem(section, itemName);
 	if(item)
 	{
 		return item->Comment;
@@ -130,13 +126,11 @@ long CIniFile::OpenIniFile(const TCHAR *IniFileName)
 {
 	
 	_tsetlocale(0, _T("chs"));
-	SECTION *section, *CurSec;
-	ITEM *item;
-	COMMENT *comment;
+	ConfigSection*curSec = nullptr;
 
 	TCHAR buf[LEN_CFG_MAX_STRING+1];
 	FILE *fp;
-	int NewSection=1;    
+	int newSection=1;    
 	if(_tfopen_s(&fp, IniFileName, _T("r"))!=0)
 	{
 		return -1;
@@ -145,29 +139,29 @@ long CIniFile::OpenIniFile(const TCHAR *IniFileName)
 	{
 		while(!feof(fp))
 		{
-			if(_fgetts(buf, LEN_CFG_MAX_STRING, fp)==NULL)
+			if(_fgetts(buf, LEN_CFG_MAX_STRING, fp)== nullptr)
 				break; 
 			Trim(buf);
 			if(_tcslen(buf)==0)
 			{
 				continue;
 			}
-			if(IsComment(buf))
+			if(isComment(buf))
 			{
-				comment=new COMMENT;
+				ConfigComment* comment = new ConfigComment;
 				_tcscpy_s(comment->Comment, buf);
-				m_IniItems.push_back(comment);
+				_iniItems.push_back(comment);
 			}
-			else if(IsSection(buf))
+			else if(isSection(buf))
 			{
-				section=new SECTION();
-				PhaseSection(buf, *section);
+				ConfigSection* section = new ConfigSection();
+				phaseSection(buf, *section);
 				UpperString(section->SectionName);
-				CurSec=FindSection(section->SectionName);
-				if(!CurSec)
+				curSec=findSection(section->SectionName);
+				if(!curSec)
 				{
-					m_IniItems.push_back(section);
-					CurSec=section;
+					_iniItems.push_back(section);
+					curSec=section;
 				}
 				else
 				{
@@ -176,14 +170,14 @@ long CIniFile::OpenIniFile(const TCHAR *IniFileName)
 			}
 			else
 			{
-				item=new ITEM();
+				ConfigItemImpl* item = new ConfigItemImpl();
 				if(!item)
 				{
 					throw -1;
 				}
-				if(PhaseItem(buf, *item))
+				if(phaseItem(buf, *item))
 				{
-					CurSec->Items.push_back(item);
+					curSec->Items.push_back(item);
 				}
 				else
 				{
@@ -194,7 +188,7 @@ long CIniFile::OpenIniFile(const TCHAR *IniFileName)
 	}
 	catch( int e)
 	{
-		RemoveAll();
+		removeAll();
 		fclose(fp);
 		return e;
 	}
@@ -202,19 +196,15 @@ long CIniFile::OpenIniFile(const TCHAR *IniFileName)
 	return 0;
 }
 
-ITEM *CIniFile::FindItem(const TCHAR *Section, const TCHAR *ItemName)
+ConfigItemImpl *CIniFile::findItem(const TCHAR *Section, const TCHAR *ItemName)
 {
-	size_t i;
-	size_t count;
-	SECTION *section;
-	ITEM *item;
-	section=FindSection(Section);
+	ConfigSection* section = findSection(Section);
 	if(section)
 	{
-		count=section->Items.size();
-		for(i=0; i<count; i++)
+		const size_t count = section->Items.size();
+		for(size_t i = 0; i<count; i++)
 		{
-			item=dynamic_cast<ITEM*>(section->Items[i]);
+			ConfigItemImpl* item = dynamic_cast<ConfigItemImpl*>(section->Items[i]);
 			if(item &&
 				_tcsicmp(item->ItemName, ItemName)==0)
 		{
@@ -222,11 +212,11 @@ ITEM *CIniFile::FindItem(const TCHAR *Section, const TCHAR *ItemName)
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
-TCHAR CIniFile::GetConfigChar(const TCHAR *Section, const TCHAR *ItemName, TCHAR defaultV)
+TCHAR CIniFile::GetConfigChar(const TCHAR *section, const TCHAR *itemName, TCHAR defaultV)
 {
-	ITEM *item=FindItem(Section, ItemName);
+	ConfigItemImpl *item=findItem(section, itemName);
 	if(item && item->Value[0]!=0)
 	{
 		return item->Value[0];
@@ -234,9 +224,9 @@ TCHAR CIniFile::GetConfigChar(const TCHAR *Section, const TCHAR *ItemName, TCHAR
 	return defaultV;
 }
 
-long CIniFile::GetConfigInt(const TCHAR *Section, const TCHAR *ItemName, long defaultV)
+long CIniFile::GetConfigInt(const TCHAR *section, const TCHAR *itemName, long defaultV)
 {
-	ITEM *item=FindItem(Section, ItemName);
+	ConfigItemImpl *item=findItem(section, itemName);
 	if(item && item->Value[0]!=0 )
 	{
 		return _tstol(item->Value);
@@ -244,31 +234,29 @@ long CIniFile::GetConfigInt(const TCHAR *Section, const TCHAR *ItemName, long de
 	return defaultV;
 }
 
-const TCHAR *CIniFile::GetConfigString(const TCHAR *Section, const TCHAR *ItemName, const TCHAR *defaultV, TCHAR *buffer, long buflen)
+const TCHAR *CIniFile::GetConfigString(const TCHAR *section, const TCHAR *itemName, const TCHAR *defaultV, TCHAR *buffer, long bufferLen)
 {
-	ITEM *pConfig;
-	pConfig=FindItem(Section, ItemName);
+	ConfigItemImpl* pConfig = findItem(section, itemName);
 	if(pConfig && pConfig->Value[0]!=0)
 	{
-		if(buffer && buflen >1)
+		if(buffer && bufferLen >1)
 		{
-			_tcsncpy_s(buffer,buflen, pConfig->Value, buflen-1);
-			buffer[buflen-1]=0;
+			_tcsncpy_s(buffer,bufferLen, pConfig->Value, bufferLen-1);
+			buffer[bufferLen-1]=0;
 		}
 		return pConfig->Value;
 	}
-	if(buffer && buflen >1)
+	if(buffer && bufferLen >1)
 	{
-		_tcsncpy_s(buffer,buflen, defaultV?defaultV:_T(""), buflen-1);
-		buffer[buflen-1]=0;
+		_tcsncpy_s(buffer,bufferLen, defaultV?defaultV:_T(""), bufferLen-1);
+		buffer[bufferLen-1]=0;
 	}
 	return defaultV;
 }
 
 double CIniFile::GetConfigDouble(const TCHAR *Section, const TCHAR *ItemName, double defaultV)
 {
-	ITEM *pConfig;
-	pConfig=FindItem(Section, ItemName);
+	ConfigItemImpl* pConfig = findItem(Section, ItemName);
 	if(pConfig && pConfig->Value[0]!=0)
 	{
 		return _tstol(pConfig->Value);
@@ -276,37 +264,36 @@ double CIniFile::GetConfigDouble(const TCHAR *Section, const TCHAR *ItemName, do
 	return defaultV;
 }
 
-long CIniFile::GetConfigSection(TCHAR *buffer, long buflen)
+long CIniFile::GetConfigSection(TCHAR *buffer, long bufferLen)
 {
-	SECTION *section;
-	TCHAR *p, *old;
+	ConfigSection *section;
+	TCHAR *p;
 	int i;
 	int len=0;
-	int lineCount;
 
-	lineCount=m_IniItems.size();
+	int lineCount = _iniItems.size();
 	for(i=0; i<lineCount; i++)
 	{
-		section=dynamic_cast<SECTION*>(m_IniItems[i]);
+		section=dynamic_cast<ConfigSection*>(_iniItems[i]);
 		if(section)
 		{
 			len+=_tcslen(section->SectionName)+1;
 		}
 	}
 	len++;
-	if(buffer==NULL || buflen==0)
+	if(buffer== nullptr || bufferLen==0)
 		return len;
 
 	buffer[0]=0;
-	old=p=buffer;
+	TCHAR* old = p = buffer;
 
-	lineCount=m_IniItems.size();
+	lineCount=_iniItems.size();
 	for(i=0; i<lineCount; i++)
 	{
-		section=dynamic_cast<SECTION*>(m_IniItems[i]);
+		section=dynamic_cast<ConfigSection*>(_iniItems[i]);
 		if(section)
 		{
-			if(p+_tcslen(section->SectionName)+1-buffer<buflen)
+			if(p+_tcslen(section->SectionName)+1-buffer<bufferLen)
 			{
 				old=p;
 				_tcscpy(p, section->SectionName);
@@ -322,16 +309,15 @@ long CIniFile::GetConfigSection(TCHAR *buffer, long buflen)
 	*p=0;
 	return len+1;
 }
-long CIniFile::GetConfigItem(const TCHAR *section, TCHAR *buffer, long buflen)
+long CIniFile::GetConfigItem(const TCHAR *section, TCHAR *buffer, long bufferLen)
 {
-	SECTION *sec;
-	ITEM* item;
-	TCHAR *p, *old;
+	ConfigItemImpl* item;
+	TCHAR *p;
 	size_t i;
 	int len=0;
 
 	//get needed buffer len
-	sec=FindSection(section);
+	ConfigSection* sec = findSection(section);
 	if(!sec)
 	{
 		return 0;
@@ -339,19 +325,19 @@ long CIniFile::GetConfigItem(const TCHAR *section, TCHAR *buffer, long buflen)
 
 	for(i=0; i<sec->Items.size(); i++)
 	{
-		item=dynamic_cast<ITEM*>(sec->Items[i]);
+		item=dynamic_cast<ConfigItemImpl*>(sec->Items[i]);
 		if(item)
 		{
 			len+=_tcslen(item->ItemName)+1;
 		}
 	}
 	len++;
-	if(buffer==NULL || buflen==0)
+	if(buffer== nullptr || bufferLen==0)
 		return len;
 	buffer[0]=0;
-	old=p=buffer;
+	TCHAR* old = p = buffer;
 
-	sec=FindSection(section);
+	sec=findSection(section);
 	if(!sec)
 	{
 		return 0;
@@ -359,10 +345,10 @@ long CIniFile::GetConfigItem(const TCHAR *section, TCHAR *buffer, long buflen)
 
 	for(i=0; i<sec->Items.size(); i++)
 	{
-		item=dynamic_cast<ITEM*>(sec->Items[i]);
+		item=dynamic_cast<ConfigItemImpl*>(sec->Items[i]);
 		if(item)
 		{
-			if(p+_tcslen(item->ItemName)+1-buffer<buflen)
+			if(p+_tcslen(item->ItemName)+1-buffer<bufferLen)
 			{
 				_tcscpy(p, item->ItemName);
 				p+=(_tcslen(p)+1);
@@ -377,58 +363,52 @@ long CIniFile::GetConfigItem(const TCHAR *section, TCHAR *buffer, long buflen)
 	return len+1;
 }
 
-long CIniFile::AddConfig(const TCHAR*Section, const TCHAR*ItemName, const TCHAR *Value)
+long CIniFile::AddConfig(const TCHAR*section, const TCHAR*itemName, const TCHAR *value)
 {
-	SECTION *sec;
-	ITEM *item;
-	if(Section==NULL ||Section[0]==0)
+	if(section== nullptr ||section[0]==0)
 		return -2;
-	item=FindItem(Section, ItemName);
+	ConfigItemImpl* item = findItem(section, itemName);
 	if(item)
 		return -1;
-	sec=FindSection(Section);
+	ConfigSection* sec = findSection(section);
 	if(!sec)
 	{
-		sec=new SECTION;
-		_tcscpy(sec->SectionName, Section);
-		m_IniItems.push_back(sec);
+		sec=new ConfigSection;
+		_tcscpy(sec->SectionName, section);
+		_iniItems.push_back(sec);
 	}
-	if(ItemName==NULL ||ItemName[0]==0)
+	if(itemName== nullptr ||itemName[0]==0)
 		return 0;
-	item=new ITEM;
-	_tcscpy(item->ItemName, ItemName);
-	_tcscpy(item->Value, Value);
+	item=new ConfigItemImpl;
+	_tcscpy(item->ItemName, itemName);
+	_tcscpy(item->Value, value);
 	sec->Items.push_back(item);
 	return 0;
 }
 
-long CIniFile::ModifyConfig(const TCHAR*Section, const TCHAR*ItemName, const TCHAR *NewValue)
+long CIniFile::ModifyConfig(const TCHAR*section, const TCHAR*itemName, const TCHAR *newValue)
 {
-	ITEM *pConfig;
-	pConfig=FindItem(Section, ItemName);
+	ConfigItemImpl* pConfig = findItem(section, itemName);
 	if(pConfig)
 	{
-		_tcscpy(pConfig->Value, NewValue);
+		_tcscpy(pConfig->Value, newValue);
 		return 0;
 	}
-	return AddConfig(Section, ItemName, NewValue);
+	return AddConfig(section, itemName, newValue);
 }
 
-long CIniFile::DeleteConfigItem(const TCHAR* Section, const TCHAR *ItemName)
+long CIniFile::DeleteConfigItem(const TCHAR* section, const TCHAR *itemName)
 {
-	SECTION *sec;
-	ITEM *item;
-	size_t i;
 	DumpIni(stdout);
-	sec=FindSection(Section);
+	ConfigSection* sec = findSection(section);
 	if(sec)
 	{
-		for(i=0; i<sec->Items.size(); i++)
+		for(size_t i = 0; i<sec->Items.size(); i++)
 		{
-			item=dynamic_cast<ITEM*>(sec->Items[i]);
+			ConfigItemImpl* item = dynamic_cast<ConfigItemImpl*>(sec->Items[i]);
 
 			if(item &&
-				_tcsicmp(item->ItemName, ItemName)==0)
+				_tcsicmp(item->ItemName, itemName)==0)
 			{
 				sec->Items.erase(sec->Items.begin()+i);
 				DumpIni(stdout);
@@ -439,24 +419,19 @@ long CIniFile::DeleteConfigItem(const TCHAR* Section, const TCHAR *ItemName)
 	return -1;    
 }
 
-long CIniFile::DeleteConfigSection(const TCHAR *Section)
+long CIniFile::DeleteConfigSection(const TCHAR *section)
 {
-	SECTION *pSec;
-
-	size_t i, count;
-	count=m_IniItems.size();
-	for(i=count-1; i>=0; i--)
+	const size_t count = _iniItems.size();
+	for(size_t i = count - 1; i>=0; i--)
 	{
-		pSec=dynamic_cast<SECTION*>(m_IniItems[i]);
+		ConfigSection* pSec = dynamic_cast<ConfigSection*>(_iniItems[i]);
 		if(pSec &&
-			_tcsicmp(Section, pSec->SectionName)==0)
+			_tcsicmp(section, pSec->SectionName)==0)
 
 		{
-			m_IniItems.erase(m_IniItems.begin()+i);
+			_iniItems.erase(_iniItems.begin()+i);
 		}
 	}
-	return 0;
-
 }
 
 long CIniFile::WriteIniFile(const TCHAR*IniFileName)
@@ -473,29 +448,25 @@ long CIniFile::WriteIniFile(const TCHAR*IniFileName)
 
 void CIniFile::CloseIniFile()
 {
-	RemoveAll();
+	removeAll();
 }
 
 void CIniFile::DumpIni(FILE *fp)
 {
-	size_t i, count;
-	count=m_IniItems.size();
-	for(i=0; i<count; i++)
+	const size_t count = _iniItems.size();
+	for(size_t i = 0; i<count; i++)
 	{
-		m_IniItems[i]->Dump(fp);
+		_iniItems[i]->Dump(fp);
 	}
 }
 long CIniFile::GetSectionNum()
 {
-	SECTION *section;
-	size_t i;
 	size_t count=0;
-	size_t lineCount;
-	lineCount=m_IniItems.size();
+	const size_t lineCount = _iniItems.size();
 
-	for(i=0; i<lineCount; i++)
+	for(size_t i = 0; i<lineCount; i++)
 	{
-		section=dynamic_cast<SECTION*>(m_IniItems[i]);
+		ConfigSection* section = dynamic_cast<ConfigSection*>(_iniItems[i]);
 		if(section)
 		{
 			count ++;

@@ -30,9 +30,6 @@
     <ClCompile Include="LineObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectObserver.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="RectObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -57,9 +54,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="LineObject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectObserver.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="RectObject.h">

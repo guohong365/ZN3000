@@ -18,7 +18,7 @@ public:
 	virtual void generator(void *pBuffer, size_t count, size_t sample_size, int N = 1);
 };
 
-class SimSampler:public ISampler
+class SimSampler:public Sampler
 {
 public:
 	SimSampler(SimSampleGenerator * pCallBack, size_t count);

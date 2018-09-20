@@ -10,7 +10,7 @@ static const FontStyle defaultFontStyle=FontStyleRegular;
 LPTEXT_EDIT_CALLBACK CTextObject::_pTextEditCallback=NULL;
 CTextObject::CTextObject(void)
 {
-    Initailize();
+    initialize();
 }
 
 CTextObject::~CTextObject(void)
@@ -23,13 +23,13 @@ CTextObject::CTextObject(const CString & name, int x, int y,
 						 int fontStyle)
 						 :CRectObject(name, x, y, 1, 1)
 {
-    Initailize();
-    SetFontFace(fontName);
-	SetFontSize(fontSize);
-	SetFontStyle(fontStyle);
-	Gdiplus::Font font(fontName, GetFontSize(), fontStyle, UnitPixel);
+    initialize();
+	CDrawObject::SetFontFace(fontName);
+	CDrawObject::SetFontSize(fontSize);
+	CDrawObject::SetFontStyle(fontStyle);
+	Gdiplus::Font font(fontName, CDrawObject::GetFontSize(), fontStyle, UnitPixel);
 
-	RectF rectF=MeasureString(name, &font, PointF((float)x,(float)y), m_pStringFormat);
+	RectF rectF=MeasureString(name, &font, PointF(float(x),float(y)), m_pStringFormat);
 	SetSize(Size((int)(rectF.Width+0.5f), (int)(rectF.Height +0.5f)));
 }
 CTextObject::CTextObject(const CString & name, const Gdiplus::Point & point, 
@@ -38,13 +38,13 @@ CTextObject::CTextObject(const CString & name, const Gdiplus::Point & point,
 						 int fontStyle)
 :CRectObject(name, point.X, point.Y, 1, 1)
 {
-    Initailize();
-	SetFontFace(fontName);
-	SetFontSize(fontSize);
-	SetFontStyle(fontStyle);
-	Gdiplus::Font font(fontName, GetFontSize(), fontStyle, UnitPixel);
-	RectF rectF=MeasureString(name, &font, PointF((float)point.X,(float)point.Y), m_pStringFormat);
-	SetSize(Size((int)(rectF.Width+0.5f), (int)(rectF.Height +0.5f)));
+    initialize();
+	CDrawObject::SetFontFace(fontName);
+	CDrawObject::SetFontSize(fontSize);
+	CDrawObject::SetFontStyle(fontStyle);
+	Gdiplus::Font font(fontName, CDrawObject::GetFontSize(), fontStyle, UnitPixel);
+	RectF rectF=MeasureString(name, &font, PointF(float(point.X),float(point.Y)), m_pStringFormat);
+	CDrawObject::SetSize(Size(int(rectF.Width + 0.5f), int(rectF.Height + 0.5f)));
 }
 
 void CTextObject::OnDrawBorder(Gdiplus::Graphics & graph)
@@ -133,36 +133,6 @@ void CTextObject::Serialize(CArchive & ar)
     CRectObject::Serialize(ar);
 }
 
-bool CTextObject::BuildProperties(CXTPPropertyGridItem * pCategoryObjects)
-{
-    CDrawObject::BuildProperties(pCategoryObjects);
-    CXTPPropertyGridItems *pItems = pCategoryObjects->GetChilds();
-    CXTPPropertyGridItem *pItem;
-    if (pItems)
-    {
-        for (int i = 0; i < pItems->GetCount(); i++)
-        {
-            pItem = pItems->GetAt(i);
-            if (pItem->GetID() == ID_OBJECT_NAME)
-            {
-                pItem->SetID(ID_OBJECT_TEXT_NAME);
-            }
-        }
-    }
-    return true;
-}
-
-void CTextObject::OnPropertyItemChangedNotify(CXTPPropertyGridItem * pItem)
-{
-    CRectObject::OnPropertyItemChangedNotify(pItem);
-    switch (pItem->GetID())
-    {
-    case ID_OBJECT_TEXT_NAME:
-        SetName(pItem->GetValue());
-        break;
-    }
-}
-
 void CTextObject::OnNameChanged()
 {
     CRectObject::OnNameChanged();
@@ -173,7 +143,7 @@ void CTextObject::OnNameChanged()
 	SetSize(Size((int)(rectF.Width+0.5f), (int)(rectF.Height +0.5f)));
 }
 
-void CTextObject::Initailize()
+void CTextObject::initialize()
 {
 	m_pStringFormat=new Gdiplus::StringFormat();
     m_pStringFormat->SetAlignment(StringAlignmentCenter);

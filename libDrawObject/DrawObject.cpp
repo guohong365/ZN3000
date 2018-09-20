@@ -3,6 +3,7 @@
 #include "DrawObject.h"
 #include "MathUtility.h"
 #include "ImageUtility.h"
+#include "DrawObjectPropertiesID.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -21,17 +22,8 @@ static char THIS_FILE[]=__FILE__;
 #if(_HAS_ITERATOR_DEBUGGING!=0)
 #endif
 
-
-
-CDrawObject::DRAW_OBJECT_LIST CDrawObject::_allObjects;
-std::vector<BIND_OBJ_INFO*> CDrawObject::_preBindObjects;
-bool CDrawObject::_bIsBindBuilding=false;
-
-
-bool CDrawObject::m_bIsPrinting = false;
 //坐标单位
-Gdiplus::Unit CDrawObject::m_Unit = Gdiplus::UnitPixel;
-IStorage *CDrawObject::m_pRootStorage = NULL;
+Gdiplus::Unit CDrawObject::Unit = Gdiplus::UnitPixel;
 
 IMPLEMENT_SERIAL(CDrawObject, CObject, 0)
 void CDrawObject::Initialize()
@@ -46,15 +38,12 @@ void CDrawObject::Initialize()
 	_bMovable = true;
 	_bRotatable = true;
 	_bSizable = true;
-	m_pParent = NULL;
+	_pParent = NULL;
 	//_appearance.FontSize=FontSizeArray[DEFAULT_FONT_SIZE_INDEX].SizePoint*FONT_SIZE_FACETOR;
 
 	 m_bUseRotateCenter = false;
 
 	_internalName = GenerateUniqueName();
-	int a=_allObjects.size();
-
-	_allObjects.push_back(this);
 }
 
 CDrawObject::CDrawObject()
@@ -91,15 +80,6 @@ CDrawObject::CDrawObject(const CString & name, const Gdiplus::Rect & rect)
 
 CDrawObject::~CDrawObject()
 {
-	UnbindAll();
-    for(DRAW_OBJECT_LIST::iterator i=_allObjects.begin(); i!= _allObjects.end(); i++)
-	{
-		if(this==*i)
-		{
-			_allObjects.erase( i);
-			break;
-		}
-	}
 }
 
 CString CDrawObject::GenerateUniqueName()
@@ -110,18 +90,6 @@ CString CDrawObject::GenerateUniqueName()
 	CString name;
 	name.Format(_T("%020I64u"), PerformanceCount.QuadPart);
 	return name;
-}
-
-//property
-
-void CDrawObject::SetStorage(IStorage * pStorage)
-{
-	m_pRootStorage = pStorage;
-}
-
-IStorage *CDrawObject::GetStorage()
-{
-	return m_pRootStorage;
 }
 
 
@@ -179,12 +147,12 @@ void CDrawObject::OnInternalNameChanged()
 //坐标单位
 void CDrawObject::SetUnit(Gdiplus::Unit unit)
 {
-	CDrawObject::m_Unit = unit;
+	CDrawObject::Unit = unit;
 }
 
 Gdiplus::Unit CDrawObject::GetUnit()
 {
-	return CDrawObject::m_Unit;
+	return CDrawObject::Unit;
 }
 
 //位置
@@ -617,21 +585,21 @@ void CDrawObject::OnSelectedChanged()
 //////////////////////////////////////////////////////////////////////////
 void CDrawObject::SetParent(CDrawObject * pParent)
 {
-	if (m_pParent != pParent)
+	if (_pParent != pParent)
 	{
 		OnParentChanging(pParent);
-		m_pParent = pParent;
+		_pParent = pParent;
 		OnParentChanged();
 	}
 }
 const CDrawObject *CDrawObject::GetParent() const 
 {
-	return m_pParent;
+	return _pParent;
 }
 
 CDrawObject *CDrawObject::GetParent()
 {
-	return m_pParent;
+	return _pParent;
 }
 
 void CDrawObject::OnParentChanging(CDrawObject * &pObject)
@@ -706,163 +674,6 @@ bool CDrawObject::GetCustomProperty(const CString & propertyName, CString & prop
 
 
 LOGFONTW OBJECT_DEFAULT_FONT = { 0 };
-bool CDrawObject::BuildProperties(CXTPPropertyGridItem * pCategoryObjects)
-{	
-	return true;
-}
-
-void CDrawObject::OnPropertyItemChangedNotify(CXTPPropertyGridItem * pItem)
-{
-    //TODO: Need to complete undo functions
-	CXTPPropertyGridItemBool *pItemBool;
-	CXTPPropertyGridItemColor *pItemColor;
-	CXTPPropertyGridItemFont *pItemFont;
-	CXTPPropertyGridItemNumber *pItemNumber;
-	CXTPPropertyGridItemDouble *pItemDouble;
-
-	pItemBool = DYNAMIC_DOWNCAST(CXTPPropertyGridItemBool, pItem);
-	pItemNumber = DYNAMIC_DOWNCAST(CXTPPropertyGridItemNumber, pItem);
-	pItemDouble = DYNAMIC_DOWNCAST(CXTPPropertyGridItemDouble, pItem);
-	pItemColor = DYNAMIC_DOWNCAST(CXTPPropertyGridItemColor, pItem);
-	pItemFont = DYNAMIC_DOWNCAST(CXTPPropertyGridItemFont, pItem);
-	Gdiplus::Color color;
-    bool updated=false;
-    bool modifyed=false;
-	switch (pItem->GetID())
-	{
-	case ID_OBJECT_NAME:
-		SetName(pItem->GetValue());
-        modifyed=true;
-		break;
-	case ID_OBJECT_INTERNAL_NAME:
-		break;
-	case ID_OBJECT_POSITION:
-		break;
-	case ID_OBJECT_POSITION_X:
-		{
-			ASSERT(pItemNumber);
-			Gdiplus::Point pt = GetPosition();
-            Gdiplus::Point ptNew=pt;
-			ptNew.X = pItemNumber->GetNumber();
-			SetPosition(pt);
-            updated=modifyed=true;
-		}
-		break;
-	case ID_OBJECT_POSITION_Y:
-		{
-			ASSERT(pItemNumber);
-			Gdiplus::Point pt = GetPosition();
-            Gdiplus::Point ptNew;
-            ptNew.Y = pItemNumber->GetNumber();
-			SetPosition(pt);
-            updated=modifyed=true;
-		}
-		break;
-	case ID_OBJECT_SIZE:
-		break;
-	case ID_OBJECT_SIZE_WIDTH:
-		{
-			ASSERT(pItemNumber);
-			Gdiplus::Size size = GetSize();
-            Gdiplus::Size sizeNew=size;
-            sizeNew.Width = pItemNumber->GetNumber();
-			SetSize(size);
-            updated=modifyed=true;
-	}
-		break;
-
-	case ID_OBJECT_SIZE_HEIGHT:
-		{
-			ASSERT(pItemNumber);
-			Gdiplus::Size size = GetSize();
-			Gdiplus::Size sizeNew=size;
-			sizeNew.Height = pItemNumber->GetNumber();
-			SetSize(size);
-            updated=modifyed=true;
-	}
-		break;
-	case ID_OBJECT_ROTATE_CENTER:
-		break;
-	case ID_OBJECT_ROTATE_CENTER_X:
-		{
-			ASSERT(pItemNumber);
-			Gdiplus::Point pt = _rotateCenter;
-			__int64 oldCenter=(((__int64)pt.Y) << 32 ) | pt.X;
-			pt.X = pItemNumber->GetNumber();
-			__int64 newCenter=(((__int64)pt.Y) << 32 ) | pt.X;
-			SetRotateCenter(pt);
-		}
-		break;
-
-	case ID_OBJECT_ROTATE_CENTER_Y:
-		{
-			ASSERT(pItemNumber);
-			Gdiplus::Point pt = _rotateCenter;
-			__int64 oldCenter=(((__int64)pt.Y) << 32 ) | pt.X;
-			pt.Y = pItemNumber->GetNumber();
-			__int64 newCenter=(((__int64)pt.Y) << 32 ) | pt.X;
-			SetRotateCenter(pt);
-		}
-		break;
-	case ID_OBJECT_ROTATE_ANGLE:
-		ASSERT(pItemDouble);
-		SetAngle(pItemDouble->GetDouble());
-		break;
-	case ID_OBJECT_VISIBLE:
-		SetVisible(pItemBool->GetBool() == TRUE);
-		break;
-	case ID_OBJECT_TRANSPARENT:
-		SetTransparent(pItemNumber->GetNumber() / 100.0f);
-		break;
-	case ID_OBJECT_SHOW_BORDER:
-		SetShowBorder(pItemBool->GetBool() == TRUE);
-		break;
-	case ID_OBJECT_LINE_WIDTH:
-		SetLineWidth((float)pItemDouble->GetDouble());
-		break;
-	case ID_OBJECT_LINE_COLOR:
-		color.SetFromCOLORREF(pItemColor->GetColor());
-		SetLineColor(color);
-		break;
-	case ID_OBJECT_FILLED:
-		SetFilled(pItemBool->GetBool() == TRUE);
-		break;
-	case ID_OBJECT_FILL_COLOR:
-		color.SetFromCOLORREF(pItemColor->GetColor());
-		SetFillColor(color);
-		break;
-	case ID_OBJECT_FONT:
-		{
-			LOGFONTW logFont;
-			pItemFont->GetFont(&logFont);
-			SetFontFace(logFont.lfFaceName);
-			SetFontSize((float)logFont.lfHeight);
-			int style= (logFont.lfItalic? Gdiplus::FontStyleItalic:0 )|
-				(logFont.lfUnderline?Gdiplus::FontStyleUnderline:0)|
-				(logFont.lfWeight < 400? Gdiplus::FontStyleRegular:Gdiplus::FontStyleBold);
-			SetFontStyle(style);
-			color.SetFromCOLORREF(pItemFont->GetColor());
-			SetFontColor(color);
-		}
-		break;
-	case ID_OBJECT_SELECTABLE:
-		SetSelectable(pItemBool->GetBool()==TRUE);
-		break;
-	case ID_OBJECT_MOVABLE:
-		SetMovable(pItemBool->GetBool()==TRUE);
-		break;
-	case ID_OBJECT_ROTATABLE:
-		SetRotatable(pItemBool->GetBool()==TRUE);
-		break;
-	case ID_OBJECT_SIZABLE:
-		SetSizable(pItemBool->GetBool()==TRUE);
-		break;
-	case ID_OBJECT_LOCK_ON_PARENT:
-		break;
-	default:
-		break;
-	}
-}
 
 //////////////////////////////////////////////////////////////////////////
 //撤销列表支持
@@ -924,7 +735,7 @@ CDrawObject *CDrawObject::Clone()
 
 void CDrawObject::DrawTracker(Gdiplus::Graphics & graph)
 {
-	if (GetSelected() && GetShowTracker() && !IsPrinting())
+	if (GetSelected() && GetShowTracker() )
 	{
 		OnDrawTracker(graph);
 	}
@@ -1382,147 +1193,6 @@ int CDrawObject::HitTest(const Gdiplus::Point & pt)
 	return 0;
 }
 
-//序列化支持
-
-void CDrawObject::Serialize(CArchive & ar)
-{
-	CObject::Serialize(ar);
-	m_CustomProperties.Serialize(ar);
-	if (ar.IsStoring())
-	{
-		ar << _name;
-		ar << _internalName;
-		ar << _position.X;
-		ar << _position.Y;
-		ar << _size.Width;
-		ar << _size.Height;
-		ar << m_bUseRotateCenter;
-		ar << _rotateCenter.X;
-		ar << _rotateCenter.Y;
-		ar << _angle;
-		ar << m_ClipRect.X;
-		ar << m_ClipRect.Y;
-		ar << m_ClipRect.Width;
-		ar << m_ClipRect.Height;
-		ar << m_bUsingClip;
-		ar << _bVisible;
-		ar << GetFilled();
-		ar << GetTransparent();
-		ar << GetShowTracker();
-		ar << GetTrackerColor().GetValue();
-		ar << GetShowBorder();
-		ar << GetLineStyle();
-		ar << GetFillColor().GetValue();
-		ar << GetActiveColor().GetValue();
-		ar << GetLineWidth();
-		ar << GetLineColor().GetValue();
-		ar << GetFontColor().GetValue();
-		ar << _bSelectable;
-		ar << _bMovable;
-		ar << _bRotatable;
-		ar << _bSizable;
-		ar << GetFontFace();
-		ar << GetFontSize();
-		ar << GetFontStyle();
-		ar << GetTextAlign();
-		ar << GetTextLineAlign();
-		ar << GetTextIsVert();
-		ar << _bindTargets.size();
-		for(size_t i=0; i< _bindTargets.size(); i++)
-		{
-			CDrawObject *pObject=_bindTargets[i];
-			ar << pObject->GetInternalName();
-		}
-	}
-	else
-	{
-		Gdiplus::ARGB argb;
-		int temp;
-		ar >> _name;
-		ar >> _internalName;
-		ar >> _position.X;
-		ar >> _position.Y;
-		ar >> _size.Width;
-		ar >> _size.Height;
-		ar >> m_bUseRotateCenter;
-		ar >> _rotateCenter.X;
-		ar >> _rotateCenter.Y;
-		ar >> _angle;
-		ar >> m_ClipRect.X;
-		ar >> m_ClipRect.Y;
-		ar >> m_ClipRect.Width;
-		ar >> m_ClipRect.Height;
-		ar >> m_bUsingClip;
-		ar >> _bVisible;
-		bool b;
-		ar >> b;
-		SetFilled(b);
-		FLOAT f;
-		ar >> f;
-		SetTransparent(f);
-		ar >> b;
-		SetShowTracker(b);
-		ar >> argb;
-		SetTrackerColor(argb);
-		ar >> b;
-		SetShowBorder(b);
-		INT i;
-		ar >> i;
-		SetLineStyle(i);
-		ar >> argb;
-		SetFillColor(argb);
-		ar >> argb;
-		SetActiveColor(argb);
-		ar >> f;
-		SetLineWidth(f);
-		ar >> argb;
-		SetLineColor(argb);
-		ar >> argb;
-		SetFontColor(argb);
-		ar >> _bSelectable;
-		ar >> _bMovable;
-		ar >> _bRotatable;
-		ar >> _bSizable;
-		CString s;
-		ar >> s;
-		SetFontFace(s);
-		ar >> f;
-		SetFontSize(f);
-		ar >> i;
-		SetFontStyle(i);
-		ar >> i;
-		SetTextAlign(i);
-		ar >> i;
-		SetTextLineAlign(i);
-		ar >> b;
-		SetTextIsVert(b);
-		ar >> temp;
-		BIND_OBJ_INFO *pInfo;
-		if(temp)
-		{
-			pInfo=new BIND_OBJ_INFO;
-			pInfo->pSource=this;
-			for(int i=0; i< temp; i++)
-			{
-				CString innerName;
-				ar >> innerName;
-				pInfo->targetList.AddTail(innerName);
-			}
-			_preBindObjects.push_back( pInfo);
-		}
-		m_CustomPropertyList.RemoveAll();
-		if(m_CustomProperties.GetCount())
-		{
-			CMapStringToString::CPair * pair = m_CustomProperties.PGetFirstAssoc();
-			while (pair)
-			{
-				m_CustomPropertyList.AddHead(pair->key);
-				pair = m_CustomProperties.PGetNextAssoc(pair);
-			}
-		}
-	}
-}
-
 bool CDrawObject::OnRButtonDown(CWnd * pWnd, UINT nFlags, Gdiplus::Point point)
 {
 	return false;
@@ -1641,26 +1311,12 @@ LPCTSTR CDrawObject::GetObjectType( int Id )
 	return _T("未定义");
 }
 
-void CDrawObject::SetPrintingState(bool state)
-{
-	m_bIsPrinting = state;
-}
-
-bool CDrawObject::IsPrinting()
-{
-	return m_bIsPrinting;
-}
 
 void CDrawObject::Notify(UINT msgID, DWORD_PTR wParam, LPVOID lpParam)
 {
 	if (GetParent())
 	{
 		GetParent()->OnNotify(this, msgID, wParam, lpParam);
-	}
-	for(size_t i=0; i< _bindedObjects.size(); i++)
-	{
-		CDrawObject* pObject=_bindedObjects[i];
-		pObject->OnNotify(this, msgID, wParam, lpParam);			
 	}
 }
 
@@ -1900,106 +1556,6 @@ void CDrawObject::OnTextVertChanged()
 	Notify(DNM_TEXT_VERT_CHANGED);
 }
 
-std::vector<CDrawObject*> & CDrawObject::GetBindedObjects()
-{
-	return _bindedObjects;
-}
-
-std::vector<CDrawObject*> & CDrawObject::GetBindTargets()
-{
-	return _bindTargets;
-}
-
-void CDrawObject::OnBinding( CDrawObject*pTarget )
-{
-
-}
-
-void CDrawObject::OnBinded( CDrawObject *pTarget )
-{
-
-}
-
-void CDrawObject::BindTo( CDrawObject *pTarget )
-{
-	ASSERT(pTarget);
-	OnBinding(pTarget);
-	pTarget->_bindedObjects.push_back(this);
-	_bindTargets.push_back( pTarget);
-	OnBinded(pTarget);
-}
-
-void CDrawObject::UnbindFrom( CDrawObject *pTarget )
-{
-	if(pTarget==NULL)
-		return;
-	OnUnbindingFrom(pTarget);
-	int pos=_findIndex(pTarget->_bindedObjects, this);
-	if(pos>=0)
-	{
-		pTarget->_bindedObjects.erase(pTarget->_bindedObjects.begin() + pos);
-	}
-	else
-	{
-		return;
-	}
-	pos=_findIndex(_bindTargets, pTarget);
-	ASSERT(pos >=0);
-	_bindTargets.erase(_bindTargets.begin() + pos);
-	OnUnbindedFrom(pTarget);
-}
-
-void CDrawObject::UnbindAll()
-{
-	for(size_t i=0; i< _bindTargets.size(); i++)
-	{
-		CDrawObject* pTarget=_bindTargets[i];
-		UnbindFrom(pTarget);
-	}
-	for(size_t i=0; i< _bindedObjects.size(); i++)
-	{
-		CDrawObject *pSource=_bindedObjects[i];
-		pSource->UnbindFrom(this);
-	}
-	_bindTargets.clear();
-	_bindedObjects.clear();
-}
-
-void CDrawObject::SetBindBuilderState( bool state )
-{
-	_bIsBindBuilding=state;
-}
-
-bool CDrawObject::IsBindBuilding()
-{
-	return _bIsBindBuilding;
-}
-
-void CDrawObject::BuildBinding()
-{
-	_bIsBindBuilding=true;
-	for(size_t i=0; i< _preBindObjects.size(); i++)
-	{
-		BIND_OBJ_INFO *pInfo=_preBindObjects[i];
-		POSITION pos=pInfo->targetList.GetHeadPosition();
-		while(pos)
-		{
-			CString innerName=pInfo->targetList.GetNext(pos);
-			CDrawObject *pTarget=_findObjectByName(_allObjects, innerName);
-			if(pTarget)
-			{
-				pInfo->pSource->BindTo(pTarget);
-			}
-		}
-	}
-	for(size_t i=0; i< _preBindObjects.size(); i++)
-	{
-		delete _preBindObjects[i];
-	}
-	_preBindObjects.clear();
-	_bIsBindBuilding=false;
-}
-
 int CDrawObject::_findIndex( std::vector<CDrawObject*> & objects, CDrawObject* pTarget )
 {
 	for(size_t i=0; i< objects.size(); i++)
@@ -2014,156 +1570,14 @@ int CDrawObject::_findIndex( std::vector<CDrawObject*> & objects, CDrawObject* p
 
 CDrawObject * CDrawObject::_findObjectByName( DRAW_OBJECT_LIST &objects, const CString & innerName )
 {
-    for(DRAW_OBJECT_LIST::iterator i=objects.begin(); i!= objects.end(); i++)
+    for(DRAW_OBJECT_LIST::iterator i=objects.begin(); i!= objects.end(); ++i)
 	{
 		if(innerName==(*i)->GetInternalName())
 		{
 			return *i;
 		}
 	}
-	return NULL;
-}
-
-void CDrawObject::notifyAttributesChanged( CDrawObject *changedObject, unsigned int attributeIndex, ATTR_VALUE  &newVal, ATTR_VALUE &oldVal )
-{
-	ASSERT(this==changedObject);
-	CString strVal;
-	INT32 intVal;
-    Gdiplus::Size szVal;
-    Gdiplus::Point ptVal;
-    Gdiplus::Rect rcVal;
-    float fVal;
-	switch(attributeIndex)
-	{
-	case ID_OBJECT_NAME://                  40100
-	case ID_OBJECT_TEXT_NAME://             40101
-		{
-			strVal=newVal;
-			SetName(strVal);
-			break;
-		}
-	case ID_OBJECT_INTERNAL_NAME://         40102
-		{
-			strVal=newVal;
-			SetInternalName(strVal);
-			break;
-		}
-	case ID_OBJECT_POSITION://              40103
-		{
-			ptVal=newVal;
-			SetPosition(ptVal);
-			break;
-		}
-	case ID_OBJECT_SIZE://                  40106
-		{
-            szVal=newVal;
-			SetSize(szVal);
-			break;
-		}
-	case ID_OBJECT_ROTATE_CENTER://         40109
-		{
-            ptVal=newVal;
-            SetRotateCenter(ptVal);
-			break;
-		}
-	case ID_OBJECT_ROTATE_ANGLE://          40112
-		{
-			SetAngle(newVal);
-			break;
-		}
-	case ID_OBJECT_VISIBLE://               40113
-		{
-			SetVisible(newVal);
-			break;
-		}
-	case ID_OBJECT_TRANSPARENT://           40114
-		{
-			SetTransparent(newVal);
-			break;
-		}
-	case ID_OBJECT_SHOW_BORDER://           40115
-		{
-			SetShowBorder(newVal);
-			break;
-		}
-	case ID_OBJECT_BORDER_COLOR://          40116   废弃，使用LINE_COLOR
-	case ID_OBJECT_LINE_COLOR://            40119
-		{
-			SetLineColor(Gdiplus::Color((int)newVal));
-			break;
-		}
-	case ID_OBJECT_BORDER_LINE_WIDTH://     40117 废弃，使用LINE_WIDTH
-	case ID_OBJECT_LINE_WIDTH://            40118
-		{
-			SetLineWidth(newVal);
-			break;
-		}
-    case ID_OBJECT_LINE_STYLE:
-        SetLineStyle(newVal);
-        break;
-	case ID_OBJECT_FILLED://                40120
-		{
-			SetFilled(newVal);
-			break;
-		}
-	case ID_OBJECT_FILL_COLOR://            40121
-		{
-			SetFillColor(Gdiplus::Color((int)newVal));
-			break;
-		}
-    case ID_OBJECT_FONT_NAME:
-        strVal=newVal;
-        SetFontFace(strVal);
-        break;
-    case ID_OBJECT_FONT_SIZE:
-        fVal=newVal;
-        SetFontSize(fVal);
-        break;
-    case ID_OBJECT_FONT_STYLE:
-        intVal=newVal;
-        SetFontStyle(intVal);
-        break;
-    case ID_OBJECT_FONT_COLOR:
-        intVal=newVal;
-        SetFontColor(Gdiplus::Color(intVal));
-        break;
-	case ID_OBJECT_SELECTABLE://            40123
-		{
-			SetSelectable((bool)newVal);
-			break;
-		}
-	case ID_OBJECT_MOVABLE://               40124
-		{
-			SetMovable((bool)newVal);
-			break;
-		}
-	case ID_OBJECT_ROTATABLE://             40125
-		{
-			SetRotatable((bool)newVal);
-			break;
-		}
-
-	case ID_OBJECT_SIZABLE://               40126
-		{
-			SetSizable((bool)newVal);
-			break;
-		}
-    case ID_OBJECT_FONT:
-        break;
-    case ID_OBJECT_TEXT_ALIGNMENT:
-        SetTextAlign(newVal);
-        break;
-    case ID_OBJECT_TEXT_LINE_ALIGNMENT:
-        SetTextLineAlign(newVal);
-        break;
-    case ID_OBJECT_TEXT_DIRECTION:
-        SetTextIsVert(newVal);
-    case ID_OBJECT_SELECTED:
-        SetSelected(newVal);
-        break;
-	default:
-		break;
-	}
+	return nullptr;
 }
 
 int CDrawObject::GetObjectTypeID() const
@@ -2305,11 +1719,6 @@ bool CDrawObject::GetWorldAngle(double *angle, Gdiplus::Point * rotateCenter)
 		*rotateCenter=ptCenter;
 	}
 	return true;
-}
-
-void CDrawObject::notifyRevert(CDrawObject* pChanged, int &action )
-{
-    throw std::exception("The method or operation is not implemented.");
 }
 
 void CDrawObject::SetCommonMenuId( UINT commonMenuId )

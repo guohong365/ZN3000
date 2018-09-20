@@ -3,7 +3,7 @@
 
 
 SerialPort::SerialPort(const CString& portName, DWORD baudRate, BYTE dataBits, BYTE parity, BYTE stopBits):
-	_handle(nullptr),
+	_handle(INVALID_HANDLE_VALUE),
 	_portName(portName),
 	_baudRate(baudRate),
 	_dataBits(dataBits),
@@ -71,5 +71,12 @@ void SerialPort::close()
 	{
 		CloseHandle(_handle);
 		_handle = nullptr;
+	}
+}
+
+void SerialPort::clear() const
+{
+	if(_handle !=INVALID_HANDLE_VALUE){
+		PurgeComm(_handle, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
 	}
 }

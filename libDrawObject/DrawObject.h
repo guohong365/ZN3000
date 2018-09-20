@@ -1,31 +1,13 @@
 #pragma once
-#include "DrawObjectPropertiesID.h"
 #include "BaseTypes.h"
-#include "DrawObjectGlobal.h"
-#include "ObjectObserver.h"
 #include "IVisaulized.h"
 #include "Appearance.h"
 #include <vector>
-#define FONT_SIZE_FACETOR   3.53f
+#define FONT_SIZE_FACTOR   3.53f
 
 class CDrawObject;
 
 typedef CTypedPtrList <CObList,  CDrawObject * >CObjectsList;
-
-/////
-///绑定信息
-///
-///用于加载文档时重构绑定关系。保存绑定关系时，只保存绑定目标的内部名称列表。
-///加载时建立全局绑定信息表，加载完成后，重建所有对象的绑定关系。
-///@see SetBindBuilderState
-///@see IsBindBuilding
-///@see BuildBinding
-///
-struct BIND_OBJ_INFO
-{
-	CDrawObject *pSource;   //< 绑定源
-	CStringList targetList; //< 绑定目标内部名称列表
-};
 
 //////////////////////////////////////////////////////////////////////////
 ///字体信息
@@ -43,16 +25,6 @@ struct FontInfo
 	Gdiplus::Color fontColor; ///<字体颜色
 };
 
-template <typename T> struct CLogData
-{
-	T _data;
-	CLogData(const T &data)
-	{
-		_data=data;
-	}
-};
-
-
 /*!
  * \brief
  * 绘图对象基类
@@ -65,7 +37,7 @@ template <typename T> struct CLogData
  * \see
  * Separate items with the '|' character.
  */
-class CDrawObject:public CObject, public IObjectObserver, public IVisaulized
+class CDrawObject:public CObject, public IVisaulized
 {
 public:
     typedef std::vector<CDrawObject*> DRAW_OBJECT_LIST;
@@ -85,81 +57,14 @@ protected:
 	///
 	CDrawObject();
 
-	///
-	///绑定来源对象列表. 绑定到自身的对象列表。自身属性发生变化时通过Notify通知这些绑定来源。
-	///@see Notify
-	///
-	std::vector<CDrawObject*> _bindedObjects;
-
-	//////////////////////////////////////////////////////////////////////////
-	///绑定目标对象列表。
-	///
-	///自身绑定的对象列表。目标对象属性发生变化时，会调用Notify通知本对象。
-	///可以在OnNotify中对这些通知消息进行处理。
-	///@see Notify
-	///@see OnNotify
-	std::vector<CDrawObject*> _bindTargets;
-
-	///
-	///取得绑定到自身的对象列表
-	///
-	///@return 对象列表
-	///
-	std::vector<CDrawObject*> & GetBindedObjects();
-	///
-	///取得自身绑定的对象列表
-	///
-	///@return 对象列表
-	///
-	std::vector<CDrawObject*> & GetBindTargets();
-
-	///
-	///绑定目标对象前事件
-	///
-	///继承类可覆盖该方法，处理绑定到目标对象前的准备工作
-	///
-	///@param pTarget 将绑定的目标对象 
-	///
-	virtual void OnBinding(CDrawObject*pTarget);
-	///
-	///绑定目标对象后事件
-	///
-	///继承类可覆盖该方法，处理绑定到目标对象后的后续处理工作
-	///
-	///@param pTarget 将绑定的目标对象 
-	///
-	virtual void OnBinded(CDrawObject *pTarget);
-
-	virtual void OnUnbindingFrom(CDrawObject *pTarget){}
-	virtual void OnUnbindedFrom(CDrawObject *pTarget){}
 	DECLARE_SERIAL(CDrawObject) 
 	
 public:  //IObjectObserver directive
-	///
-	///IObjectObserver接口重载
-	///
-	virtual void notifyAttributesChanged(CDrawObject *changedObject, unsigned int attributeIndex, ATTR_VALUE & newVal, ATTR_VALUE & oldVal);
-    virtual void notifyRevert(CDrawObject *pChanged, int &action );
-
     //IVisaulized
     Gdiplus::Image* GetPicture(int width, int height, Gdiplus::Color background = Gdiplus::Color::Transparent,
                                int flag = GET_PIC_FLAG_ASPECT | GET_PIC_POS_HCENTER | GET_PIC_POS_VCENTER);
 
-	///
-	///将本对象绑定到目标对象
-	///
-	///@param pTarget 被绑定的目标对象
-	///
-	void BindTo(CDrawObject *pTarget);
-	///把本对象与目标对象解除绑定
-	///
-	///@param pTarget 解除绑定的目标对象
-	///
-	void UnbindFrom(CDrawObject *pTarget);
-	void UnbindAll();
-
     virtual void ResetContent();
-
 
 	CDrawObject(const CString & name);
 	CDrawObject(const CString & name, int x, int y, int width, int height);
@@ -167,28 +72,6 @@ public:  //IObjectObserver directive
 	CDrawObject(const CString & name, const Gdiplus::Rect & rect);
 	virtual ~ CDrawObject();
 
-	//////////////////////////////////////////////////////////////////////////
-	///设置绑定重建状态位
-	///
-	///@param state 
-	/// - true 禁止绑定事件响应
-	/// - false 允许绑定事件响应
-	///
-	///@remark当文件加载时，需要置绑定重建状态位为ture，避免绑定事件触发。绑定关系建立完成后，调用该函数置为false。解除锁定。
-	///
-	static void SetBindBuilderState(bool state);
-	//////////////////////////////////////////////////////////////////////////
-	///取绑定重建状态位
-	///
-	///@return 重建状态位
-	///
-	static bool IsBindBuilding();
-	//////////////////////////////////////////////////////////////////////////
-	///重建绑定关系
-	///
-	///该方法在文件加载后，即调用，以恢复对象绑定关系。
-	///
-	static void BuildBinding();
 	///
 	///查找对象列表中的特定对象的索引
 	///
@@ -206,20 +89,6 @@ public:  //IObjectObserver directive
 	///
 	static CDrawObject * _findObjectByName(DRAW_OBJECT_LIST &objects,  const CString & innerName);
 
-	//////////////////////////////////////////////////////////////////////////
-	///设置打印状态位
-	///
-	///打印输出前，设置打印状态位为true，避免，部分对象仅显示而不可打印的部分被打印。
-	///
-	///@param state 打印状态位的新值
-	///
-	static void SetPrintingState(bool state);
-	///取打印状态位
-	///
-	///@return 打印状态位
-	/// - true 打印中
-	/// - false 正常
-	static bool IsPrinting();
 	///生成唯一字符串
 	///
 	///用于生成对象内部名称
@@ -505,15 +374,6 @@ public:  //IObjectObserver directive
 
 	//UI 交互
 
-	//创建属性表
-	virtual bool BuildProperties(CXTPPropertyGridItem * pCategoryObjects);
-	///
-	///属性改变响应
-	///
-	///通过属性表交互修改表中相关属性值后，通过回调该方法修改对象相应属性值
-	///
-	virtual void OnPropertyItemChangedNotify(CXTPPropertyGridItem * pItem);
-
 	///TODO
 	void SetCommonMenuId(UINT commonMenuId);
 	virtual void SetMenuId(UINT menuId);
@@ -655,21 +515,13 @@ public:  //IObjectObserver directive
 	///@param rect 测试矩形，世界坐标
 	virtual bool IsInRect(const Gdiplus::Rect &rect);
 
-
-	//序列化支持
-	virtual void Serialize(CArchive & ar);
-
-
-	static void SetStorage(IStorage * pStorage);
-	static IStorage *GetStorage();
 	static Gdiplus::RectF MeasureString( const CStringW & text, Gdiplus::Font * pFont, Gdiplus::PointF origin, Gdiplus::StringFormat *pFormat);
     //坐标单位
-	static Gdiplus::Unit m_Unit;
-	static IStorage *m_pRootStorage;
+	static Gdiplus::Unit Unit;
 
 private:
 	//基本属性
-	CDrawObject * m_pParent;
+	CDrawObject * _pParent;
 
 	//对象名称
 	CString _name;
@@ -721,14 +573,4 @@ private:
 	bool _bRotatable;
 	//是否可改变大小
 	bool _bSizable;
-
-
-    //Gdiplus::Image * _pVisualizedImage;
-	//////////////////////////////////////////////////////////////////////////
-
-	static bool m_bIsPrinting;
-	static bool _bIsBindBuilding;
-	static std::vector<BIND_OBJ_INFO*> _preBindObjects;
-	static DRAW_OBJECT_LIST _allObjects;
-
 };

@@ -3,21 +3,36 @@
 #include "Packet.h"
 
 SerialPortSampler::
-SerialPortSampler(const CString& portName, DWORD baudRate, BYTE dataBits, BYTE parity, BYTE stopBits):
-	_serialPort(portName, baudRate, dataBits, parity, stopBits),
-	_hThread(nullptr), _dwThreadId(0), _buffers(nullptr),
-	_quit(false)
+SerialPortSampler(const CString& portName, DWORD baudRate, BYTE dataBits, BYTE parity, BYTE stopBits)
+	: _serialPort(portName, baudRate, dataBits, parity, stopBits)
+	  , _hThread(nullptr)
+	  , _hResume(nullptr)
+	  , _dwThreadId(0)
+	  , _buffers(nullptr)
+	  , _quit(false)
+	  , _paused(false)
 {
 }
 
 bool SerialPortSampler::begin()
 {
 	_quit = false;
+	_hResume = CreateEvent(nullptr, TRUE, false, nullptr);
 	_hThread = CreateThread(nullptr, 0, samplerFunc, this, 0, &_dwThreadId);
 	return _hThread != nullptr;
 }
 
-void SerialPortSampler::stop()
+void SerialPortSampler::pause()
+{
+	_paused=true;
+}
+
+void SerialPortSampler::resume()
+{
+	SetEvent(_hResume);
+}
+
+void SerialPortSampler::quit()
 {
 	_quit=true;
 	WaitForSingleObject(_hThread, INFINITE);
@@ -25,7 +40,8 @@ void SerialPortSampler::stop()
 
 SerialPortSampler::~SerialPortSampler()
 {
-	delete[] _buffers;
+	CloseHandle(_hResume);
+	CloseHandle(_hThread);
 }
 
 DWORD SerialPortSampler::samplerFunc(LPVOID lpParam)
@@ -39,6 +55,15 @@ DWORD SerialPortSampler::samplerFunc(LPVOID lpParam)
 	BYTE byte;
 	while (!pThis->_quit)
 	{
+		if(pThis->_paused)
+		{
+			if(WaitForSingleObject(pThis->_hResume, 100)==WAIT_TIMEOUT)
+			{
+				continue;
+			}
+			pThis->_paused=false;
+			pThis->_serialPort.clear();
+		}
 		if (pThis->_serialPort.read(&byte, 1) != 1)
 			return DWORD(-1);
 		if (byte == 0xF1)

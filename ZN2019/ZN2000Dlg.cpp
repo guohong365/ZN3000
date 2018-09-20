@@ -25,7 +25,7 @@ CZN2000Dlg::CZN2000Dlg(CWnd* pParent /*=NULL*/)
 	  , _currentPart(PART_NONE)
 	  , _dwState(OS_IDLE)
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 void CZN2000Dlg::DoDataExchange(CDataExchange* pDX)
@@ -75,8 +75,8 @@ BOOL CZN2000Dlg::OnInitDialog()
 
 	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
-	SetIcon(m_hIcon, TRUE);			// 设置大图标
-	SetIcon(m_hIcon, FALSE);		// 设置小图标
+	SetIcon(_hIcon, TRUE);			// 设置大图标
+	SetIcon(_hIcon, FALSE);		// 设置小图标
 
 	SetResize(IDC_STATIC_PART, SZ_TOP_LEFT, SZ_TOP_LEFT);
 	SetResize(IDC_BUTTON_PART, SZ_TOP_LEFT, SZ_TOP_LEFT);
@@ -98,13 +98,11 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_mainBaseCtrl.MoveWindow(&rect, TRUE);
 	_mainBaseFrame.ShowWindow(SW_HIDE);
 	_mainBaseCtrl.ShowWindow(SW_SHOW);
-
 	_infoPane.Create(CInfoPane::IDD, this);
 	_InfoPaneFrame.GetWindowRect(&rect);
 	_infoPane.MoveWindow(&rect, TRUE);
 	_InfoPaneFrame.ShowWindow(SW_HIDE);
 	_infoPane.ShowWindow(SW_SHOW);
-	_infoPane.SetRecord(_pRecord);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -129,7 +127,7 @@ void CZN2000Dlg::OnPaint()
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
 		// 绘制图标
-		dc.DrawIcon(x, y, m_hIcon);
+		dc.DrawIcon(x, y, _hIcon);
 	}
 	else
 	{
@@ -141,7 +139,7 @@ void CZN2000Dlg::OnPaint()
 //显示。
 HCURSOR CZN2000Dlg::OnQueryDragIcon()
 {
-	return static_cast<HCURSOR>(m_hIcon);
+	return static_cast<HCURSOR>(_hIcon);
 }
 
 
@@ -159,14 +157,16 @@ HBRUSH CZN2000Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	switch(nCtlColor)
 	{
 	case CTLCOLOR_DLG:
-		hbr=(HBRUSH)GetStockObject(BLACK_BRUSH);
+		hbr=HBRUSH(GetStockObject(BLACK_BRUSH));
 		break;
 	case CTLCOLOR_STATIC:
 		pDC->SetTextColor(RGB(0, 255, 0));
 		pDC->SetBkMode(TRANSPARENT);
 		break;
+	default: 
+		hbr=HBRUSH(GetStockObject(BLACK_BRUSH));
+		break;
 	}
-	hbr=(HBRUSH)GetStockObject(BLACK_BRUSH);
 	return hbr;
 }
 
@@ -186,7 +186,7 @@ void CZN2000Dlg::OnBnClickedPause()
 
 void CZN2000Dlg::OnBnClickedSearch()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	
 }
 
 void CZN2000Dlg::OnPartSelectDropDown()
@@ -218,6 +218,47 @@ void CZN2000Dlg::OnPartSelected( UINT part )
 	SignalChannel * pChannel=ZnHelper::createSignalChannel(partId, ZN_SAMPLE_FREQUENCY);
 	dynamic_cast<ZnRecord*>(_pRecord)->addChannel(pChannel);	
 	_dwState |=OS_SELECT_PART;
+}
+
+HRESULT CZN2000Dlg::OnKickIdle(WPARAM, LPARAM)
+{
+	UpdateDialogControls(this, TRUE);
+	return 0;
+}
+
+void CZN2000Dlg::OnUpdateBtnBegin(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(_dwState == (OS_PARAM_INPUT | OS_SELECT_PART) || (_dwState & OS_PAUSE));
+}
+
+void CZN2000Dlg::OnUpdateBtnPause(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(_dwState & OS_BEGIN);
+}
+
+void CZN2000Dlg::OnUpdateBtnSearch(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(!(_dwState & OS_BEGIN));
+}
+
+void CZN2000Dlg::OnUpdateBtnInputParam(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(!(_dwState & OS_BEGIN));
+}
+
+void CZN2000Dlg::OnUpdateBtnCalc(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(_dwState & OS_PAUSE);
+}
+
+void CZN2000Dlg::OnUpdateBtnQuit(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(!(_dwState & OS_BEGIN));
+}
+
+void CZN2000Dlg::OnUpdateBtnPartSelect(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(!(_dwState & OS_BEGIN));
 }
 
 void CZN2000Dlg::OnBnClickedInput()

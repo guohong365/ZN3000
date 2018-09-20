@@ -18,9 +18,6 @@ BEGIN_MESSAGE_MAP(CZN2000App, CWinAppEx)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-
-// CZN2000App 构造
-
 CZN2000App::CZN2000App()
 {
 	// TODO: 在此处添加构造代码，
@@ -29,9 +26,9 @@ CZN2000App::CZN2000App()
 
 
 // 唯一的一个 CZN2000App 对象
-GdiplusEnveriment gdiplusEnv;
+GdiplusEnveriment GdiPlusEnv;
 
-CZN2000App theApp;
+CZN2000App TheApp;
 
 
 // CZN2000App 初始化

@@ -6,7 +6,7 @@ class SampleThread
 {
 	static DWORD WINAPI SampleThreadFun(LPVOID pParam);
 public:
-	SampleThread(SignalBuffer<unsigned short>* pBuffers, int channelCount,  ISampler * pSampler);
+	SampleThread(SignalBuffer<unsigned short>* pBuffers, int channelCount,  Sampler * pSampler);
 	virtual void start();
 	virtual void stop(DWORD timeout);
 	virtual DWORD run();
@@ -17,5 +17,5 @@ protected:
 	bool _bQuit;
 	SignalBuffer<unsigned short> * _pBuffers;
 	int _channelCount;
-	ISampler * _pSampler;
+	Sampler * _pSampler;
 };

@@ -42,7 +42,7 @@ protected:
 	void CalcLayout();
 	void DrawBackground();
 	void DrawLabel(Gdiplus::Graphics &graph,int x, int y, int width, int height, int baseline);
-	void DrawHorizLabel(Gdiplus::Graphics & graph);
+	void DrawHorizontalLabel(Gdiplus::Graphics & graph);
 private:
 	Gdiplus::Font *_pFont;
 	Gdiplus::Bitmap * _pBackground;

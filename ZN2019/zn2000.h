@@ -9,7 +9,7 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include <mmsystem.h>
+#include <MMSystem.h>
 
 
 // CZN2000App:
@@ -23,7 +23,6 @@ public:
 	CZN2000App();
 
 // 重写
-	public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 // 实现
@@ -31,4 +30,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CZN2000App theApp;
+extern CZN2000App TheApp;

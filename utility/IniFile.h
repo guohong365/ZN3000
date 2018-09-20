@@ -12,7 +12,7 @@
 
 
 /**Ini项类型*/
-enum ITEM_TYPE
+enum ConfigItemType
 {
 	TYPE_COMMENT, //!注释项
 	TYPE_SECTION, //!节项
@@ -20,31 +20,31 @@ enum ITEM_TYPE
 };
 
 /**Ini配置基本项*/
-struct CONFIG_ITEM
+struct ConfigItem
 {
-	ITEM_TYPE Type;//!项类型
+	ConfigItemType Type;//!项类型
 	/** 项输出函数
 
 	输出该项到文件指针fp相关联的文件中
 	@param fp 已打开的文件指针
 	*/
 	virtual void Dump(FILE *fp)=0;
-	virtual ~CONFIG_ITEM(){}
+	virtual ~ConfigItem(){}
 };
 
-class delete_ptr
+class DeletePtr
 {
 public:
-	void operator()(CONFIG_ITEM* ptr){delete ptr;}
+	void operator()(ConfigItem* ptr) const {delete ptr;}
 };
 /**值项目
 */
-struct ITEM: public CONFIG_ITEM
+struct ConfigItemImpl: ConfigItem
 {
 	TCHAR ItemName[LEN_CFG_ITEM_NAME+1];//!<变量名
 	TCHAR Value[LEN_CFG_MAX_STRING+1];//!<值
 	TCHAR Comment[LEN_CFG_MAX_STRING+1];//!<注释
-	ITEM()
+	ConfigItemImpl()
 	{
 		ItemName[0]=Value[0]=Comment[0]=0;
 		Type=TYPE_ITEM;
@@ -59,19 +59,19 @@ struct ITEM: public CONFIG_ITEM
 */
 
 
-struct SECTION:public CONFIG_ITEM
+struct ConfigSection:public ConfigItem
 {
 	TCHAR SectionName[LEN_CFG_SECTION_NAME+1]; //!<节名
 	TCHAR Comment[LEN_CFG_MAX_STRING+1]; //!<注释
-	std::vector<CONFIG_ITEM *> Items; //!该节下所有变量的链表
-	SECTION()
+	std::vector<ConfigItem *> Items; //!该节下所有变量的链表
+	ConfigSection()
 	{
 		SectionName[0]=Comment[0]=0;
 		Type=TYPE_SECTION;
 	}
-	~SECTION()
+	~ConfigSection()
 	{
-		std::for_each(Items.begin(), Items.end(), delete_ptr());
+		std::for_each(Items.begin(), Items.end(), DeletePtr());
 		Items.clear();
 	}
 	virtual void Dump(FILE *fp)
@@ -86,10 +86,10 @@ struct SECTION:public CONFIG_ITEM
 
 /**纯注释项目
 */
-struct COMMENT:public CONFIG_ITEM
+struct ConfigComment:public ConfigItem
 {
 	TCHAR Comment[LEN_CFG_MAX_STRING+1];//!<注释
-	COMMENT()
+	ConfigComment()
 	{
 		Comment[0]=0;
 		Type=TYPE_COMMENT;
@@ -112,17 +112,18 @@ struct COMMENT:public CONFIG_ITEM
 class CIniFile
 {
 private:
-	void RemoveAll()
+	void removeAll()
 	{
-		std::for_each(m_IniItems.begin(),m_IniItems.end(), delete_ptr());
-		m_IniItems.clear();
+		std::for_each(_iniItems.begin(),_iniItems.end(), DeletePtr());
+		_iniItems.clear();
 	}
 	/**配置项目链表
 
 	所有的配置项（包括节、变量、注释）存储于该链表中
 	*/
-	std::vector<CONFIG_ITEM *> m_IniItems;
+	std::vector<ConfigItem *> _iniItems;
 
+	// ReSharper disable CommentTypo
 	/**判断buf中的字串是否是一个节项目
 
 	即如同[xxxxxxx]形式，[]中两端的空白符将被忽略
@@ -131,7 +132,9 @@ private:
 	- 0 不是
 	- 非0 是
 	*/
-	int IsSection(const TCHAR*buf);
+	// ReSharper restore CommentTypo
+	static int isSection(const TCHAR*buf);
+	// ReSharper disable CommentTypo
 	/**判断buf中的字串是否是一个注释项目
 
 	即忽略开头的空白符后，第一个字符是';'的行
@@ -140,12 +143,13 @@ private:
 	- 0 不是
 	- 非0 是
 	*/
-	int IsComment(const TCHAR*buf);
+	// ReSharper restore CommentTypo
+	static int isComment(const TCHAR*buf);
 	/**解析一个节项目
 	@param buf 输入字符串
 	@param section 输出参数，返回解析好的节项目对象
 	*/
-	void PhaseSection(const TCHAR*buf, SECTION &section);
+	void phaseSection(const TCHAR*buf, ConfigSection &section) const;
 	/**解析一个值项目
 	@param buf 输入字符串
 	@param item 返回解析好的值项目对象
@@ -153,7 +157,7 @@ private:
 	- 1 成功
 	- 0 失败
 	*/
-	long PhaseItem(const TCHAR *buf, ITEM &item);
+	long phaseItem(const TCHAR *buf, ConfigItemImpl &item) const;
 
 	/**根据节名查找已加载的节对象
 	@param section 节名，查找条件，不区分大小写
@@ -161,7 +165,7 @@ private:
 	- NULL 没有找到
 	- 其它 符合条件的节对象指针
 	*/
-	SECTION * FindSection(const TCHAR *section);
+	ConfigSection * findSection(const TCHAR *section);
 	/**根据节名、变量名查找值对象
 	@param Section 节名，查找条件，不区分大小写
 	@param ItemName 变量名，查找条件，不区分大小写
@@ -169,7 +173,7 @@ private:
 	- NULL 没有找到
 	- 其它 符合条件的值对象指针
 	*/
-	ITEM *FindItem(const TCHAR *Section, const TCHAR *ItemName);
+	ConfigItemImpl *findItem(const TCHAR *Section, const TCHAR *ItemName);
 public:
 	/**
 	* 取得给定SECTION的注释
@@ -210,85 +214,86 @@ public:
 	* 取得指定SECTION下某一ITEM的字符串值
 
 	缺省(该ITEM不存在)取defaultV
-	* @param Section :给定SECTION名
-	* @param ItemName :给定ITEM名
+	* @param section :给定SECTION名
+	* @param itemName :给定ITEM名
 	* @param buffer :存放ITEM值的缓冲
-	* @param buflen :存放ITEM值的缓冲的大小
+	* @param bufferLen :存放ITEM值的缓冲的大小
 	* @param defaultV :缺省(该ITEM不存在)取值
 	* @return char* :要取得的item的值
 	*/
-	const TCHAR *GetConfigString(const TCHAR *Section, const TCHAR *ItemName, const TCHAR *defaultV=NULL, TCHAR *buffer=NULL, long buflen=0);
+	const TCHAR* GetConfigString(const TCHAR* section, const TCHAR* itemName, const TCHAR* defaultV = nullptr,
+	                             TCHAR* buffer = nullptr, long bufferLen = 0);
 	/**
 	* 获取给定SECTION下某一item的	DOUBLE值
 
 	缺省(该ITEM不存在)取defaultV
-	* @param Section :给定SECTION名
-	* @param ItemName :给定ITEM名
+	* @param section :给定SECTION名
+	* @param itemName :给定ITEM名
 	* @param defaultV :缺省(该ITEM不存在)取值
 	* @return 要取得的item的值
 	*/
-	double GetConfigDouble(const TCHAR *Section, const TCHAR *ItemName, double defaultV);
+	double GetConfigDouble(const TCHAR *section, const TCHAR *itemName, double defaultV);
 
 	/**
 	* 获取给定ini文件下顺序SECTION值到BUFFER； 最多填充buflen长
 	*
 	* @param buffer :填写顺序SECTION--格式SETION1-VALUE\\0SETION2-VALUE\\0SETION3-VALUE\\0SETION4-VALUE\\0\\0
-	* @param buflen :给定BUFFER的长度
+	* @param bufferLen :给定BUFFER的长度
 	* @return 返回存储所有节名所需缓冲区的长度。
 	*/
-	long GetConfigSection(TCHAR *buffer, long buflen);
+	long GetConfigSection(TCHAR *buffer, long bufferLen);
 	/**
 	* 获取某一SECTION下的KEY值
 
 	* 返回值存放在BUFFER中；格式为"ITEM1\\0ITEM2\\0ITEM3\\0ITEM4\\0\\0"
 	* @param section :指定SECTION 名
 	* @param buffer ：获取ITEM值的缓冲
-	* @param buflen ：给定BUFFER的长度
+	* @param bufferLen ：给定BUFFER的长度
 	* @return long : 返回存储所有节名所需缓冲区的长度。
 	*/
-	long GetConfigItem(const TCHAR *section, TCHAR *buffer, long buflen);
+	long GetConfigItem(const TCHAR *section, TCHAR *buffer, long bufferLen);
 
 	/**
 	*在某一SECTION下增加一个KEY项；其值赋为Value
 	*
-	* @param Section : 节名
-	* @param ItemName : 变量名
-	* @param Value :变量的值
+	* @param section : 节名
+	* @param itemName : 变量名
+	* @param value :变量的值
 	* @return 
 	- -1 失败
 	- 0 成功
 	*/
-	long AddConfig(const TCHAR*Section, const TCHAR*ItemName, const TCHAR *Value);
+	long AddConfig(const TCHAR*section, const TCHAR*itemName, const TCHAR *value);
 	/**
 	* 修改某一SECTION下的KEY ，并用新值代替
 	*
-	* @param Section : section名
-	* @param ItemName : key名
-	* @param NewValue :替换的新值
+	* @param section : section名
+	* @param itemName : key名
+	* @param newValue :替换的新值
 	* @return long 
 	- -1 失败
 	- 0 成功
 	*/
-	long ModifyConfig(const TCHAR*Section, const TCHAR*ItemName, const TCHAR *NewValue);
+	long ModifyConfig(const TCHAR*section, const TCHAR*itemName, const TCHAR *newValue);
 	/**
 	* 删除某一SECTION下的变量
 	*
-	* @param Section ：节名
-	* @param ItemName ：变量名
+	* @param section ：节名
+	* @param itemName ：变量名
 	* @return 
 	- 0 成功
 	- -1 不存在该SECTION
 	*/
-	long DeleteConfigItem(const TCHAR* Section, const TCHAR *ItemName);
+	long DeleteConfigItem(const TCHAR* section, const TCHAR * itemName);
 	/**
 	* 删除某一SECTION下的KEY
 	*
-	* @param Section :节名
+	* @param section :节名
 	* @return 
 	- 0 成功
 	- -1 失败或不存在该变量
 	*/
-	long DeleteConfigSection(const TCHAR* Section);
+	long DeleteConfigSection(const TCHAR* section);
 	/**
 	* 打开一个给定文件名的INI文件
 	*
@@ -326,8 +331,8 @@ public:
 	long GetSectionNum() ;
 	~CIniFile()
 	{
-		std::for_each(m_IniItems.begin(), m_IniItems.end(), delete_ptr());
-		m_IniItems.clear();
+		std::for_each(_iniItems.begin(), _iniItems.end(), DeletePtr());
+		_iniItems.clear();
 	}
 };
 

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "ZNDData.h"
-#include "SignalBuffer.h"
-
-class ISampler
+class Sampler
 {
 public:
 	virtual bool begin()=0;
-	virtual void stop()=0;
-	virtual ~ISampler(){}
+	virtual void pause()=0;
+	virtual void resume()=0;
+	virtual void quit()=0;
+	virtual ~Sampler(){}
 };
 
 

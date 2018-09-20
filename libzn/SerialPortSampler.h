@@ -2,8 +2,9 @@
 
 #include "Sampler.h"
 #include "SerialPort.h"
+#include "SignalBuffer.h"
 
-class SerialPortSampler : public ISampler
+class SerialPortSampler : public Sampler
 {
 public:
 	explicit SerialPortSampler(
@@ -12,18 +13,18 @@ public:
 		BYTE dataBits = 8,
 		BYTE parity = NOPARITY,
 		BYTE stopBits = ONESTOPBIT);
-
-	virtual bool begin();
-
-	virtual void stop();
-
 	~SerialPortSampler();
-
+	virtual bool begin();
+	virtual void pause();
+	virtual void resume();
+	virtual void quit();
 private:
-	static DWORD __stdcall samplerFunc(LPVOID lpParam);
+	static DWORD __stdcall samplerFunc(LPVOID lpParam);	
 	SerialPort _serialPort;
 	HANDLE _hThread;
+	HANDLE _hResume;
 	DWORD _dwThreadId;
 	SignalBuffer<short> *_buffers;
 	bool _quit;
+	bool _paused;
 };
