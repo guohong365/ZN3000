@@ -10,9 +10,7 @@ ZnSignalChannelImpl::ZnSignalChannelImpl(const double frequency, const double ph
 	                                                                                             physicalMaximum,
 	                                                                                             dimension, bufferSize,
 	                                                                                             sensor),
-                                                                                             _partId(partId),
-                                                                                             _isAnalysisSection(
-	                                                                                             isAnalysisSection)
+                                                                                             _partId(partId)
 {
 	SignalChannelImpl::setLabel(BODY_STRING[partId]);
 }
@@ -29,4 +27,42 @@ void ZnSignalChannelImpl::setPartId(PartId partId)
 
 bool ZnSignalChannelImpl::isAnalysisSection(PartId partId) const
 {
+	return getLabel().Compare(ZnHelper::getPartLabel(partId, true)) ==0;
+}
+
+bool ZnRecordImpl::isExamined(const PartId partId)
+{
+	return getChannel(partId) != nullptr;
+}
+
+SignalChannel* ZnRecordImpl::getChannel(PartId partId)
+{
+	for(SignalChannels::iterator i = getSignalChannels().begin(); i!= getSignalChannels().end(); ++i)
+	{
+		if(dynamic_cast<ZnSignalChannel*>(*i)->getPartId()==partId)
+		{
+			return *i;
+		}
+	}
+	return nullptr;
+}
+
+SignalChannel* ZnRecordImpl::getChannel(const CString& label)
+{
+	for(SignalChannels::iterator i = getSignalChannels().begin(); i!= getSignalChannels().end(); ++i)
+	{
+		if((*i)->getLabel().Compare(label)==0) return *i;
+		
+	}
+	return nullptr;
+}
+
+SignalChannel* ZnRecordImpl::getAnalysisSection(PartId partId)
+{
+	return getChannel(ZnHelper::getPartLabel(partId, true));
+}
+
+void ZnRecordImpl::addChannel(SignalChannel* pChannel)
+{
+	getSignalChannels().push_back(pChannel);
 }

@@ -12,7 +12,10 @@
 // CZN2000Dlg 对话框
 class CZN2000Dlg : public CXTResizeDialog
 {
-	RheographyRecord * _pRecord;
+	ZnRecordImpl *_pRecord;
+	SignalChannel * _pCurrentChannel;
+	SignalChannel * _pEcg;
+	PartId _currentPart;
 // 构造
 public:
 	CZN2000Dlg(CWnd* pParent = nullptr);	// 标准构造函数

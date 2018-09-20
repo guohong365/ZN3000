@@ -1,17 +1,15 @@
 #include "stdafx.h"
 #include "SimSampler.h"
 #include <cmath>
+#include "../ZN2019/ZN2000Dlg.h"
 
 SimSampler::SimSampler( SimSampleGenerator * pCallBack, size_t count)
 :_pCallBack(pCallBack)
 {
 	ASSERT(_pCallBack);
-	_pHeartBuffer=new SignalChannelImpl(count);
-	_pHeartBuffer->setSampleFrequency(500);
-	_pHeartBuffer->setLabel(_T("ÐÄµç"));
+	_pHeartBuffer=ZnHelper::createSignalChannel(PART_HEART, ZN_SAMPLE_FREQUENCY);	
 	_pCallBack->generator(_pHeartBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
-	_pAdmittanceBuffer=new SignalChannelImpl(count);
-	_pAdmittanceBuffer->setSampleFrequency(500);
+	_pAdmittanceBuffer=ZnHelper::createSignalChannel(PART_HEART_ECG, ZN_SAMPLE_FREQUENCY);
 	_pAdmittanceBuffer->setLabel(_T("Î¢·Ö"));
 	_pCallBack->generator(_pAdmittanceBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
 }

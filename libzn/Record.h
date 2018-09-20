@@ -1,7 +1,6 @@
 #pragma once
 #include "SignalBuffer.h"
 #include <vector>
-#include "ZNDData.h"
 
 class SignalChannel;
 

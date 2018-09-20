@@ -160,7 +160,6 @@ CZN2000ViewDoc* CZN2000ViewView::GetDocument() const // 非调试版本是内联的
 void CZN2000ViewView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-	SignalBuffer<long> *pBuffer;
 	int part=-1;
 	float minData;
 	float maxData;

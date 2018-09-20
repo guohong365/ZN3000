@@ -54,7 +54,7 @@ DWORD SampleThread::run()
 	ASSERT(_pSampler);
 	ASSERT(_pBuffers);
 
-	_pSampler->open();
+	_pSampler.->open();
 	while(!_bQuit)
 	{
 		for(int i=0; i< _channelCount; i++)

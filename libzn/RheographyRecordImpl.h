@@ -12,7 +12,7 @@ class RheographyRecordImpl : public RheographyRecord
 {
 public:
 	RheographyRecordImpl();
-	virtual ~RheographyRecordImpl(void);
+	virtual ~RheographyRecordImpl();
 	virtual CONST CString& getPatientName() CONST;
 	virtual VOID setPatientName(CONST CString& name);
 	virtual CONST CString& getPatientId() CONST;

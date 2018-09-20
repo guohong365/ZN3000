@@ -4,28 +4,30 @@
 
 RheographyRecordImpl::RheographyRecordImpl()
 	: _gender(0)
-	  , _age(0)
-	  , _height(0)
-	  , _weight(0)
-	  , _systolicBloodPressure(0)
-	  , _diastolicBloodPressure(0)
-	  , _heartRate(0)
-	  , _elevation(0)
-	  , _startTime(0)
+	, _age(0)
+	, _height(0)
+	, _weight(0)
+	, _systolicBloodPressure(0)
+	, _diastolicBloodPressure(0)
+	, _heartRate(0)
+	, _elevation(0)
+	, _startTime(0)
 {
 }
 
 
 RheographyRecordImpl::~RheographyRecordImpl()
 {
-	for(Annotations::const_iterator i=_annotations.begin(); i!= _annotations.end(); ++i)
+		for(Annotations::const_iterator i=_annotations.begin(); i!= _annotations.end(); ++i)
 	{
 		delete *(i);
 	}
+	_annotations.clear();
 	for(SignalChannels::const_iterator i=_signalChannels.begin(); i!=_signalChannels.end(); ++i)
 	{
 		delete *(i);
 	}
+	_signalChannels.clear();
 }
 
 const CString& RheographyRecordImpl::getPatientName() const
@@ -187,3 +189,4 @@ const SignalChannels& RheographyRecordImpl::getSignalChannels() const
 {
 	return _signalChannels;
 }
+

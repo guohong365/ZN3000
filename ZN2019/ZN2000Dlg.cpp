@@ -20,6 +20,9 @@
 CZN2000Dlg::CZN2000Dlg(CWnd* pParent /*=NULL*/)
 	: CXTResizeDialog(CZN2000Dlg::IDD, pParent)
 	  , _pRecord(nullptr)
+	  , _pCurrentChannel(nullptr)
+	  , _pEcg(nullptr)
+	  , _currentPart(PART_NONE)
 	  , _dwState(OS_IDLE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -193,7 +196,7 @@ void CZN2000Dlg::OnPartSelectDropDown()
 	menu.LoadMenu(IDR_MENU_PART_SELECT);
 	for(int i = 0; i< PART_MAX; i++)
 	{
-		if(_pRecord->hasPart(PartId(i)))
+		if(dynamic_cast<ZnRecord*>(_pRecord)->isExamined(PartId(i)))
 		{
 			menu.CheckMenuItem(i + IDM_PART_HEART, MF_BYCOMMAND | MF_CHECKED);
 		}
@@ -209,10 +212,11 @@ void CZN2000Dlg::OnPartSelectDropDown()
 
 void CZN2000Dlg::OnPartSelected( UINT part )
 {
-	CString text=BODY_STRING[part-IDM_PART_HEART];
+	const PartId partId=PartId(part-IDM_PART_HEART);
+	const CString text=BODY_STRING[part-IDM_PART_HEART];
 	_btnPartSelect.SetWindowText(text);
-	SignalChannel * pChannel=new SignalChannelImpl(ZND_DATA_SIZE);
-	_pRecord->getSignalChannels().push_back(new SignalChannelImpl(ZND_DATA_SIZE));
+	SignalChannel * pChannel=ZnHelper::createSignalChannel(partId, ZN_SAMPLE_FREQUENCY);
+	dynamic_cast<ZnRecord*>(_pRecord)->addChannel(pChannel);	
 	_dwState |=OS_SELECT_PART;
 }
 

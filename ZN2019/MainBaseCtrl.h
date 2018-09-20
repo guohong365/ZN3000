@@ -3,6 +3,8 @@
 #include "../libzn/WaveBackgronud.h"
 #include "../libzn/WaveDrawer.h"
 #include "../libzn/WaveCanvas.h"
+#include "../libzn/ZnRecord.h"
+#include "resource.h"
 
 
 // CMainBaseCtrl ¶Ô»°¿ò
@@ -39,13 +41,8 @@ private:
 	WaveBackground _background;
 	WaveDrawer* _pWaveDrawer;
 	WaveCanvas *_pCanvas;
-
-	LARGE_INTEGER _last;
-	LARGE_INTEGER _current;
-	LARGE_INTEGER _frequency;
-
-	CBitmap  _MemBitmap;
-
-	RheographyRecord *_pRecordBuffer;
+	CBitmap  _memBitmap;
+	PartId _currentPart;
+	ZnRecordImpl _record;
 
 };

@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZN2019", "ZN2019\ZN2019.vcxproj", "{2D0287D5-1753-4280-9D2B-D5FD26A4AA3C}"
 	ProjectSection(ProjectDependencies) = postProject
+		{29E2C214-DE6D-47F3-AD6D-8025544D576E} = {29E2C214-DE6D-47F3-AD6D-8025544D576E}
 		{F03C90E2-4C6D-461E-8DC9-588F0B6E2D06} = {F03C90E2-4C6D-461E-8DC9-588F0B6E2D06}
 	EndProjectSection
 EndProject
@@ -26,6 +27,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EdfTest", "EdfTest\EdfTest.
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EDFGenerator", "EDFGenerator\EDFGenerator.vcxproj", "{14B3BF8E-DFAF-4006-B27A-2755DA28AB14}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B8F9B511-73E8-43D1-B0D4-C2E5955E69EF} = {B8F9B511-73E8-43D1-B0D4-C2E5955E69EF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SerialTest", "SerialTest\SerialTest.vcxproj", "{0914F557-A940-42E7-B248-C5B64835DA4E}"
 	ProjectSection(ProjectDependencies) = postProject
