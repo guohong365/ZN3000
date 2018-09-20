@@ -1,0 +1,54 @@
+document.write("<div class='QQbox' id='divQQbox' >");
+document.write("<div class='Qlist' id='divOnline'>");
+document.write("<div class='t'></div>");
+document.write("<div class='con'>");
+document.write("<h2>客服&nbsp;&nbsp;&nbsp; <a href='javascript:void()' onclick='xiao();'><img src='fil/xiao.png' width='20' height='18'/></a><a href='javascript:void()' onclick='da();'><img src='fil/da.png' width='20' height='18'/></a><a href='javascript:void()' onclick='Out();'><img src='fil/close.png' width='20' height='18'/></a></h2>");
+document.write("<ul id='qqull'>");
+document.write("<li class=odd><a href=' http://wpa.qq.com/msgrd?V=1&amp;Uin=1291721128&amp;Site=广告招商&amp;Menu=yes' target='_blank'><img src='fil/qq.gif'  border='0' alt='QQ' width='15' height='15' /> 广告招商</a></li>");
+document.write("<li class=odd><a href=' http://wpa.qq.com/msgrd?V=1&amp;Uin=1291721128&amp;Site=标准求助&amp;Menu=yes' target='_blank'><img src='fil/qq.gif'  border='0' alt='QQ' width='15' height='15'  /> 标准求助</a></li>");
+document.write("<li class=odd><a href=' http://wpa.qq.com/msgrd?V=1&amp;Uin=1291721128&amp;Site=标准翻译&amp;Menu=yes' target='_blank'><img src='fil/qq.gif'  border='0' alt='QQ' width='15' height='15'  /> 标准翻译</a></li>");
+document.write("<li class=odd><a href=' http://wpa.qq.com/msgrd?V=1&amp;Uin=1291721128&amp;Site=标准更新&amp;Menu=yes' target='_blank'><img src='fil/qq.gif'  border='0' alt='QQ' width='15' height='15'  /> 标准更新</a></li>");
+document.write("<li class=odd><a href=' http://wpa.qq.com/msgrd?V=1&amp;Uin=1291721128&amp;Site=标准制订&amp;Menu=yes' target='_blank'><img src='fil/qq.gif'  border='0' alt='QQ' width='15' height='15'  /> 标准制订</a></li>");
+document.write("</ul>");document.write("</div>");
+document.write("<div class='b'></div>");
+document.write("</div>");
+document.write("</div>");
+//<![CDATA[
+var tips; var theTop = 40; var old = theTop;
+function initFloatTips() {
+tips = document.getElementById('divQQbox');
+document.getElementById("divQQbox").style.width = "120px";
+moveTips();
+};
+function moveTips() {
+var tt=50;
+if (window.innerHeight) {
+pos = window.pageYOffset
+}else if (document.documentElement && document.documentElement.scrollTop) {
+pos = document.documentElement.scrollTop
+}
+else if (document.body) {
+pos = document.body.scrollTop;
+}
+pos=pos-tips.offsetTop+theTop;
+pos=tips.offsetTop+pos/10;
+if (pos < theTop) pos = theTop;
+if (pos != old) {
+tips.style.top = pos+"px";
+tt=10;
+//alert(tips.style.top);
+}
+old = pos;
+setTimeout(moveTips,tt);
+}
+//!]]>
+initFloatTips();
+function Out(){
+document.getElementById('divQQbox').style.display = "none";
+}
+function xiao(){
+document.getElementById('qqull').style.display = "none";
+}
+function da(){
+document.getElementById('qqull').style.display = "block";
+}

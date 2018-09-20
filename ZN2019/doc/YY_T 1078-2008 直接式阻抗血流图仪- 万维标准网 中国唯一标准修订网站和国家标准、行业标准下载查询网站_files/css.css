@@ -1,0 +1,21 @@
+TD {
+	FONT-FAMILY: "黑体"; COLOR: #363636; FONT-SIZE: 14px
+}
+.baixian {
+	BORDER-LEFT: #FFFFFF 4px solid; BORDER-RIGHT: #FFFFFF 4px solid
+}
+.baizi {
+	COLOR: #000000
+}
+.baicu13 {
+width:84px;
+}
+.baicu13:link {
+	COLOR: #000000; FONT-SIZE: 14px; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+.baicu13:visited {
+	COLOR: #000000; FONT-SIZE: 14px; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+.baicu13:hover {
+	COLOR: #000000; FONT-SIZE: 14px; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}

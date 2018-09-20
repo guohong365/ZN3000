@@ -1,0 +1,63 @@
+UL {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+LI {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+A {
+	COLOR: #1f376d; TEXT-DECORATION: none
+}
+A:hover {
+	TEXT-DECORATION: underline
+}
+.more {
+	LINE-HEIGHT: 15px; MARGIN-TOP:-22px;  DISPLAY: block; BACKGROUND: url(http://www.wwwstandard.cn/style/bg_index.gif) 28px -219px; FLOAT: right; HEIGHT: 15px; COLOR: #36c; FONT-SIZE: 12px; 
+}
+
+#lemmaTodo .tab {
+	BORDER-BOTTOM: #dfdfdf 1px solid; HEIGHT: 26px
+}
+#tab_more_1 {
+	POSITION: absolute; TOP: 5px; RIGHT: 12px; FONT-WEIGHT: normal
+}
+#tab_more_2 {
+	POSITION: absolute; TOP: 5px; RIGHT: 12px; FONT-WEIGHT: normal; DISPLAY: none
+}
+#lemmaTodo .tab LI {
+	POSITION: relative; TEXT-ALIGN: center; WIDTH: 100px; ZOOM: 1; BACKGROUND: url(http://www.wwwstandard.cn/style/bg_index.gif) no-repeat 0px -146px; FLOAT: left; HEIGHT: 20px; TOP: 1px; CURSOR: pointer; FONT-WEIGHT: bold; MARGIN-RIGHT: 2px; PADDING-TOP: 6px
+}
+#lemmaTodo .tab LI.tab_on {
+	BACKGROUND: url(http://www.wwwstandard.cn/style/bg_index.gif) no-repeat -110px -146px
+}
+#lemmaTodo .tab_con {
+	BORDER-BOTTOM: #dfdfdf 1px solid; BORDER-LEFT: #dfdfdf 1px solid; PADDING-BOTTOM: 10px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; HEIGHT: 160px; CLEAR: both; OVERFLOW: hidden; BORDER-TOP: #dfdfdf 1px; BORDER-RIGHT: #dfdfdf 1px solid; PADDING-TOP: 15px
+}
+#lemmaTodo .tab_con TD {
+	BORDER-BOTTOM: #ececec 1px dashed; LINE-HEIGHT: 24px; PADDING-LEFT: 14px; WHITE-SPACE: nowrap; HEIGHT: 30px; FONT-SIZE: 12px
+}
+#lemmaTodo .tab_con TD A {
+	FONT-SIZE: 14px
+}
+#lemmaTodo .tab_holder {
+	POSITION: relative; HEIGHT: 25px; TOP: -1px
+}
+#lemmaTodo #tab_con_2 TD {
+	HEIGHT: 26px
+}
+#lemmaTodo #tab_con_1 TD {
+	HEIGHT: 26px
+}
+
+.nr14 { MARGIN-TOP: 5px; WIDTH: 470px; MARGIN-BOTTOM: 5px; HEIGHT: 225px; MARGIN-LEFT: 8px;}
+#mainL_R { WIDTH: 480px; FLOAT: left;}
+.title_L { WIDTH: 480px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 30px;border-bottom:1px solid #CCCCCC;}
+.lanmuM { WIDTH: 480px; MARGIN-BOTTOM: 10px; FLOAT: left;}
+.tavM { LINE-HEIGHT: 28px; MARGIN-TOP: 2px; WIDTH: 450px; HEIGHT: 28px; MARGIN-LEFT: 20px; FONT-SIZE: 14px; FONT-WEIGHT: bold; }
+.tab4s { TEXT-ALIGN: center; LINE-HEIGHT: 28px; WIDTH: 85px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 27px; COLOR: #003399; FONT-SIZE: 14px; CURSOR: pointer; FONT-WEIGHT: bold; MARGIN-RIGHT: 8px;border-top:1px solid #CCCCCC;border-left:1px solid #CCCCCC;border-right:1px solid #CCCCCC;border-bottom:1px solid #FFFFFF;}
+.tab4 { TEXT-ALIGN: center; LINE-HEIGHT: 28px; WIDTH: 85px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 27px; COLOR: #000000; FONT-SIZE: 14px; CURSOR: pointer; FONT-WEIGHT: normal; MARGIN-RIGHT: 8px; }
+#lanmuMpic { MARGIN-TOP: 8px; WIDTH: 160px; MARGIN-BOTTOM: 8px; FLOAT: left; HEIGHT: 210px; MARGIN-RIGHT: 8px;}
+#pic { WIDTH: 160px; MARGIN-BOTTOM: 10px; HEIGHT: 180px; margin-top:10px;}
+#pictext { TEXT-ALIGN: center; LINE-HEIGHT: 15px; WIDTH: 160px; HEIGHT: 30px; FONT-SIZE: 13px; FONT-WEIGHT: bold;}
+#lanmuMtext {MARGIN-TOP: 8px; WIDTH: 300px; FLOAT: left;}
+.lanmuMnr { LINE-HEIGHT: 17px; WIDTH: 300px; MARGIN-BOTTOM: 5px; HEIGHT: 17px; FONT-SIZE: 14px;}
+.lanmuMnr_L2 { WIDTH: 290px; FLOAT: left; HEIGHT: 20px; line-height:20px; font-size:13px; margin-left:5px; white-space:nowrap; word-break:keep-all; overflow:hidden; text-overflow:ellipsis;}

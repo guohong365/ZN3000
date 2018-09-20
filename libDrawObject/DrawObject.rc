@@ -1,0 +1,103 @@
+//
+// CriminalCasePhotoDossier.RC2 - resources Microsoft Visual C++ does not edit directly
+//
+
+#ifdef APSTUDIO_INVOKED
+#error this file is not editable by Microsoft Visual C++
+#endif //APSTUDIO_INVOKED
+
+#include "DrawObjectPropertiesID.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    ID_CATEGORY_SUMMARY     "概要信息"
+    ID_CATEGORY_CONTAINER   "当前活动视图"
+    ID_CATEGORY_IMAGE       "当前图像"
+    ID_CATEGORY_OBJECTS     "当前对像"
+    ID_CATEGORY_RULERS      "标尺"
+    ID_ITEM_AUTHOR          "处理人"
+    ID_ITEM_CREATED_DATE    "创建日期"
+    ID_ITEM_SUBJECT         "主题"
+    ID_ITEM_TITLE           "标题"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_OBJECT_NAME          "对象名称"
+    ID_OBJECT_TEXT_NAME     "文字"
+    ID_OBJECT_INTERNAL_NAME "对象内部标识"
+    ID_OBJECT_POSITION      "位置"
+    ID_OBJECT_POSITION_X    "X"
+    ID_OBJECT_POSITION_Y    "Y"
+    ID_OBJECT_SIZE          "大小"
+    ID_OBJECT_SIZE_WIDTH    "宽度"
+    ID_OBJECT_SIZE_HEIGHT   "高度"
+    ID_OBJECT_ROTATE_CENTER "旋转中心"
+    ID_OBJECT_ROTATE_CENTER_X "X"
+    ID_OBJECT_ROTATE_CENTER_Y "Y"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_OBJECT_ROTATE_ANGLE  "旋转角度"
+    ID_OBJECT_VISIBLE       "显示"
+    ID_OBJECT_TRANSPARENT   "透明度"
+    ID_OBJECT_SHOW_BORDER   "显示边框"
+    ID_OBJECT_BORDER_COLOR  "边框颜色"
+    ID_OBJECT_BORDER_LINE_WIDTH "边框线宽"
+    ID_OBJECT_LINE_WIDTH    "笔画线宽"
+    ID_OBJECT_LINE_COLOR    "笔画颜色"
+    ID_OBJECT_FILLED        "填充"
+    ID_OBJECT_FILL_COLOR    "填充色"
+    ID_OBJECT_FONT          "字体"
+    ID_OBJECT_SELECTABLE    "锁定选择"
+    ID_OBJECT_MOVABLE       "锁定移动"
+    ID_OBJECT_ROTATABLE     "锁定旋转"
+    ID_OBJECT_SIZABLE       "锁定缩放"
+    ID_OBJECT_LOCK_ON_PARENT "随底图缩放"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_OBJECT_BACKGROUND_IMAGE "背景图片"
+    ID_OBJECT_BACKGOUND_MODE "背景图显示模式"
+    ID_OBJECT_BACKGROUND_OPTION "选项"
+    ID_OBJECT_IMAGE_FILE_NAME "图像名称"
+    ID_OBJECT_IMAGE_GRAY_SHOW "灰度显示"
+    ID_OBJECT_IMAGE_INVERT_SHOW "反色显示"
+    ID_OBJECT_IMAGE_CHANNEL "颜色通道"
+    ID_OBJECT_IMAGE_CHANNEL_RED "红色"
+    ID_OBJECT_IMAGE_CHANNEL_GREEN "绿色"
+    ID_OBJECT_IMAGE_CHANNEL_BLUE "蓝色"
+    ID_OBJECT_CONTAINER_HORIZ_RULER "水平标尺"
+    ID_OBJECT_CONTAINER_VERT_RULER "垂直标尺"
+    ID_OBJECT_CONTAINER_RULER_COLOR   "标尺颜色"
+    ID_OBJECT_CONTAINER_RULER_UNIT    "标尺单位"
+    ID_OBJECT_IMAGE_CONTAINER_ACTIVE_COLOR "激活边框颜色"
+END
+
+IDM_OBJECT_CTX_MENU_DEFAULT MENU
+BEGIN 
+	POPUP "_DEFAULT_CTX_MENU_"
+	BEGIN
+		MENUITEM "属性\tCtrl+P", IDC_OBJECT_PROPERTIES
+		MENUITEM SEPARATOR
+		MENUITEM "剪切\tCtrl+X", IDC_CTX_EDIT_CUT
+		MENUITEM "复制\tCtrl+C", IDC_CTX_EDIT_COPY
+		MENUITEM "粘贴\tCtrl+V", IDC_CTX_EDIT_PASTE
+		MENUITEM "删除\tDel",    IDC_CTX_EDIT_DEL
+	END
+END
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Add manually edited resources here...
+
+/////////////////////////////////////////////////////////////////////////////

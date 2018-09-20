@@ -1,0 +1,7 @@
+var BouServer='http://api.yucmedia.com';var BouServer1='http://img.yucmedia.com';var yucmedia_captcha_tip='';var sitekey='7z5utztpjjl3hdvy3vhwvd2q2';var yucmedia_inputid='testid';var yucmedia_offtop='0';yucmedia_offleft='0';yucmedia_offleft_s='0';yucmedia_offtop_s='0';var Yucmedia_mediatype='pad';imgtip1=decodeURI('%E5%88%B7%E6%96%B0');imgtip2=decodeURI('%E4%BA%86%E8%A7%A3%E9%AA%8C%E8%AF%81%E7%A0%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8F%90%E4%BE%9B%E5%95%86%E5%AE%87%E5%88%9D%E7%BD%91%E7%BB%9C');imgtip3=decodeURI('%E7%82%B9%E5%87%BB%E6%9F%A5%E7%9C%8B%E5%B9%BF%E5%91%8A%E8%AF%A6%E6%83%85');var yucmedia_preload=0;document.write("<inpu"+"t id='BMser"+"ialnum' name='BMseri"+"alnum' type='hid"+"den' />");
+    document.write("<inpu"+"t id='yucmedia_verify"+"info' name='yucmedia_verify"+"info' type='hid"+"den' />");
+        document.getElementById('BMserialnum').value='YUCMEDIA7z5utztpjjl3hdvy3vhwvd2q220130314023706078675nztxU8lPRh0U12DTcHPnIs';
+                    var Captcha_box_img='imgl2pad.gif';
+                var YucMediaLog="inline";
+                            (function (){var YucMediaScriptLoad = document.createElement ('script') ; YucMediaScriptLoad.src = 'http://script.yucmedia.com/script/yucmedia.js?v=1.21'; YucMediaScriptLoad.charset='utf-8';YucMediaScriptLoad.type='text/javascript'; document.getElementsByTagName('head') [0].appendChild(YucMediaScriptLoad);})();
+                

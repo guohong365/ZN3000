@@ -1,0 +1,13 @@
+H2, UL, LI, img {border:none; padding:0px; list-style:none; margin:0px;}
+A:hover { color:#000000;}
+A {color:#696969; font-size:12px; text-decoration:none;}
+.QQbox { z-index:9999; position:absolute; width:120px; top:160px; right:-10px;}
+.QQbox .press {position:absolute; border:none; width:33px; height:158px; cursor:pointer; right:0px;}
+.QQbox .Qlist {position:absolute; width:120px; left:0px; background:url(qq_listbg.gif) repeat-y -155px 0px;}
+.QQbox .Qlist .t, .QQbox .Qlist .b{width:120px; float:right; height:6px; font-size:1px;}
+.QQbox .Qlist .t{background: url(qq_listbg.gif) no-repeat left 50%;}
+.QQbox .Qlist .b {background: url(qq_listbg.gif) no-repeat right 50%;}
+.QQbox .Qlist .con {margin:0px auto; width:90%; background:#fff;}
+.QQbox .Qlist .con H2 {border:#3a708d 1px solid; text-align:center; background: url(qq_listbg.gif) repeat-y -163px 0px; font:bold 12px/22px Arial, Helvetica, sans-serif; height:22px; color:#FFFFFF;}
+.QQbox .Qlist .con UL LI { padding:5px 0px 0px 8px; background:#ffffff; height:20px;}
+.QQbox .Qlist .con UL LI.odd {background: #fff;}

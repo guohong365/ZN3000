@@ -1,0 +1,343 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\zn2000.rc2""  // ·? Microsoft Visual C++ ±à?-μ?×ê?′\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ±ê×?×é?t\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\zn2000.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ZN2000_DIALOG DIALOGEX 0, 0, 402, 319
+STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_APPWINDOW
+FONT 10, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    LTEXT           "检测部位：",IDC_STATIC_PART,7,7,39,14,SS_CENTERIMAGE,WS_EX_TRANSPARENT
+    PUSHBUTTON      "",IDC_BUTTON_PART,48,7,50,14
+    CONTROL         "",IDC_MAIN_BASE,"Static",SS_BLACKFRAME,7,23,287,262
+    CONTROL         "",IDC_INFO_PANE,"Static",SS_BLACKFRAME,295,24,100,261
+    DEFPUSHBUTTON   "开始检查",IDC_BEGIN,21,298,50,14
+    PUSHBUTTON      "暂停采样",IDC_PAUSE,83,298,50,14
+    PUSHBUTTON      "测量计算",IDC_CALC,145,298,50,14
+    PUSHBUTTON      "输入参数",IDC_INPUT,207,298,50,14
+    PUSHBUTTON      "查询结果",IDC_SEARCH,269,298,50,14
+    PUSHBUTTON      "退出程序",IDCANCEL,331,298,50,14
+END
+
+IDD_MAIN_BASE_CTRL DIALOGEX 0, 0, 316, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_INFO_PANE DIALOGEX 0, 0, 101, 332
+STYLE DS_SETFONT | WS_CHILD
+FONT 10, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    LTEXT           "编号：",IDC_STATIC_ID,7,7,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "姓名：",IDC_STATIC_NAME,7,19,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "身高：",IDC_STATIC_HEIGHT,7,43,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "体重：",IDC_STATIC_WEIGHT,7,55,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "心率：",IDC_STATIC_BEAT_RATE,7,89,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "血压：",IDC_STATIC_BLOOD_PRESURE,7,67,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "性别：",IDC_STATIC_GEBDER,7,31,87,8,0,WS_EX_TRANSPARENT
+END
+
+IDD_PERSON_INFO DIALOGEX 0, 0, 256, 168
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "基本信息"
+FONT 10, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_EDIT_ID,47,7,183,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_NAME,47,26,40,14,ES_AUTOHSCROLL
+    CONTROL         "男",IDC_RADIO_GENGER,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,156,26,23,14
+    CONTROL         "女",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,184,26,23,14
+    EDITTEXT        IDC_EDIT_HEIGHT,47,45,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_WEIGHT,156,45,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_AGE,47,64,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_EVELATION,156,64,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LOW_PRESURE,47,83,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_HI_PRESURE,156,83,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_ELECTRODE_DISTANCE,47,102,40,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "确定",IDOK,67,147,50,14
+    PUSHBUTTON      "取消",IDCANCEL,139,147,50,14
+    LTEXT           "姓名：",IDC_STATIC,7,26,38,14,SS_CENTERIMAGE,WS_EX_RIGHT
+    RTEXT           "性别：",IDC_STATIC,123,26,31,14,SS_CENTERIMAGE
+    RTEXT           "编号：",IDC_STATIC,7,7,38,14,SS_CENTERIMAGE
+    LTEXT           "年龄：",IDC_STATIC,7,64,38,14,SS_CENTERIMAGE,WS_EX_RIGHT
+    RTEXT           "身高：",IDC_STATIC,7,45,38,14,SS_CENTERIMAGE
+    LTEXT           "体重：",IDC_STATIC,123,45,31,14,SS_CENTERIMAGE,WS_EX_RIGHT
+    LTEXT           "米",IDC_STATIC,198,64,28,14,SS_CENTERIMAGE
+    LTEXT           "收缩压：",IDC_STATIC,123,83,31,14,SS_CENTERIMAGE,WS_EX_RIGHT
+    LTEXT           "电极间距：",IDC_STATIC,7,102,38,14,SS_CENTERIMAGE,WS_EX_RIGHT
+    LTEXT           "毫米汞柱",IDC_STATIC,198,83,32,14,SS_CENTERIMAGE
+    LTEXT           "厘米",IDC_STATIC,89,45,28,14,SS_CENTERIMAGE
+    RTEXT           "舒张压：",IDC_STATIC,7,83,38,14,SS_CENTERIMAGE
+    LTEXT           "毫米汞柱",IDC_STATIC,89,83,32,14,SS_CENTERIMAGE
+    RTEXT           "海拔：",IDC_STATIC,123,64,31,14,SS_CENTERIMAGE
+    LTEXT           "厘米",IDC_STATIC,89,102,28,14,SS_CENTERIMAGE
+    LTEXT           "公斤",IDC_STATIC,198,44,28,14,SS_CENTERIMAGE
+    LTEXT           "岁",IDC_STATIC,89,64,28,14,SS_CENTERIMAGE
+END
+
+IDD_SETTINGS DIALOGEX 0, 0, 316, 180
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "设置"
+FONT 10, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,205,159,50,14
+    PUSHBUTTON      "取消",IDCANCEL,259,159,50,14
+END
+
+IDD_CALC_CTRL DIALOGEX 0, 0, 316, 182
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,205,161,50,14
+    PUSHBUTTON      "取消",IDCANCEL,259,161,50,14
+END
+
+IDD_REPORT_CTL DIALOGEX 0, 0, 358, 346
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST2,"SysListView32",LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,344,157
+END
+
+IDD_WAVE_CTRL DIALOGEX 0, 0, 316, 183
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_BORDER
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "zn2000.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "zn2000.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ZN2000_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 395
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 312
+    END
+
+    IDD_MAIN_BASE_CTRL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+    END
+
+    IDD_INFO_PANE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 94
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 325
+    END
+
+    IDD_PERSON_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 249
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 161
+    END
+
+    IDD_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 173
+    END
+
+    IDD_CALC_CTRL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 175
+    END
+
+    IDD_REPORT_CTL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 351
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 339
+    END
+
+    IDD_WAVE_CTRL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU_PART_SELECT MENU
+BEGIN
+    POPUP "_PART_SELECT_"
+    BEGIN
+        MENUITEM "心脏",                          IDM_PART_HEART
+        MENUITEM "肺部",                          IDM_PART_LUNG
+        MENUITEM "肝脏",                          IDM_PART_LIVER
+        MENUITEM "肾脏",                          IDM_PART_KINDEY
+        MENUITEM "左颈内动脉",                       IDM_PART_LEFT_BRAIN_E
+        MENUITEM "右颈内动脉",                       IDM_PART_RIGHT_BRAIN_E
+        MENUITEM "左椎动脉",                        IDM_PART_LEFT_BRAIN_Z
+        MENUITEM "右椎动脉",                        IDM_PART_RIGHT_BRAIN_Z
+        MENUITEM "手臂",                          IDM_PART_ARM
+        MENUITEM "左腿",                          IDM_PART_LEFT_LEG
+        MENUITEM "右腿",                          IDM_PART_RIGHT_LEG
+    END
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\zn2000.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "l.CHS\afxres.rc"      // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
