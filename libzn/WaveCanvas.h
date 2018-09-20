@@ -3,7 +3,7 @@
 #include <vector>
 #include "SignalBuffer.h"
 #include "WaveDrawer.h"
-
+#include "WaveBackgronud.h"
 #define DEFAULT_WAVE_BACKGROUND_COLOR (RGB(0, 64, 0)|0xFF000000)
 #define DEFAULT_WAVE_COLOR            (RGB(0, 255, 0)|0xFF000000)
 #define DEFAULT_THICK_GRID_LINE_COLOR (RGB(0, 255, 0)|0xFF000000)

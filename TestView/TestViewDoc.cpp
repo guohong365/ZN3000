@@ -64,10 +64,10 @@ void CTestViewDoc::Serialize(CArchive& ar)
 		ar.Read(temp, LEN_BUFFER * sizeof(short));
 		_pCanvase=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
 		SignalBuffer<long>* pBuffer[4];
-		pBuffer[0]=new SignalBuffer<long>(LEN_BUFFER/4, 0.001, _T("1"));
-		pBuffer[1]=new SignalBuffer<long>(LEN_BUFFER/4, 0.001, _T("2"));
-		pBuffer[2]=new SignalBuffer<long>(LEN_BUFFER/4, 0.001, _T("3"));
-		pBuffer[3]=new SignalBuffer<long>(LEN_BUFFER/4, 0.001, _T("4"));
+		pBuffer[0]=new SignalBuffer<long>(LEN_BUFFER/4);
+		pBuffer[1]=new SignalBuffer<long>(LEN_BUFFER/4);
+		pBuffer[2]=new SignalBuffer<long>(LEN_BUFFER/4);
+		pBuffer[3]=new SignalBuffer<long>(LEN_BUFFER/4);
 		int index=0;
 		for(int i=0; i< LEN_BUFFER; i++)
 		{

@@ -8,7 +8,7 @@
 #ifndef SHARED_HANDLERS
 #include "TestView.h"
 #endif
-
+#include "../libzn/WaveCanvas.h"
 #include "TestViewDoc.h"
 #include "TestViewView.h"
 #include "../libDrawObject/UIHelper.h"
