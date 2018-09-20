@@ -6,22 +6,23 @@
 #include "afxwin.h"
 #include "MainBaseCtrl.h"
 #include "InfoPane.h"
-#include "../libzn/RheographyRecord.h"
+#include "../libzn/ZNDData.h"
+
 
 // CZN2000Dlg 对话框
 class CZN2000Dlg : public CXTResizeDialog
 {
+	RheographyRecord * _pRecord;
 // 构造
 public:
-	CZN2000Dlg(CWnd* pParent = NULL);	// 标准构造函数
+	CZN2000Dlg(CWnd* pParent = nullptr);	// 标准构造函数
 
 // 对话框数据
 	enum { IDD = IDD_ZN2000_DIALOG };
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-
-	PatientImpl _patientInfo;
+	
 	DWORD _dwState;
 // 实现
 protected:

@@ -57,8 +57,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/$(Platform);D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Lib\vc100;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libznD.lib;libDrawObjectD.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib/$(Platform)\$(Configuration);D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Lib\vc100;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libzn.lib;libDrawObject.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

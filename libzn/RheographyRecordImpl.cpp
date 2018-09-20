@@ -183,7 +183,7 @@ SignalChannels& RheographyRecordImpl::getSignalChannels()
 	return _signalChannels;
 }
 
-const SignalChannels& RheographyRecordImpl::GetSignalChannels() const
+const SignalChannels& RheographyRecordImpl::getSignalChannels() const
 {
 	return _signalChannels;
 }

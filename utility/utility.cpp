@@ -282,7 +282,7 @@ bool HEXString2Bin(const char * str, BYTE * bin, size_t size)
 }
 void genRandomHEXString(char * pwd, size_t length)
 {
-    srand(time(NULL));
+    srand(time(nullptr));
     for(size_t i=0; i <length -1; i++)
     {
         int val= rand()%16;

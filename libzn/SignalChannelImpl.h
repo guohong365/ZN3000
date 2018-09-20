@@ -4,7 +4,8 @@
 class SignalChannelImpl : public SignalChannel
 {
 public:
-	explicit SignalChannelImpl(SIZE_T bufferSize);
+	explicit SignalChannelImpl(const CString& label, double frequency, double physicalMinimum, double physicalMaximum,
+	                           const CString& dimension, SIZE_T bufferSize, const CString& sensor = _T(""));
 	virtual ~SignalChannelImpl();
 	virtual const CString& getLabel() const;
 	virtual void setLabel(const CString& label);

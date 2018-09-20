@@ -2,15 +2,18 @@
 #include "SignalChannelImpl.h"
 
 
-SignalChannelImpl::SignalChannelImpl(SIZE_T bufferSize)
-	: _physicalMinimum(-1)
-	, _physicalMaximum(1)
+SignalChannelImpl::SignalChannelImpl(const CString& label, double frequency, double physicalMinimum, double physicalMaximum, const CString& dimension, SIZE_T bufferSize, const CString & sensor)
+	: _label(label)
+	, _sensor(sensor)
+	, _physicalDimension(dimension)
+	, _physicalMinimum(physicalMinimum)
+	, _physicalMaximum(physicalMaximum)
 	, _digitalMinimum(-32768)
 	, _digitalMaximum(32767)
 	, _highPassFilter(-1)
 	, _lowPassFilter(-1)
 	, _notchFilter(-1)
-	, _sampleFrequency(1)
+	, _sampleFrequency(frequency)
 	, _signalBuffer(bufferSize)
 {
 }

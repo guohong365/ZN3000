@@ -5,11 +5,12 @@
 
 #pragma once
 #include "../libzn/ZNDData.h"
-#include "../libzn/RheographyRecord.h"
+#include "../libzn/Record.h"
+
 
 class CZN2000ViewDoc : public CDocument
 {
-	RheographyRecordImpl _record;
+	RheographyRecord* _pRecord;
 protected: // 仅从序列化创建
 	CZN2000ViewDoc();
 	DECLARE_DYNCREATE(CZN2000ViewDoc)

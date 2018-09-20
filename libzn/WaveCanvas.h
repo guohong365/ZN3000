@@ -17,10 +17,9 @@ class WaveCanvas : public CDrawObject
 public:
 	WaveCanvas(const Gdiplus::Point &pt, const Gdiplus::Size & size);
 	~WaveCanvas();
- template  <class VALUE_TYPE>
-	void AddWave(SignalBuffer<VALUE_TYPE> * pBuffer, int percent)
+	void AddWave(SignalChannel * pChannel, int percent)
 	{
-		WaveDrawer * pDrawer=new WaveDrawer(pBuffer, Gdiplus::Point(0,0), Gdiplus::Size(0,0));
+		WaveDrawer * pDrawer=new WaveDrawer(pChannel, Gdiplus::Point(0,0), Gdiplus::Size(0,0));
 		pDrawer->SetParent(this);
 		_waveDrawers.push_back(pDrawer);
 		_layoutRatio.push_back(percent);

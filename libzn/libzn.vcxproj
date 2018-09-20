@@ -99,6 +99,7 @@
     <ClInclude Include="WaveCanvas.h" />
     <ClInclude Include="WaveDrawer.h" />
     <ClInclude Include="ZNDData.h" />
+    <ClInclude Include="ZnRecord.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnnotationImpl.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="WaveBackgronud.cpp" />
     <ClCompile Include="WaveCanvas.cpp" />
     <ClCompile Include="WaveDrawer.cpp" />
+    <ClCompile Include="ZnRecord.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

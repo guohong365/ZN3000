@@ -1,6 +1,7 @@
 #pragma once
 #include "SignalBuffer.h"
 #include <vector>
+#include "ZNDData.h"
 
 class SignalChannel;
 
@@ -90,7 +91,7 @@ public:
 	virtual FLOAT getElevation() CONST=0;
 	virtual VOID setElevation(FLOAT elevation)=0;	
 	virtual SignalChannels& getSignalChannels()=0;
-	virtual const SignalChannels & GetSignalChannels() const=0;
+	virtual const SignalChannels & getSignalChannels() const=0;
 };
 
 

@@ -19,7 +19,8 @@
 
 CZN2000Dlg::CZN2000Dlg(CWnd* pParent /*=NULL*/)
 	: CXTResizeDialog(CZN2000Dlg::IDD, pParent)
-	, _dwState(OS_IDLE)
+	  , _pRecord(nullptr)
+	  , _dwState(OS_IDLE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -100,7 +101,7 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_infoPane.MoveWindow(&rect, TRUE);
 	_InfoPaneFrame.ShowWindow(SW_HIDE);
 	_infoPane.ShowWindow(SW_SHOW);
-	_infoPane.SetRecord(&_patientInfo);
+	_infoPane.SetRecord(_pRecord);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -190,9 +191,9 @@ void CZN2000Dlg::OnPartSelectDropDown()
 	CXTPWindowRect rc(&_btnPartSelect);
 	CMenu menu;
 	menu.LoadMenu(IDR_MENU_PART_SELECT);
-	for(UINT i=0; i< PART_MAX; i++)
+	for(int i = 0; i< PART_MAX; i++)
 	{
-		if(_patientInfo.IsPartChecked(i))
+		if(_pRecord->hasPart(PartId(i)))
 		{
 			menu.CheckMenuItem(i + IDM_PART_HEART, MF_BYCOMMAND | MF_CHECKED);
 		}
@@ -208,9 +209,10 @@ void CZN2000Dlg::OnPartSelectDropDown()
 
 void CZN2000Dlg::OnPartSelected( UINT part )
 {
-	CString text;
-	_btnPartSelect.SetWindowText(BODY_STRING[part-IDM_PART_HEART]);
-	_patientInfo.SetPartChecked(part - IDM_PART_HEART);
+	CString text=BODY_STRING[part-IDM_PART_HEART];
+	_btnPartSelect.SetWindowText(text);
+	SignalChannel * pChannel=new SignalChannelImpl(ZND_DATA_SIZE);
+	_pRecord->getSignalChannels().push_back(new SignalChannelImpl(ZND_DATA_SIZE));
 	_dwState |=OS_SELECT_PART;
 }
 
@@ -219,17 +221,16 @@ void CZN2000Dlg::OnBnClickedInput()
 	CPersonInfoInpputDlg dlg;
 	if(dlg.DoModal()==IDOK)
 	{
-		CTime date=CTime::GetCurrentTime();
-		_patientInfo.SetId(dlg._Id);
-		_patientInfo.SetName(dlg._Name);
-		_patientInfo.SetGender(dlg._gender);
-		_patientInfo.SetHeight(dlg._height);
-		_patientInfo.SetWeight(dlg._weight);
-		_patientInfo.SetElevation(dlg._evelation);
-		_patientInfo.SetElectrodeDistance(dlg._electrodeDistance);
-		_patientInfo.SetSystolicBloodPressure(dlg._systolicBloodPresure);
-		_patientInfo.SetDiastolicBloodPressure(dlg._diastolicBloodPresure);
-		_patientInfo.SetDate(date.Format(_T("%Y%m%d")));
+		__time64_t time=_time64(nullptr);
+		_pRecord->setPatientId(dlg._Id);
+		_pRecord->setPatientName(dlg._Name);
+		_pRecord->setGender(dlg._gender);
+		_pRecord->setHeight(dlg._height);
+		_pRecord->setWeight(dlg._weight);
+		_pRecord->setElevation(dlg._evelation);
+		_pRecord->setSystolicBloodPressure(dlg._systolicBloodPresure);
+		_pRecord->setDiastolicBloodPressure(dlg._diastolicBloodPresure);
+		_pRecord->setStartTime(time);		
 		_infoPane.RefreshInfo();
 		_dwState |=OS_PARAM_INPUT;
 	}

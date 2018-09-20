@@ -45,7 +45,7 @@ public:
 	__time64_t getStartTime() const;
 	void setStartTime(__time64_t startTime);
 	virtual SignalChannels& getSignalChannels();
-	virtual const SignalChannels& GetSignalChannels() const;
+	virtual const SignalChannels& getSignalChannels() const;
 private:
 	CString _recordId;
 	CString _hospital;
