@@ -6,10 +6,9 @@ class CLineObject :
 	public CRectObject
 {
 protected:
-	CLineObject(void);
-	void Initalize();
+	CLineObject();
 public:
-	virtual ~CLineObject(void);
+	virtual ~CLineObject();
 	CLineObject(const CString & name, const Gdiplus::Rect & rect);
 	CLineObject(const CString & name, int x, int y, int width, int height);
 	CLineObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size &size );
@@ -20,4 +19,5 @@ public:
 
 	virtual int GetHandleCount();
 	virtual int HitTest(const Gdiplus::Point &pt);
+	virtual DrawObject* CreateInstance(){return new CLineObject();}
 };

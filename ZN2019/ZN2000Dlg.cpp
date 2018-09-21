@@ -189,23 +189,25 @@ void CZN2000Dlg::OnBnClickedSearch()
 	
 }
 
-void CZN2000Dlg::OnPartSelectDropDown()
+void CZN2000Dlg::OnPartSelectDropDown() 
 {
-	CXTPWindowRect rc(&_btnPartSelect);
+	const CXTPWindowRect rc(&_btnPartSelect);
 	CMenu menu;
 	menu.LoadMenu(IDR_MENU_PART_SELECT);
-	for(int i = 0; i< PART_MAX; i++)
+	if(_pRecord) 
 	{
-		if(dynamic_cast<ZnRecord*>(_pRecord)->isExamined(PartId(i)))
+		for(int i = 0; i< PART_MAX; i++)
 		{
-			menu.CheckMenuItem(i + IDM_PART_HEART, MF_BYCOMMAND | MF_CHECKED);
-		}
-		else
-		{
-			menu.CheckMenuItem(i + IDM_PART_HEART, MF_BYCOMMAND|MF_UNCHECKED);
+			if(dynamic_cast<ZnRecord*>(_pRecord)->isExamined(PartId(i)))
+			{
+				menu.CheckMenuItem(i + IDM_PART_HEART, MF_BYCOMMAND | MF_CHECKED);
+			}
+			else
+			{
+				menu.CheckMenuItem(i + IDM_PART_HEART, MF_BYCOMMAND|MF_UNCHECKED);
+			}
 		}
 	}
-
 	TrackPopupMenu(menu.GetSubMenu(0)->GetSafeHmenu(), 0, rc.left, rc.bottom, 0, m_hWnd, 0);
 
 }
@@ -213,7 +215,18 @@ void CZN2000Dlg::OnPartSelectDropDown()
 void CZN2000Dlg::OnPartSelected( UINT part )
 {
 	const PartId partId=PartId(part-IDM_PART_HEART);
-	const CString text=BODY_STRING[part-IDM_PART_HEART];
+	const CString text=BODY_STRING[part-IDM_PART_HEART];	
+	if(!_pRecord)
+	{		
+		CPersonInfoInpputDlg dlg;
+		if(dlg.DoModal()!=IDOK)
+		{
+			return;
+		}
+		_pRecord=new ZnRecordImpl();
+		_infoPane.SetRecord(_pRecord);
+	}
+
 	_btnPartSelect.SetWindowText(text);
 	SignalChannel * pChannel=ZnHelper::createSignalChannel(partId, ZN_SAMPLE_FREQUENCY);
 	dynamic_cast<ZnRecord*>(_pRecord)->addChannel(pChannel);	

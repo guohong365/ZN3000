@@ -67,8 +67,13 @@ void CMainBaseCtrl::OnPaint()
 	{
 		_memBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
 	}
+	if(_background.GetSafeHandle()==nullptr)
+	{
+		_background.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
 
+	}
 	CBitmap * pOldBitmap=static_cast<CBitmap*>(memDC.SelectObject(&_memBitmap));
+	
 	memDC.SetMapMode(MM_ANISOTROPIC);
 
 	CSize sz(1000,1000);

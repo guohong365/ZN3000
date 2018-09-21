@@ -45,7 +45,7 @@ void WaveCanvas::AddWave(SignalChannel* pChannel, int percent)
 	pDrawer->SetParent(this);
 	_waveDrawers.push_back(pDrawer);
 	_layoutRatio.push_back(percent);
-	_pWaveBackground->AddBaseline(0, 5, DEFAULT_WAVE_BASELINE_COLOR);
+	_pWaveBackground->AddBaseline(pChannel->getLabel(), 0, 5, DEFAULT_WAVE_BASELINE_COLOR);
 }
 
 int WaveCanvas::GetWaveCount() const
@@ -126,7 +126,6 @@ void WaveCanvas::_drawBackground()
 void WaveCanvas::PrepareCanvas( int dx, int dy )
 {
 	delete _pBackground;
-
 	_pBackground=BitmapCreate(dx, dy, PixelFormat32bppRGB);
 	Gdiplus::Graphics graph(_pBackground);
 	graph.ScaleTransform(1.0f/CUICoordinateHelper::GetHelper()._horzLMPerDeviceUnit , 1.0f/CUICoordinateHelper::GetHelper()._vertLMPerDeviceUnit);	
@@ -135,7 +134,7 @@ void WaveCanvas::PrepareCanvas( int dx, int dy )
 	{
 		_drawLabel(graph, 0,_waveDrawers[i]->GetPosition().Y,
 			_waveDrawers[i]->GetPosition().X - 10, _waveDrawers[i]->GetSize().Height,
-			_pWaveBackground->GetPosition().X + _pWaveBackground->GetBaseline(i));
+			_pWaveBackground->GetPosition().X + _pWaveBackground->GetBaseline(i)->GetPosition().Y);
 	}
 	_drawHorizontalLabel(graph);
 }

@@ -38,7 +38,7 @@ public:
 	virtual void start();
 	virtual void stop();
 private:
-	WaveBackground _background;
+	CBitmap _background;
 	WaveDrawer* _pWaveDrawer;
 	WaveCanvas *_pCanvas;
 	CBitmap  _memBitmap;
