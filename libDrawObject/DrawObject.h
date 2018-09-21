@@ -1,21 +1,8 @@
 #pragma once
-#include "BaseTypes.h"
-#include "IVisaulized.h"
+#include "Visualized.h"
 #include "Appearance.h"
-#include <vector>
 #define FONT_SIZE_FACTOR   3.53f
 
-class CDrawObject;
-
-typedef CTypedPtrList <CObList,  CDrawObject * >CObjectsList;
-
-//////////////////////////////////////////////////////////////////////////
-///字体信息
-///
-///字体改变时用于保存Undo日志的新、旧字体相关属性值
-///@see CHistoryFontChanged
-///@see notifyAttribtesChanged
-///
 struct FontInfo
 {
     UINT mask;
@@ -25,69 +12,25 @@ struct FontInfo
 	Gdiplus::Color fontColor; ///<字体颜色
 };
 
-/*!
- * \brief
- * 绘图对象基类
- * 
- * Write detailed description for CDrawObject here.
- * 
- * \remarks
- * Write remarks for CDrawObject here.
- * 
- * \see
- * Separate items with the '|' character.
- */
-class CDrawObject:public CObject, public IVisaulized
+class DrawObject: public Visualized
 {
 public:
-    typedef std::vector<CDrawObject*> DRAW_OBJECT_LIST;
-
-	////////////
-	///初始化成员变量
-	///
-	void Initialize();
-	CStringList m_CustomPropertyList;
-	CMapStringToString m_CustomProperties;
+	void Initialize();	
 
 protected:
-	//////////////////////////////////////////////////////////////////////////
-	///默认构造函数
-	///
-	///由RuntimeClass的CreateObject调用
-	///
-	CDrawObject();
-
-	DECLARE_SERIAL(CDrawObject) 
-	
-public:  //IObjectObserver directive
-    //IVisaulized
-    Gdiplus::Image* GetPicture(int width, int height, Gdiplus::Color background = Gdiplus::Color::Transparent,
-                               int flag = GET_PIC_FLAG_ASPECT | GET_PIC_POS_HCENTER | GET_PIC_POS_VCENTER);
+	DrawObject();
+public:  
+    //Visualized
+    virtual Gdiplus::Image* GetPicture(int width, int height, Gdiplus::Color background = Gdiplus::Color::Transparent,
+                               DWORD flag = GET_PIC_FLAG_ASPECT | GET_PIC_POS_HCENTER | GET_PIC_POS_VCENTER);
 
     virtual void ResetContent();
 
-	CDrawObject(const CString & name);
-	CDrawObject(const CString & name, int x, int y, int width, int height);
-	CDrawObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size);
-	CDrawObject(const CString & name, const Gdiplus::Rect & rect);
-	virtual ~ CDrawObject();
-
-	///
-	///查找对象列表中的特定对象的索引
-	///
-	///@param objects 对象列表
-	///@param pTarget 查找目标
-	///@return 目标对象在列表中的索引位置，0起始。未找到返回-1。
-	///
-	static int _findIndex(std::vector<CDrawObject*> & objects, CDrawObject* pTarget);
-	///
-	///根据对内部象名称，在列表中查找对象
-	///
-	///@param objects 对象列表
-	///@param innerName 对象内部名称
-	///@return 找到的对象，未找到返回NULL。
-	///
-	static CDrawObject * _findObjectByName(DRAW_OBJECT_LIST &objects,  const CString & innerName);
+	explicit DrawObject(const CString & name);
+	DrawObject(const CString & name, int x, int y, int width, int height);
+	DrawObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size);
+	DrawObject(const CString & name, const Gdiplus::Rect & rect);
+	virtual ~DrawObject();
 
 	///生成唯一字符串
 	///
@@ -98,40 +41,10 @@ public:  //IObjectObserver directive
 	
 	//Attributes
 
-	//只读
-	
-	///
-	///对象类型
-	///
-	enum ObjectType
-	{
-		Shape, ///< 形状。一般绘图对象
-		Operator, ///< 操作对象。用于做其他操作预先绘制的对象。例如用于剪切的CCutMask对象
-		Tool,  ///< 工具对象。例如测量标尺对象，辅助线对象
-		Mark   ///< 标记对象。目前未用到
-	};
-	//////////////////////////////////////////////////////////////////////////
-	///从对象类型Id取得对象类型名称
-	///
-	///@prama Id 对象类型Id， 取值为ObjectType枚举值
-	///@return 对象类型名称
-	static LPCTSTR GetObjectType(int Id);
-	///
-	///取对象类型名称
-	///
-	///@return 类型名称
-	///
-	virtual LPCTSTR GetObjectType() const;
-	///
-	///取对象类型Id
-	///
-	///@return 对象类型ID
-	///
-	virtual int GetObjectTypeID() const;
 	///
 	///设置对象名称
 	///
-	///@param 新名称
+	///@param name 新名称
 	///
 	virtual void SetName(CString name);
 	///
@@ -140,12 +53,6 @@ public:  //IObjectObserver directive
 	virtual CString  GetName();
 	virtual void OnNameChanging(CString & newName);
 	virtual void OnNameChanged();
-
-	///对象内部名称，作为名称索引的唯一标识
-	virtual const CString GetInternalName() const;
-	virtual void SetInternalName(CString internalName);
-	virtual void OnInternalNameChanging(CString & internalName);
-	virtual void OnInternalNameChanged();
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -165,20 +72,7 @@ public:  //IObjectObserver directive
 	virtual Gdiplus::Size GetSize() const;
 	virtual void OnSizeChanging(Gdiplus::Size & newSize);
 	virtual void OnSizeChanged();
-	//对象旋转中心
-	//TODO: BUG 旋转后移动旋转中心将影响_Angle的取值，需修正_Angle的值
-	void SetRotateCenter(Gdiplus::Point center);
-	virtual Gdiplus::Point GetRotateCenter();
-	virtual void OnRotateCenterChanging(Gdiplus::Point & newCenter);
-	virtual void OnRotateCenterChanged();
-	//旋转角度
-	virtual void SetAngle(double angle);
-	virtual double GetAngle() const;
-	virtual void OnAngleChanging(double &newAngle);
-	virtual void OnAngleChanged();
-
-	virtual bool GetWorldAngle(double *angle, Gdiplus::Point * rotateCenter);
-
+	
 	//////////////////////////////////////////////////////////////////////////
 
 	//绘图属性
@@ -294,10 +188,10 @@ public:  //IObjectObserver directive
 	virtual void OnTextLineAlignChanged();
 	
 	//文字竖排
-	virtual void SetTextIsVert(bool isVert);
-	virtual bool GetTextIsVert();
-	virtual void OnTextVertChanging(bool & isVert);
-	virtual void OnTextVertChanged();
+	virtual void SetTextIsVertical(bool isVertical);
+	virtual bool GetTextIsVertical();
+	virtual void OnTextVerticalChanging(bool & isVert);
+	virtual void OnTextVerticalChanged();
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -309,79 +203,21 @@ public:  //IObjectObserver directive
 	virtual void OnActiveChanging(bool &isActived);
 	virtual void OnActiveChanged();
 
-	//对象选择状态
-	virtual void SetSelected(bool isSelected);
-	virtual bool GetSelected() const;
-	virtual void OnSelectedChanging(bool & newSelected);
-	virtual void OnSelectedChanged();
 	//////////////////////////////////////////////////////////////////////////
 
 	//对象父对象
-	virtual void SetParent(CDrawObject * pParent);
-	virtual const CDrawObject *GetParent() const;
-	virtual CDrawObject *GetParent();
-	virtual void OnParentChanging(CDrawObject * & pObject);
+	virtual void SetParent(DrawObject * pParent);
+	virtual const DrawObject *GetParent() const;
+	virtual DrawObject *GetParent();
+	virtual void OnParentChanging(DrawObject * & pObject);
 	virtual void OnParentChanged();
-
-	//////////////////////////////////////////////////////////////////////////
-
-	//使能属性
-
-	//获得所支持的属性名称列表
-	static CStringList & GetPropertyList();
-
-	//可选择
-	virtual void SetSelectable(bool isSelectable);
-	virtual bool GetSelectable();
-	virtual void OnSelectableChanging(bool & isSelectable);
-	virtual void OnSelectableChanged();
-
-	//可移动
-	virtual void SetMovable(bool isMovable);
-	virtual bool GetMovable();
-	virtual void OnMovableChanging(bool & isMovable);
-	virtual void OnMovableChanged();
-
-	//可旋转
-	virtual void SetRotatable(bool isRotatable);
-	virtual bool GetRotatable();
-	virtual void OnRotatableChanging(bool &isRotatable);
-	virtual void OnRotatableChanged();
-
-	//可改变大小
-	virtual void SetSizable(bool isSizable);
-	virtual bool GetSizable();
-	virtual void OnSizableChanging(bool & isSizable);
-	virtual void OnSizableChanged();
-
-
-	//////////////////////////////////////////////////////////////////////////
-
-	//自定义属性
-	virtual CStringList & GetCustomPropertyList();
-	virtual void AddCustomProperty(const CString & propertyName, const CString & propertyValue);
-	virtual void RemoveCustomProperty(const CString & propertyName);
-	virtual bool GetCustomProperty(const CString & propertyName, CString & propertyValue);
-	//////////////////////////////////////////////////////////////////////////
-
 
 	//method
 	///
 	///消息通知
 	virtual void Notify(UINT msgID, DWORD_PTR wParam = 0, LPVOID lpParam = NULL);
 	///通知响应
-	virtual void OnNotify(CDrawObject * pSource, UINT messageID, DWORD_PTR wParam, LPVOID lpParam);
-
-	//UI 交互
-
-	///TODO
-	void SetCommonMenuId(UINT commonMenuId);
-	virtual void SetMenuId(UINT menuId);
-	virtual UINT GetMenuId();
-	///
-	CMenu * GetObjectMenu(CMenu * pMenu);
-
-	virtual void OnMenuCommand(UINT command);
+	virtual void OnNotify(DrawObject * pSource, UINT messageID, DWORD_PTR wParam, LPVOID lpParam);
 
 	virtual bool OnRButtonDown(CWnd * pWnd, UINT nFlags, Gdiplus::Point point);
 	virtual bool OnLButtonDblClk(CWnd *pWnd, UINT nFlags, Gdiplus::Point point);
@@ -391,22 +227,18 @@ public:  //IObjectObserver directive
 	//////////////////////////////////////////////////////////////////////////
 	//复制对象
 	//@param source 复制source对象当前数据到本对象，不复制撤销列表。
-	virtual CDrawObject *CopyFrom(CDrawObject * source);
+	virtual DrawObject *CopyFrom(DrawObject * source);
 
+	virtual DrawObject * CreateInstance() = 0;
 	//创建深度复制副本
 	//分配新的对象空间，复制当前数据到新对象。
-	virtual CDrawObject *Clone();
+	virtual DrawObject *Clone();
 	//////////////////////////////////////////////////////////////////////////
 
 
 	//////////////////////////////////////////////////////////////////////////
 	//绘图支持
 	//////////////////////////////////////////////////////////////////////////
-
-	//绘制对象句柄
-	virtual void DrawTracker(Gdiplus::Graphics & graph);
-	//对象句柄绘制事件响应
-	virtual void OnDrawTracker(Gdiplus::Graphics & graph);
 
 	//绘制对象
 	virtual void Draw(Gdiplus::Graphics & graph);
@@ -469,11 +301,6 @@ public:  //IObjectObserver directive
 	virtual void Offset(int x, int y);
 	virtual void Offset(Gdiplus::Point point);
 
-	//旋转
-	//基于当前旋转中心，自当前角度旋转angle度，angle小于0，向左旋；angle大于0，向右旋
-	virtual void Rotate(double angle);
-
-	
 	//缩放
 	//基于本体坐标原点缩放
 	//@param scaleX  x方向缩放比例
@@ -486,21 +313,6 @@ public:  //IObjectObserver directive
 	//取对象句柄总数
 	virtual int GetHandleCount();
 	
-	//根据句柄号取句柄位置，本体坐标
-	virtual Gdiplus::Point GetHandle(int nHandle);
-
-	//根据句柄号，取句柄矩形框，本体坐标
-	virtual Gdiplus::Rect GetHandleRect(int nHandle);
-
-	//根据句柄号，取该句柄对应光标
-	//用于鼠标移动至该光标上时显示对应光标
-	virtual HCURSOR GetHandleCursor(int nHandle);
-
-	//移动对应nHandle指定的句柄移动到，point位置
-	//@param nHandle 需移动的句柄，该方法处理后，nHandle会改变
-	//@param point 需移动到的位置，全局坐标
-	virtual void MoveHandleTo(int &nHandle, Gdiplus::Point point);
-
 	//测试pt位置与本对象的“击中”位置，用于判断鼠标点击位置选中对象的部位
 	//@param pt 用于测试的坐标点
 	//@return “击中”位置
@@ -521,7 +333,7 @@ public:  //IObjectObserver directive
 
 private:
 	//基本属性
-	CDrawObject * _pParent;
+	DrawObject * _pParent;
 
 	//对象名称
 	CString _name;
@@ -536,20 +348,13 @@ private:
 	Gdiplus::Point _position;
 	//大小
 	Gdiplus::Size _size;
-	//自定义旋转中心，本体坐标
-	Gdiplus::Point _rotateCenter;
-	//是否启用旋转中心
-	bool m_bUseRotateCenter;
-	//旋转角度
-	DOUBLE _angle;
-	//////////////////////////////////////////////////////////////////////////
 
 	//绘图属性
 
 	//剪切边框
-	Gdiplus::Rect m_ClipRect;
+	Gdiplus::Rect _clipRect;
 	//是否剪切
-	bool m_bUsingClip;
+	bool _bUsingClip;
 	//是否显示
 	bool _bVisible;
 
@@ -560,17 +365,5 @@ private:
 	//控制属性
 	bool _isActive;
 	//是否为选择状态
-	bool m_bSelected;
-	//////////////////////////////////////////////////////////////////////////
-	//使能属性
-
-	//是否可选择
-	bool _bSelectable;
-	//是否可移动
-	bool _bMovable;
-
-	//是否可选转
-	bool _bRotatable;
-	//是否可改变大小
-	bool _bSizable;
+	bool _bSelected;
 };

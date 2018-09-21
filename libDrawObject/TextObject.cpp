@@ -3,7 +3,6 @@
 
 using namespace Gdiplus;
 
-IMPLEMENT_SERIAL(CTextObject, CRectObject, 0)
 static const WCHAR *defaultFontName=_T("宋体");
 static const float  defaultFontSize=49.4f;  //四号字
 static const FontStyle defaultFontStyle=FontStyleRegular;
@@ -24,10 +23,10 @@ CTextObject::CTextObject(const CString & name, int x, int y,
 						 :CRectObject(name, x, y, 1, 1)
 {
     initialize();
-	CDrawObject::SetFontFace(fontName);
-	CDrawObject::SetFontSize(fontSize);
-	CDrawObject::SetFontStyle(fontStyle);
-	Gdiplus::Font font(fontName, CDrawObject::GetFontSize(), fontStyle, UnitPixel);
+	DrawObject::SetFontFace(fontName);
+	DrawObject::SetFontSize(fontSize);
+	DrawObject::SetFontStyle(fontStyle);
+	Gdiplus::Font font(fontName, DrawObject::GetFontSize(), fontStyle, UnitPixel);
 
 	RectF rectF=MeasureString(name, &font, PointF(float(x),float(y)), m_pStringFormat);
 	SetSize(Size((int)(rectF.Width+0.5f), (int)(rectF.Height +0.5f)));
@@ -39,12 +38,12 @@ CTextObject::CTextObject(const CString & name, const Gdiplus::Point & point,
 :CRectObject(name, point.X, point.Y, 1, 1)
 {
     initialize();
-	CDrawObject::SetFontFace(fontName);
-	CDrawObject::SetFontSize(fontSize);
-	CDrawObject::SetFontStyle(fontStyle);
-	Gdiplus::Font font(fontName, CDrawObject::GetFontSize(), fontStyle, UnitPixel);
+	DrawObject::SetFontFace(fontName);
+	DrawObject::SetFontSize(fontSize);
+	DrawObject::SetFontStyle(fontStyle);
+	Gdiplus::Font font(fontName, DrawObject::GetFontSize(), fontStyle, UnitPixel);
 	RectF rectF=MeasureString(name, &font, PointF(float(point.X),float(point.Y)), m_pStringFormat);
-	CDrawObject::SetSize(Size(int(rectF.Width + 0.5f), int(rectF.Height + 0.5f)));
+	DrawObject::SetSize(Size(int(rectF.Width + 0.5f), int(rectF.Height + 0.5f)));
 }
 
 void CTextObject::OnDrawBorder(Gdiplus::Graphics & graph)
@@ -66,7 +65,7 @@ void CTextObject::OnDrawBorder(Gdiplus::Graphics & graph)
 	{
 		m_pStringFormat->SetAlignment((StringAlignment)GetTextAlign());
 		m_pStringFormat->SetLineAlignment((StringAlignment)GetTextLineAlign());
-		if(GetTextIsVert())
+		if(GetTextIsVertical())
 		{
 			m_pStringFormat->SetFormatFlags(m_pStringFormat->GetFormatFlags()|StringFormatFlagsDirectionVertical);
 		}
@@ -101,7 +100,7 @@ void CTextObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 	{
 		m_pStringFormat->SetAlignment((StringAlignment)GetTextAlign());
 		m_pStringFormat->SetLineAlignment((StringAlignment)GetTextLineAlign());
-		if(GetTextIsVert())
+		if(GetTextIsVertical())
 		{
 			m_pStringFormat->SetFormatFlags(m_pStringFormat->GetFormatFlags()|StringFormatFlagsDirectionVertical);
 		}
@@ -118,19 +117,14 @@ void CTextObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 
 //复制对象
 //@param source 复制source对象当前数据到本对象，不复制撤销列表。
-CDrawObject *CTextObject::CopyFrom(CDrawObject * source)
+DrawObject *CTextObject::CopyFrom(DrawObject * source)
 {
     CRectObject::CopyFrom(source);
-    CTextObject *pTextObject = DYNAMIC_DOWNCAST(CTextObject, source);
+    CTextObject *pTextObject = dynamic_cast<CTextObject*>(source);
     ASSERT(pTextObject);
 	ASSERT(m_pStringFormat);
 	m_pStringFormat=pTextObject->m_pStringFormat->Clone();
     return this;
-}
-
-void CTextObject::Serialize(CArchive & ar)
-{
-    CRectObject::Serialize(ar);
 }
 
 void CTextObject::OnNameChanged()
@@ -151,15 +145,6 @@ void CTextObject::initialize()
     SetShowBorder(false);
 	SetFilled(true);
 	SetFillColor(Color::Black);
-}
-
-void CTextObject::OnDrawTracker(Gdiplus::Graphics & graph)
-{
-	Rect rect=GetObjectRect();
-	Pen pen(GetActiveColor());
-	pen.SetDashStyle(DashStyleDashDot);
-	graph.DrawRectangle(&pen, rect);
-	__super::OnDrawTracker(graph);
 }
 
 RectF CTextObject::GetTextExtent()

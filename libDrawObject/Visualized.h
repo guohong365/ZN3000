@@ -13,14 +13,10 @@
 #define GET_PIC_POS_HCENTER 0x00001000
 #define GET_PIC_POS_VCENTER 0x00002000
 #define GET_PIC_POS_MASK    0x00FFFF00
-class IVisaulized
+
+class Visualized
 {
 public:
-    virtual ~IVisaulized(void)
-    {
-    }
-    virtual Gdiplus::Image* GetPicture(int width, int height, Gdiplus::Color colorBackground, DWORD flag)
-    {
-        return NULL;
-    }
+    virtual ~Visualized(){}
+    virtual Gdiplus::Image* GetPicture(int width, int height, Gdiplus::Color colorBackground, DWORD flag){ return nullptr; }
 };

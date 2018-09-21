@@ -7,7 +7,6 @@ class CLineObject :
 {
 protected:
 	CLineObject(void);
-	DECLARE_SERIAL(CLineObject)
 	void Initalize();
 public:
 	virtual ~CLineObject(void);
@@ -20,8 +19,5 @@ public:
 	virtual void OnDrawFillObject(Gdiplus::Graphics &graph);
 
 	virtual int GetHandleCount();
-	virtual Gdiplus::Point GetHandle(int nHandle);
-	virtual HCURSOR GetHandleCursor(int nHandle);
-	virtual void MoveHandleTo(int nHandle, Gdiplus::Point point);
 	virtual int HitTest(const Gdiplus::Point &pt);
 };

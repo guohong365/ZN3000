@@ -3,9 +3,8 @@
 #include <vector>
 #include "../libDrawObject/DrawObject.h"
 
-class WaveBackground:public CDrawObject
+class WaveBackground:public DrawObject
 {
-	DECLARE_DYNCREATE(WaveBackground);
 public:
 	WaveBackground();
 	WaveBackground(const Gdiplus::Point &position, const Gdiplus::Size & size);
@@ -144,6 +143,9 @@ private:
 
 	virtual void OnDrawBorder( Gdiplus::Graphics & graph );
 
+public:
+	virtual DrawObject* CreateInstance();
+private:
 	bool _isDrawThickGrid;
 	bool _isDrawThinGrid;
 	float _thickGridLineWidth;  //0.1mm

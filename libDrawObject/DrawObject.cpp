@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include <Rpc.h>
 #include "DrawObject.h"
-#include "MathUtility.h"
 #include "ImageUtility.h"
-#include "DrawObjectPropertiesID.h"
+#include "BaseTypes.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
- 
+
 #define STRING2x(x) #x
 #define STRINGxx(x) STRING2x(x)
 
@@ -23,54 +22,46 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 //坐标单位
-Gdiplus::Unit CDrawObject::Unit = Gdiplus::UnitPixel;
+Gdiplus::Unit DrawObject::Unit = Gdiplus::UnitPixel;
 
-IMPLEMENT_SERIAL(CDrawObject, CObject, 0)
-void CDrawObject::Initialize()
+void DrawObject::Initialize()
 {
 	_name=_T("");
-	_angle = 0.0;
-	m_bUsingClip = false;
+	_bUsingClip = false;
 	_bVisible = true;
 	_isActive=false;
-	m_bSelected = false;
-	_bSelectable = true;
-	_bMovable = true;
-	_bRotatable = true;
-	_bSizable = true;
-	_pParent = NULL;
+	_bSelected = false;	
+	_pParent = nullptr;
 	//_appearance.FontSize=FontSizeArray[DEFAULT_FONT_SIZE_INDEX].SizePoint*FONT_SIZE_FACETOR;
-
-	 m_bUseRotateCenter = false;
 
 	_internalName = GenerateUniqueName();
 }
 
-CDrawObject::CDrawObject()
+DrawObject::DrawObject()
 {
 	Initialize();
 }
 
-CDrawObject::CDrawObject(const CString & name)
+DrawObject::DrawObject(const CString & name)
 {
 	Initialize();
 	_name = name;
 }
-CDrawObject::CDrawObject(const CString & name, int x, int y, int width, int height)
+DrawObject::DrawObject(const CString & name, int x, int y, int width, int height)
 {
 	Initialize();
 	_name = name;
 	_position = Gdiplus::Point(x, y);
 	_size = Gdiplus::Size(width, height);
 }
-CDrawObject::CDrawObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size)
+DrawObject::DrawObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size)
 {
 	Initialize();
 	_name = name;
 	_position = point;
 	_size = size;
 }
-CDrawObject::CDrawObject(const CString & name, const Gdiplus::Rect & rect)
+DrawObject::DrawObject(const CString & name, const Gdiplus::Rect & rect)
 {
 	Initialize();
 	_name = name;
@@ -78,11 +69,11 @@ CDrawObject::CDrawObject(const CString & name, const Gdiplus::Rect & rect)
 	_size =Gdiplus::Size(rect.Width, rect.Height); 
 }
 
-CDrawObject::~CDrawObject()
+DrawObject::~DrawObject()
 {
 }
 
-CString CDrawObject::GenerateUniqueName()
+CString DrawObject::GenerateUniqueName()
 {
 	LARGE_INTEGER PerformanceCount;
 	QueryPerformanceCounter(&PerformanceCount);
@@ -94,7 +85,7 @@ CString CDrawObject::GenerateUniqueName()
 
 
 //对象名称
-void CDrawObject::SetName(CString name)
+void DrawObject::SetName(CString name)
 {
 	if (_name != name)
 	{
@@ -103,41 +94,18 @@ void CDrawObject::SetName(CString name)
 		OnNameChanged();
 	}
 }
- CString CDrawObject::GetName()  
+CString DrawObject::GetName()  
 {
 	return _name;
 }
 
-void CDrawObject::OnNameChanging(CString & newName)
+void DrawObject::OnNameChanging(CString & newName)
 {
-    Notify(DNM_NAME_CHANGING, 0, &newName);
+	Notify(DNM_NAME_CHANGING, 0, &newName);
 }
-void CDrawObject::OnNameChanged()
+void DrawObject::OnNameChanged()
 {
 	Notify(DNM_NAME_CHANGED);
-}
-
-void CDrawObject::SetInternalName(CString internalName)
-{
-	if (_internalName != internalName)
-	{
-		OnInternalNameChanging(internalName);
-		_internalName = internalName;
-		OnInternalNameChanged();
-	}
-}
-const CString CDrawObject::GetInternalName() const 
-{
-	return _internalName;
-}
-
-void CDrawObject::OnInternalNameChanging(CString & internalName)
-{
-
-}
-void CDrawObject::OnInternalNameChanged()
-{
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -145,18 +113,18 @@ void CDrawObject::OnInternalNameChanged()
 //几何属性。，角度单位（度）
 
 //坐标单位
-void CDrawObject::SetUnit(Gdiplus::Unit unit)
+void DrawObject::SetUnit(Gdiplus::Unit unit)
 {
-	CDrawObject::Unit = unit;
+	DrawObject::Unit = unit;
 }
 
-Gdiplus::Unit CDrawObject::GetUnit()
+Gdiplus::Unit DrawObject::GetUnit()
 {
-	return CDrawObject::Unit;
+	return DrawObject::Unit;
 }
 
 //位置
-void CDrawObject::SetPosition(Gdiplus::Point point)
+void DrawObject::SetPosition(Gdiplus::Point point)
 {
 	if (!_position.Equals(point))
 	{
@@ -166,22 +134,22 @@ void CDrawObject::SetPosition(Gdiplus::Point point)
 	}
 }
 
-Gdiplus::Point CDrawObject::GetPosition() const
+Gdiplus::Point DrawObject::GetPosition() const
 {
 	return _position;
 }
 
-void CDrawObject::OnPositionChanging(Gdiplus::Point & newPoint)
+void DrawObject::OnPositionChanging(Gdiplus::Point & newPoint)
 {
 	Notify(DNM_POSITION_CHANGING, 0, &newPoint);
 }
-void CDrawObject::OnPositionChanged()
+void DrawObject::OnPositionChanged()
 {
 	Notify(DNM_POSITION_CHANGED);
 }
 
 //大小
-void CDrawObject::SetSize(Gdiplus::Size size)
+void DrawObject::SetSize(Gdiplus::Size size)
 {
 	if (!_size.Equals(size))
 	{
@@ -191,128 +159,75 @@ void CDrawObject::SetSize(Gdiplus::Size size)
 	}
 }
 
-Gdiplus::Size CDrawObject::GetSize() const
+Gdiplus::Size DrawObject::GetSize() const
 {
 	return _size;
 }
 
-void CDrawObject::OnSizeChanging(Gdiplus::Size & newSize)
+void DrawObject::OnSizeChanging(Gdiplus::Size & newSize)
 {
 	Notify(DNM_SIZE_CHANGING, 0, &newSize);
 }
-void CDrawObject::OnSizeChanged()
+void DrawObject::OnSizeChanged()
 {
 	Notify(DNM_SIZE_CHANGED);
 }
-
-//旋转中心
-void CDrawObject::SetRotateCenter(Gdiplus::Point center)
-{
-	m_bUseRotateCenter = true;
-	OnRotateCenterChanging(center);
-	_rotateCenter = center;
-	OnRotateCenterChanged();
-}
-
-Gdiplus::Point CDrawObject::GetRotateCenter()
-{
-	if (m_bUseRotateCenter)
-	{
-		return _rotateCenter;
-	}
-	else
-	{
-		return GetCenter();
-	}
-}
-void CDrawObject::OnRotateCenterChanging(Gdiplus::Point & newCenter)
-{
-	Notify(DNM_ROTATE_CENTER_CHANGING, 0, &newCenter);
-}
-void CDrawObject::OnRotateCenterChanged()
-{
-	Notify(DNM_ROTATE_CENTER_CHANGED);
-}
-
-//旋转角度
-void CDrawObject::SetAngle(double angle)
-{
-	if (_angle != angle)
-	{
-		OnAngleChanging(angle);
-		_angle = angle;
-		OnAngleChanged();
-	}
-}
-double CDrawObject::GetAngle() const 
-{
-	return _angle;
-}
-void CDrawObject::OnAngleChanging(double &newAngle)
-{
-	Notify(DNM_ANGLE_CHANGING, 0, &newAngle);
-}
-void CDrawObject::OnAngleChanged()
-{
-	Notify(DNM_ANGLE_CHANGED);
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 
 //绘图属性
 
 //剪切边框
-void CDrawObject::SetClipRect(Gdiplus::Rect rect)
+void DrawObject::SetClipRect(Gdiplus::Rect rect)
 {
-	if (!m_ClipRect.Equals(rect))
+	if (!_clipRect.Equals(rect))
 	{
 		OnClipRectChanging(rect);
-		m_ClipRect = rect;
+		_clipRect = rect;
 		OnClipRectChanged();
 	}
 }
 
-Gdiplus::Rect CDrawObject::GetClipRect() const
+Gdiplus::Rect DrawObject::GetClipRect() const
 {
-	return m_ClipRect;
+	return _clipRect;
 }
 
-void CDrawObject::OnClipRectChanging(Gdiplus::Rect & newRect)
+void DrawObject::OnClipRectChanging(Gdiplus::Rect & newRect)
 {
 	Notify(DNM_CLIP_RECT_CHANGING, 0, &newRect);
 }
-void CDrawObject::OnClipRectChanged()
+void DrawObject::OnClipRectChanged()
 {
 	Notify(DNM_CLIP_RECT_CHANGED);
 }
 
 //是否剪切
-void CDrawObject::SetUsingClip(bool isUsingClip)
+void DrawObject::SetUsingClip(bool isUsingClip)
 {
-	if (m_bUsingClip != isUsingClip)
+	if (_bUsingClip != isUsingClip)
 	{
 		OnUsingClipChanging(isUsingClip);
-		m_bUsingClip = isUsingClip;
+		_bUsingClip = isUsingClip;
 		OnUsingClipChanged();
 	}
 }
-bool CDrawObject::GetUsingClip() const 
+bool DrawObject::GetUsingClip() const 
 {
-	return m_bUsingClip;
+	return _bUsingClip;
 }
 
-void CDrawObject::OnUsingClipChanging(bool & newUsingClip)
+void DrawObject::OnUsingClipChanging(bool & newUsingClip)
 {
 	Notify(DNM_USING_CLIP_CHANGING, 0, & newUsingClip);
 }
-void CDrawObject::OnUsingClipChanged()
+void DrawObject::OnUsingClipChanged()
 {
 	Notify(DNM_USING_CLIP_CHANGED);
 }
 
 //是否显示
-void CDrawObject::SetVisible(bool isVisible)
+void DrawObject::SetVisible(bool isVisible)
 {
 	if (isVisible != _bVisible)
 	{
@@ -321,22 +236,22 @@ void CDrawObject::SetVisible(bool isVisible)
 		OnVisibleChanged();
 	}
 }
-bool CDrawObject::GetVisible() const 
+bool DrawObject::GetVisible() const 
 {
 	return _bVisible;
 }
 
-void CDrawObject::OnVisibleChanging(bool & newVisible)
+void DrawObject::OnVisibleChanging(bool & newVisible)
 {
-    Notify(DNM_VISIBLE_CHANGING, 0, &newVisible);
+	Notify(DNM_VISIBLE_CHANGING, 0, &newVisible);
 }
-void CDrawObject::OnVisibleChanged()
+void DrawObject::OnVisibleChanged()
 {
 	Notify(DNM_VISIBLE_CHANGED);
 }
 
 //是否填充
-void CDrawObject::SetFilled(bool isFilled)
+void DrawObject::SetFilled(bool isFilled)
 {
 	if (_appearance.ShowFill != isFilled)
 	{
@@ -345,22 +260,22 @@ void CDrawObject::SetFilled(bool isFilled)
 		OnFilledChanged();
 	}
 }
-bool CDrawObject::GetFilled() const 
+bool DrawObject::GetFilled() const 
 {
 	return _appearance.ShowFill;
 }
 
-void CDrawObject::OnFilledChanging(bool & newFilled)
+void DrawObject::OnFilledChanging(bool & newFilled)
 {
-    Notify(DNM_FILLED_CHANGING, 0, &newFilled);
+	Notify(DNM_FILLED_CHANGING, 0, &newFilled);
 }
-void CDrawObject::OnFilledChanged()
+void DrawObject::OnFilledChanged()
 {
 	Notify(DNM_FILLED_CHANGED);
 }
 
 //是否绘制边框
-void CDrawObject::SetShowBorder(bool isShowBorder)
+void DrawObject::SetShowBorder(bool isShowBorder)
 {
 	if (_appearance.ShowBorder != isShowBorder)
 	{
@@ -369,20 +284,20 @@ void CDrawObject::SetShowBorder(bool isShowBorder)
 		OnVisibleChanged();
 	}
 }
-bool CDrawObject::GetShowBorder() const 
+bool DrawObject::GetShowBorder() const 
 {
 	return _appearance.ShowBorder;
 }
 
-void CDrawObject::OnShowBorderChanging(bool & newShowBorder)
+void DrawObject::OnShowBorderChanging(bool & newShowBorder)
 {
 	Notify(DNM_SHOW_BORDER_CHANGING, 0, &newShowBorder);
 }
-void CDrawObject::OnShowBorderChanged()
+void DrawObject::OnShowBorderChanged()
 {
 	Notify(DNM_SHOW_BORDER_CHANGED);
 }
-void CDrawObject::SetShowTracker(bool isShowTracker)
+void DrawObject::SetShowTracker(bool isShowTracker)
 {
 	if (isShowTracker != _appearance.ShowTrack)
 	{
@@ -391,21 +306,21 @@ void CDrawObject::SetShowTracker(bool isShowTracker)
 		OnShowTrackerChanged();
 	}
 }
-bool CDrawObject::GetShowTracker() const 
+bool DrawObject::GetShowTracker() const 
 {
 	return _appearance.ShowTrack;
 }
 
-void CDrawObject::OnShowTrackerChanging(bool & newShowTracker)
+void DrawObject::OnShowTrackerChanging(bool & newShowTracker)
 {
 	Notify(DNM_SHOW_TRACKER_CHANGING, 0, &newShowTracker);
 }
-void CDrawObject::OnShowTrackerChanged()
+void DrawObject::OnShowTrackerChanged()
 {
 	Notify(DNM_SHOW_TRACKER_CHANGED);
 }
 
-void CDrawObject::SetTrackerColor(Gdiplus::Color color)
+void DrawObject::SetTrackerColor(Gdiplus::Color color)
 {
 	if (color.GetValue() != _appearance.TraceColor.GetValue())
 	{
@@ -415,22 +330,22 @@ void CDrawObject::SetTrackerColor(Gdiplus::Color color)
 	}
 }
 
-Gdiplus::Color CDrawObject::GetTrackerColor() const
+Gdiplus::Color DrawObject::GetTrackerColor() const
 {
 	return _appearance.TraceColor;
 }
 
-void CDrawObject::OnTrackerColorChanging(Gdiplus::Color & color)
+void DrawObject::OnTrackerColorChanging(Gdiplus::Color & color)
 {
-    Notify(DNM_TRACKER_COLOR_CHANGING, 0,&color);
+	Notify(DNM_TRACKER_COLOR_CHANGING, 0,&color);
 }
-void CDrawObject::OnTrackerColorChanged()
+void DrawObject::OnTrackerColorChanged()
 {
 	Notify(DNM_TRACKER_COLOR_CHANGED);
 }
 
 //透明度
-void CDrawObject::SetTransparent(float transparent)
+void DrawObject::SetTransparent(float transparent)
 {
 	if (_appearance.Transparent != transparent)
 	{
@@ -439,22 +354,22 @@ void CDrawObject::SetTransparent(float transparent)
 		OnTransparentChanged();
 	}
 }
-float CDrawObject::GetTransparent() const 
+float DrawObject::GetTransparent() const 
 {
 	return _appearance.Transparent;
 }
-void CDrawObject::OnTransparentChanging(float &newTransparent)
+void DrawObject::OnTransparentChanging(float &newTransparent)
 {
 	Notify(DNM_TRANSPARENT_CHANGING, 0, &newTransparent);
 }
-void CDrawObject::OnTransparentChanged()
+void DrawObject::OnTransparentChanged()
 {
 	Notify(DNM_TRANSPARENT_CHANGED);
 }
 
 
 //填充颜色
-void CDrawObject::SetFillColor(Gdiplus::Color color)
+void DrawObject::SetFillColor(Gdiplus::Color color)
 {
 	if (_appearance.FillColor.GetValue() != color.GetValue())
 	{
@@ -464,22 +379,22 @@ void CDrawObject::SetFillColor(Gdiplus::Color color)
 	}
 }
 
-Gdiplus::Color CDrawObject::GetFillColor() const
+Gdiplus::Color DrawObject::GetFillColor() const
 {
 	return _appearance.FillColor;
 }
 
-void CDrawObject::OnFillColorChanging(Gdiplus::Color & newColor)
+void DrawObject::OnFillColorChanging(Gdiplus::Color & newColor)
 {
 	Notify(DNM_FILL_COLOR_CHANGING, 0, &newColor);
 }
-void CDrawObject::OnFillColorChanged()
+void DrawObject::OnFillColorChanged()
 {
 	Notify(DNM_FILL_COLOR_CHANGED);
 }
 
 //边框颜色
-void CDrawObject::SetLineColor(Gdiplus::Color color)
+void DrawObject::SetLineColor(Gdiplus::Color color)
 {
 	if (_appearance.LineColor.GetValue() != color.GetValue())
 	{
@@ -489,21 +404,21 @@ void CDrawObject::SetLineColor(Gdiplus::Color color)
 	}
 }
 
-Gdiplus::Color CDrawObject::GetLineColor() const
+Gdiplus::Color DrawObject::GetLineColor() const
 {
 	return _appearance.LineColor;
 }
 
-void CDrawObject::OnLineColorChanging(Gdiplus::Color & newColor)
+void DrawObject::OnLineColorChanging(Gdiplus::Color & newColor)
 {
 	Notify(DNM_LINE_COLOR_CHANGING, 0, &newColor);
 }
-void CDrawObject::OnLineColorChanged()
+void DrawObject::OnLineColorChanged()
 {
 	Notify(DNM_LINE_COLOR_CHANGED);
 }
 
-void CDrawObject::SetLineWidth(float width)
+void DrawObject::SetLineWidth(float width)
 {
 	if (_appearance.LineWidth != width)
 	{
@@ -512,21 +427,21 @@ void CDrawObject::SetLineWidth(float width)
 		OnLineWidthChanged();
 	}
 }
-float CDrawObject::GetLineWidth()
+float DrawObject::GetLineWidth()
 {
 	return _appearance.LineWidth;
 }
-void CDrawObject::OnLineWidthChanging(float &width)
+void DrawObject::OnLineWidthChanging(float &width)
 {
 	Notify(DNM_LINE_WIDTH_CHANGING, 0, &width);
 }
-void CDrawObject::OnLineWidthChanged()
+void DrawObject::OnLineWidthChanged()
 {
 	Notify(DNM_LINE_WIDTH_CHANGED);
 }
 
 //字体颜色
-void CDrawObject::SetFontColor(Gdiplus::Color color)
+void DrawObject::SetFontColor(Gdiplus::Color color)
 {
 	if (_appearance.FontColor.GetValue() != color.GetValue())
 	{
@@ -536,16 +451,16 @@ void CDrawObject::SetFontColor(Gdiplus::Color color)
 	}
 }
 
-Gdiplus::Color CDrawObject::GetFontColor() const
+Gdiplus::Color DrawObject::GetFontColor() const
 {
 	return _appearance.FontColor;
 }
 
-void CDrawObject::OnFontColorChanging(Gdiplus::Color & newFontColor)
+void DrawObject::OnFontColorChanging(Gdiplus::Color & newFontColor)
 {
 	Notify(DNM_FONT_COLOR_CHANGING, 0, &newFontColor);
 }
-void CDrawObject::OnFontColorChanged()
+void DrawObject::OnFontColorChanged()
 {
 	Notify(DNM_FONT_COLOR_CHANGED);
 }
@@ -554,36 +469,11 @@ void CDrawObject::OnFontColorChanged()
 
 //控制属性
 
-//是否为选择状态
-void CDrawObject::SetSelected(bool isSelected)
-{
-	if (m_bSelected != isSelected)
-	{
-		OnSelectedChanging(isSelected);
-		m_bSelected = isSelected;
-		OnSelectedChanged();
-	}
-}
-
-bool CDrawObject::GetSelected() const 
-{
-	return m_bSelected;
-}
-
-void CDrawObject::OnSelectedChanging(bool & newSelected)
-{
-	Notify(DNM_SELECTED_CHANGING, 0, &newSelected);	
-}
-void CDrawObject::OnSelectedChanged()
-{
-	Notify(DNM_SELECTED_CHANGED); 
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////////
-void CDrawObject::SetParent(CDrawObject * pParent)
+void DrawObject::SetParent(DrawObject * pParent)
 {
 	if (_pParent != pParent)
 	{
@@ -592,86 +482,24 @@ void CDrawObject::SetParent(CDrawObject * pParent)
 		OnParentChanged();
 	}
 }
-const CDrawObject *CDrawObject::GetParent() const 
+const DrawObject *DrawObject::GetParent() const 
 {
 	return _pParent;
 }
 
-CDrawObject *CDrawObject::GetParent()
+DrawObject *DrawObject::GetParent()
 {
 	return _pParent;
 }
 
-void CDrawObject::OnParentChanging(CDrawObject * &pObject)
+void DrawObject::OnParentChanging(DrawObject * &pObject)
 {
 	Notify(DNM_PARENT_CHANGING, 0, &pObject);
 }
-void CDrawObject::OnParentChanged()
+void DrawObject::OnParentChanged()
 {
 	Notify(DNM_PARENT_CHANGED);
 }
-
-//使能属性
-
-
-//////////////////////////////////////////////////////////////////////////
-
-//自定义属性
-CStringList & CDrawObject::GetCustomPropertyList()
-{
-	return m_CustomPropertyList;
-}
-void CDrawObject::AddCustomProperty(const CString & propertyName, const CString & propertyValue)
-{
-	CString rValue;
-	//try to find existed key
-	if (m_CustomProperties.Lookup(propertyName, rValue) == NULL)
-	{
-		m_CustomPropertyList.AddHead(propertyName);
-	}
-	m_CustomProperties[propertyName] = propertyValue;
-}
-void CDrawObject::RemoveCustomProperty(const CString & propertyName)
-{
-	CString rValue;
-	POSITION pos = m_CustomPropertyList.Find(propertyName);
-	if (pos)
-	{
-		m_CustomPropertyList.RemoveAt(pos);
-		m_CustomProperties.RemoveKey(propertyName);
-	}
-}
-bool CDrawObject::GetCustomProperty(const CString & propertyName, CString & propertyValue)
-{
-	return m_CustomProperties.Lookup(propertyName, propertyValue) == TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-
-//method
-
-//bool CDrawObject::Notify(UINT messageID, DWORD wParam, LPVOID lpParam)
-//{
-//      switch(messageID)
-//      {
-//      case DN_PARENT_SIZE_CHANGED:
-//              {
-//
-//              }
-//              break;
-//      case DN_PROPERTY_CHANGED:
-//              {
-//
-//              }
-//              break;
-//      default:
-//              break;
-//      }
-//      return true;
-//}
-//
-
 
 LOGFONTW OBJECT_DEFAULT_FONT = { 0 };
 
@@ -680,47 +508,25 @@ LOGFONTW OBJECT_DEFAULT_FONT = { 0 };
 //////////////////////////////////////////////////////////////////////////
 //复制对象
 //@param source 复制source对象当前数据到本对象，不复制撤销列表。
-CDrawObject *CDrawObject::CopyFrom(CDrawObject * source)
+DrawObject *DrawObject::CopyFrom(DrawObject * source)
 {
 	_name = source->_name;
 	_position = source->_position;
 	_size = source->_size;
-	_rotateCenter = source->_rotateCenter;
-	m_bUseRotateCenter = source->m_bUseRotateCenter;
-	_angle = source->_angle;
-	m_ClipRect = source->m_ClipRect;
-	m_bUsingClip = source->m_bUsingClip;
+	_clipRect = source->_clipRect;
+	_bUsingClip = source->_bUsingClip;
 	_bVisible = source->_bVisible;
 	_appearance=source->_appearance;
-	m_bSelected = source->m_bSelected;
-	_bSelectable = source->_bSelectable;
-	_bMovable = source->_bMovable;
-	_bRotatable = source->_bRotatable;
-	_bSizable = source->_bSizable;
-	m_CustomPropertyList.RemoveAll();
-	POSITION pos = source->m_CustomPropertyList.GetHeadPosition();
-	while (pos)
-	{
-		m_CustomPropertyList.AddTail(source->m_CustomPropertyList.GetNext(pos));
-	}
-	m_CustomProperties.RemoveAll();
-	CString key;
-	CString rValue;
-	pos = source->m_CustomProperties.GetStartPosition();
-	while (pos)
-	{
-		source->m_CustomProperties.GetNextAssoc(pos, key, rValue);
-		m_CustomProperties[key] = rValue;
-	}
+	_bSelected = source->_bSelected;
 	return this;
 }
 
 
 //创建副本
 //分配新的对象空间，复制当前数据到新对象，但不复制撤销列表。
-CDrawObject *CDrawObject::Clone()
+DrawObject *DrawObject::Clone()
 {
-	CDrawObject *pObject = DYNAMIC_DOWNCAST(CDrawObject, GetRuntimeClass()->CreateObject());
+	DrawObject *pObject = CreateInstance();
 	ASSERT(pObject);
 	pObject->CopyFrom(this);
 	return pObject;
@@ -733,106 +539,70 @@ CDrawObject *CDrawObject::Clone()
 //绘图支持
 //////////////////////////////////////////////////////////////////////////
 
-void CDrawObject::DrawTracker(Gdiplus::Graphics & graph)
+void DrawObject::Draw(Gdiplus::Graphics & graph)
 {
-	if (GetSelected() && GetShowTracker() )
+	if (!GetVisible())
 	{
-		OnDrawTracker(graph);
+		return;
 	}
-}
-void CDrawObject::OnDrawTracker(Gdiplus::Graphics & graph)
-{
-	if (GetSelected())
+	graph.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	graph.SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
+	graph.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+	Gdiplus::Matrix matrix;
+	Gdiplus::Matrix oldMatrix;
+	graph.GetTransform(&oldMatrix);
+	graph.GetTransform(&matrix);
+	matrix.Translate(Gdiplus::REAL(GetPosition().X), Gdiplus::REAL(GetPosition().Y));
+	graph.SetTransform(&matrix);
+	Gdiplus::Region clip;
+	Gdiplus::Rect rf;
+	bool setClip = false;
+	if (!graph.IsClipEmpty())
 	{
-		Gdiplus::CompositingMode mode = graph.GetCompositingMode();
-		int nHandleCount = GetHandleCount();
-		for (int nHandle = 1; nHandle <= nHandleCount; nHandle += 1)
+		if (GetUsingClip())
 		{
-			Gdiplus::Color color=(0xC0FFFFFF&Gdiplus::Color::Green);;
-			if(!GetSizable())
-			{
-				color=(0xC0FFFFFF & Gdiplus::Color::Red);
-			}
-			Gdiplus::Pen pen(color);
-			Gdiplus::SolidBrush brush(color);
-			Gdiplus::Rect rect = GetHandleRect(nHandle);
-			graph.SetCompositingMode(Gdiplus::CompositingModeSourceOver);
-			graph.FillRectangle(&brush, rect);
-			graph.DrawRectangle(&pen, rect);
-		}
-		graph.SetCompositingMode(mode);
-	}
-}
+			graph.GetClip(&clip);
+			clip.GetBounds(&rf, &graph);
+			graph.SetClip(_clipRect, Gdiplus::CombineModeIntersect);
 
-void CDrawObject::Draw(Gdiplus::Graphics & graph)
-{
-	if (GetVisible())
+			graph.GetClipBounds(&rf);
+			setClip = true;
+		}
+	}
+	OnDraw(graph);
+	if(setClip)
 	{
-		graph.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-		graph.SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
-		graph.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
-		float m[6];
-		Gdiplus::Matrix matrix;
-		Gdiplus::Matrix oldMatrix;
-		graph.GetTransform(&oldMatrix);
-		graph.GetTransform(&matrix);
-		matrix.GetElements(m);
-		matrix.Translate((Gdiplus::REAL) GetPosition().X, (Gdiplus::REAL) GetPosition().Y);
-		Gdiplus::PointF pointF((Gdiplus::REAL) GetRotateCenter().X, (Gdiplus::REAL) GetRotateCenter().Y);
-		matrix.RotateAt((Gdiplus::REAL) GetAngle(), pointF);
-		graph.SetTransform(&matrix);
-		matrix.GetElements(m);
-
-		Gdiplus::Region clip;
-		Gdiplus::Rect rf;
-		bool setClip = false;
-		if (!graph.IsClipEmpty())
-		{
-			if (GetUsingClip())
-			{
-				graph.GetClip(&clip);
-				clip.GetBounds(&rf, &graph);
-				graph.SetClip(m_ClipRect, Gdiplus::CombineModeIntersect);
-
-				graph.GetClipBounds(&rf);
-				setClip = true;
-			}
-		}
-		OnDraw(graph);
-		if(setClip)
-		{
-			graph.SetClip(&clip);
-		}
-		DrawBorder(graph);
-		DrawTracker(graph);
-		graph.SetTransform(&oldMatrix);
+		graph.SetClip(&clip);
 	}
+	DrawBorder(graph);
+	graph.SetTransform(&oldMatrix);
+
 }
-void CDrawObject::OnDraw(Gdiplus::Graphics & graph)
+void DrawObject::OnDraw(Gdiplus::Graphics & graph)
 {
 	DrawFillObject(graph);
 }
 
-void CDrawObject::DrawBorder(Gdiplus::Graphics & graph)
+void DrawObject::DrawBorder(Gdiplus::Graphics & graph)
 {
 	if ((GetShowBorder() || GetActive()))
 	{
 		OnDrawBorder(graph);
 	}
 }
-void CDrawObject::OnDrawBorder(Gdiplus::Graphics & graph)
+void DrawObject::OnDrawBorder(Gdiplus::Graphics & graph)
 {
 
 }
 
-void CDrawObject::DrawFillObject(Gdiplus::Graphics & graph)
+void DrawObject::DrawFillObject(Gdiplus::Graphics & graph)
 {
 	if (GetFilled())
 	{
 		OnDrawFillObject(graph);
 	}
 }
-void CDrawObject::OnDrawFillObject(Gdiplus::Graphics & graph)
+void DrawObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 {
 
 }
@@ -840,26 +610,26 @@ void CDrawObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 //////////////////////////////////////////////////////////////////////////
 //几何操作
 //////////////////////////////////////////////////////////////////////////
-Gdiplus::Point CDrawObject::GetCenter()
+Gdiplus::Point DrawObject::GetCenter()
 {
 	Gdiplus::Rect rect = GetObjectRect();
 	return Gdiplus::Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
 }
 
 
-Gdiplus::Rect CDrawObject::GetObjectRect()
+Gdiplus::Rect DrawObject::GetObjectRect()
 {
 	return Gdiplus::Rect(Gdiplus::Point(0, 0), GetSize());
 }
 
-void CDrawObject::GetObjectRegion(Gdiplus::GraphicsPath & region)
+void DrawObject::GetObjectRegion(Gdiplus::GraphicsPath & region)
 {
 	region.Reset();
 	region.AddRectangle(GetObjectRect());
 }
 
 
-Gdiplus::Rect CDrawObject::GetBounds()
+Gdiplus::Rect DrawObject::GetBounds()
 {
 	Gdiplus::Rect rect=GetObjectRect();
 	Gdiplus::Point pt[4];
@@ -886,7 +656,7 @@ Gdiplus::Rect CDrawObject::GetBounds()
 	return Gdiplus::Rect(minx, miny, maxx - minx, maxy - miny);
 }
 
-Gdiplus::Rect CDrawObject::GetWorldBounds()
+Gdiplus::Rect DrawObject::GetWorldBounds()
 {
 	Gdiplus::Rect rect=GetObjectRect();
 	Gdiplus::Point pt[4];
@@ -914,277 +684,45 @@ Gdiplus::Rect CDrawObject::GetWorldBounds()
 }
 
 
-void CDrawObject::MoveTo(Gdiplus::Point point)
+void DrawObject::MoveTo(Gdiplus::Point point)
 {
 	SetPosition(point);
 }
-void CDrawObject::MoveTo(int x, int y)
+void DrawObject::MoveTo(int x, int y)
 {
 	SetPosition(Gdiplus::Point(x, y));
 }
-void CDrawObject::Offset(int x, int y)
+void DrawObject::Offset(int x, int y)
 {
 	Offset(Gdiplus::Point(x, y));
 }
 
-void CDrawObject::Offset(Gdiplus::Point point)
+void DrawObject::Offset(Gdiplus::Point point)
 {
 	SetPosition(_position + point);
 }
 
-void CDrawObject::Rotate(double angle)
-{
-	SetAngle(GetAngle() + angle);
-}
-
-void CDrawObject::Scale(double scaleX, double scaleY)
+void DrawObject::Scale(double scaleX, double scaleY)
 {
 	Gdiplus::Size size;
-	size.Width = (int) (_size.Width * scaleX);
-	size.Height = (int) (_size.Height * scaleY);
+	size.Width = int(_size.Width * scaleX);
+	size.Height = int(_size.Height * scaleY);
 	SetSize(size);
 }
 
-int CDrawObject::GetHandleCount()
+int DrawObject::GetHandleCount()
 {
 	return 8;
 }
 
-Gdiplus::Point CDrawObject::GetHandle(int nHandle)
+int DrawObject::HitTest(const Gdiplus::Point & pt)
 {
-	Gdiplus::Size size = GetSize();
-	int x, y, xCenter, yCenter;
-
-	xCenter = size.Width / 2;
-	yCenter = size.Height / 2;
-
-	switch (nHandle)
-	{
-	default:
-		ASSERT(FALSE);
-
-	case 1:
-		x = 0;
-		y = 0;
-		break;
-
-	case 2:
-		x = xCenter;
-		y = 0;
-		break;
-
-	case 3:
-		x = size.Width;
-		y = 0;
-		break;
-
-	case 4:
-		x = size.Width;
-		y = yCenter;
-		break;
-
-	case 5:
-		x = size.Width;
-		y = size.Height;
-		break;
-
-	case 6:
-		x = xCenter;
-		y = size.Height;
-		break;
-
-	case 7:
-		x = 0;
-		y = size.Height;
-		break;
-
-	case 8:
-		x = 0;
-		y = yCenter;
-		break;
-	}
-
-	return Gdiplus::Point(x, y);
-}
-
-Gdiplus::Rect CDrawObject::GetHandleRect(int nHandle)
-{
-	Gdiplus::Point pt = GetHandle(nHandle);
-	return Gdiplus::Rect(pt.X - 15, pt.Y - 15, 31, 31);
-}
-
-HCURSOR CDrawObject::GetHandleCursor(int nHandle)
-{
-	LPCTSTR id;
-	if (!GetSizable())
-	{
-		id = IDC_ARROW;
-	}
-	else
-	{
-		switch (nHandle)
-		{
-		default:
-			id = IDC_ARROW;
-			break;
-		case 1:
-		case 5:
-			id = IDC_SIZENWSE;
-			break;
-
-		case 2:
-		case 6:
-			id = IDC_SIZENS;
-			break;
-
-		case 3:
-		case 7:
-			id = IDC_SIZENESW;
-			break;
-
-		case 4:
-		case 8:
-			id = IDC_SIZEWE;
-			break;
-		case 9:
-			id = IDC_SIZEALL;
-			break;
-		}
-	}
-
-	return AfxGetApp()->LoadStandardCursor(id);
-}
-void CDrawObject::MoveHandleTo(int &nHandle, Gdiplus::Point point)
-{
-	if (GetSizable())
-	{
-		CRect rect(_position.X, _position.Y, _position.X + _size.Width, _position.Y + _size.Height);
-		Gdiplus::Size newSize = _size;
-		Gdiplus::Point newPos = _position;
-		switch (nHandle)
-		{
-		case 1:
-			if (point.X > rect.right && point.Y < rect.bottom)  //x revert
-			{
-				nHandle = 3;
-			}
-			if (point.X < rect.right && point.Y > rect.bottom)  //y revert
-			{
-				nHandle = 7;
-			}
-			if (point.X > rect.right && point.Y > rect.bottom)  // x & y revert
-			{
-				nHandle = 5;
-			}
-			rect.left = point.X;
-			rect.top = point.Y;
-			break;
-		case 2:
-			if (point.Y > rect.bottom)
-			{
-				nHandle = 6;
-			}
-			rect.top = point.Y;
-			break;
-		case 3:
-			if (point.X < rect.left && point.Y < rect.bottom)
-			{
-				nHandle = 1;
-			}
-			if (point.X < rect.left && point.Y > rect.bottom)
-			{
-				nHandle = 7;
-			}
-			if (point.X > rect.left && point.Y > rect.bottom)
-			{
-				nHandle = 5;
-			}
-			rect.right = point.X;
-			rect.top = point.Y;
-			break;
-		case 4:
-			if (point.X < rect.left)
-			{
-				nHandle = 8;
-			}
-			rect.right = point.X;
-			break;
-		case 5:
-			if (point.X < rect.left && point.Y > rect.top)
-			{
-				nHandle = 7;
-			}
-			if (point.X > rect.left && point.Y < rect.top)
-			{
-				nHandle = 3;
-			}
-			if (point.X < rect.left && point.Y < rect.top)
-			{
-				nHandle = 1;
-			}
-			rect.right = point.X;
-			rect.bottom = point.Y;
-			break;
-		case 6:
-			if (point.Y < rect.top)
-			{
-				nHandle = 2;
-			}
-			rect.bottom = point.Y;
-			break;
-		case 7:
-			if (point.X > rect.right && point.Y > rect.top)
-			{
-				nHandle = 5;
-			}
-			if (point.X < rect.right && point.Y < rect.top)
-			{
-				nHandle = 1;
-			}
-			if (point.X > rect.right && point.Y < rect.top)
-			{
-				nHandle = 3;
-			}
-			rect.left = point.X;
-			rect.bottom = point.Y;
-			break;
-		case 8:
-			if (point.X > rect.right)
-			{
-				nHandle = 4;
-			}
-			rect.left = point.X;
-			break;
-		}
-		rect.NormalizeRect();
-		newSize.Width = rect.Width();
-		newSize.Height = rect.Height();
-		newPos.X = rect.left;
-		newPos.Y = rect.top;
-		SetPosition(newPos);
-		SetSize(newSize);
-	}
-}
-
-int CDrawObject::HitTest(const Gdiplus::Point & pt)
-{
-	if (GetVisible() == false && GetSelected() == false)
+	if (!GetVisible())
 	{
 		return 0;
 	}
-	int nHandleCount = GetHandleCount();
-	if (GetSelected())
-	{
-		for (int nHandle = 1; nHandle <= nHandleCount; nHandle += 1)
-		{
-			// GetHandleRect returns in logical coords
-			Gdiplus::Rect rc = GetHandleRect(nHandle);
-			if (rc.Contains(pt))
-			{
-				return nHandle;
-			}
-		}
-	}
+	const int nHandleCount = GetHandleCount();
+
 	Gdiplus::Rect rect = GetObjectRect();
 	if (rect.Contains(pt))
 	{
@@ -1193,17 +731,17 @@ int CDrawObject::HitTest(const Gdiplus::Point & pt)
 	return 0;
 }
 
-bool CDrawObject::OnRButtonDown(CWnd * pWnd, UINT nFlags, Gdiplus::Point point)
+bool DrawObject::OnRButtonDown(CWnd * pWnd, UINT nFlags, Gdiplus::Point point)
 {
 	return false;
 }
-bool CDrawObject::OnLButtonDblClk(CWnd *pWnd, UINT nFlags, Gdiplus::Point point)
+bool DrawObject::OnLButtonDblClk(CWnd *pWnd, UINT nFlags, Gdiplus::Point point)
 {
 	return false;
 }
-void CDrawObject::Local2World(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::Local2World(Gdiplus::Point * pt, int count /*=1*/ )
 {
-	CDrawObject *pParent = GetParent();
+	DrawObject *pParent = GetParent();
 	Local2Global(pt, count);
 	while (pParent)
 	{
@@ -1212,7 +750,7 @@ void CDrawObject::Local2World(Gdiplus::Point * pt, int count /*=1*/ )
 	}
 }
 
-void CDrawObject::Local2World( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::Local2World( Gdiplus::Rect *rect, int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -1224,9 +762,9 @@ void CDrawObject::Local2World( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void CDrawObject::World2Local(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::World2Local(Gdiplus::Point * pt, int count /*=1*/ )
 {
-	CDrawObject *pParent = GetParent();
+	DrawObject *pParent = GetParent();
 	if (pParent)
 	{
 		pParent->World2Local(pt, count);
@@ -1234,7 +772,7 @@ void CDrawObject::World2Local(Gdiplus::Point * pt, int count /*=1*/ )
 	Global2Local(pt, count);
 }
 
-void CDrawObject::World2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::World2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -1246,15 +784,14 @@ void CDrawObject::World2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void CDrawObject::Global2Local(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::Global2Local(Gdiplus::Point * pt, int count /*=1*/ )
 {
 	Gdiplus::Matrix matrix;
-	matrix.RotateAt(-(Gdiplus::REAL) GetAngle(), Gdiplus::PointF((Gdiplus::REAL) GetRotateCenter().X, (Gdiplus::REAL) GetRotateCenter().Y));
-	matrix.Translate(-(Gdiplus::REAL) GetPosition().X, -(Gdiplus::REAL) GetPosition().Y);
+	matrix.Translate(-Gdiplus::REAL(GetPosition().X), -(Gdiplus::REAL) GetPosition().Y);
 	matrix.TransformPoints(pt, count);
 }
 
-void CDrawObject::Global2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::Global2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -1266,15 +803,14 @@ void CDrawObject::Global2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void CDrawObject::Local2Global(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::Local2Global(Gdiplus::Point * pt, int count /*=1*/ )
 {
 	Gdiplus::Matrix matrix;
-	matrix.Translate((Gdiplus::REAL) GetPosition().X, (Gdiplus::REAL) GetPosition().Y);
-	matrix.RotateAt((Gdiplus::REAL) GetAngle(), Gdiplus::PointF((Gdiplus::REAL) GetRotateCenter().X, (Gdiplus::REAL) GetRotateCenter().Y));
+	matrix.Translate(Gdiplus::REAL(GetPosition().X), Gdiplus::REAL(GetPosition().Y));
 	matrix.TransformPoints(pt, count);
 }
 
-void CDrawObject::Local2Global( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::Local2Global( Gdiplus::Rect *rect, int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -1286,33 +822,11 @@ void CDrawObject::Local2Global( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void CDrawObject::OnNotify(CDrawObject * pSource, UINT messageID, DWORD_PTR wParam, LPVOID lpParam)
+void DrawObject::OnNotify(DrawObject * pSource, UINT messageID, DWORD_PTR wParam, LPVOID lpParam)
 {
 }
 
-LPCTSTR CDrawObject::GetObjectType() const 
-{
-	return GetObjectType(GetObjectTypeID());
-}
-
-LPCTSTR CDrawObject::GetObjectType( int Id )
-{
-	switch(Id)
-	{
-	case Shape:
-		return _T("形状");
-	case Operator:
-		return _T("操作对象");
-	case Tool:
-		return _T("工具");
-	case Mark:
-		return _T("标记");
-	}
-	return _T("未定义");
-}
-
-
-void CDrawObject::Notify(UINT msgID, DWORD_PTR wParam, LPVOID lpParam)
+void DrawObject::Notify(UINT msgID, DWORD_PTR wParam, LPVOID lpParam)
 {
 	if (GetParent())
 	{
@@ -1321,7 +835,7 @@ void CDrawObject::Notify(UINT msgID, DWORD_PTR wParam, LPVOID lpParam)
 }
 
 
-Gdiplus::RectF CDrawObject::MeasureString( const CStringW & text, Gdiplus::Font * pFont, Gdiplus::PointF origin, Gdiplus::StringFormat *pFormat)
+Gdiplus::RectF DrawObject::MeasureString( const CStringW & text, Gdiplus::Font * pFont, Gdiplus::PointF origin, Gdiplus::StringFormat *pFormat)
 {
 	Gdiplus::RectF retRectF;
 	Gdiplus::Bitmap bmp(1,1);
@@ -1331,7 +845,7 @@ Gdiplus::RectF CDrawObject::MeasureString( const CStringW & text, Gdiplus::Font 
 	return retRectF;
 }
 
-void CDrawObject::SetLineStyle( INT style )
+void DrawObject::SetLineStyle( INT style )
 {
 	if(_appearance.LineStyle!=style)
 	{
@@ -1342,45 +856,45 @@ void CDrawObject::SetLineStyle( INT style )
 	}
 }
 
-INT CDrawObject::GetLineStyle()
+INT DrawObject::GetLineStyle()
 {
 	return _appearance.LineStyle;
 }
 
-void CDrawObject::OnLineStyleChanging(INT & style )
+void DrawObject::OnLineStyleChanging(INT & style )
 {
-    Notify(DNM_LINE_STYLE_CHANGING, 0, &style);
+	Notify(DNM_LINE_STYLE_CHANGING, 0, &style);
 }
 
-void CDrawObject::OnLineStyleChanged()
+void DrawObject::OnLineStyleChanged()
 {
 	Notify(DNM_LINE_STYLE_CHANGED);
 }
 
-void CDrawObject::SetActiveColor( Gdiplus::Color activeColor )
+void DrawObject::SetActiveColor( Gdiplus::Color activeColor )
 {
 	if(activeColor.GetValue()!=_appearance.ActiveColor.GetValue())
 	{
-        Gdiplus::Color color=activeColor;
+		Gdiplus::Color color=activeColor;
 		OnActiveColorChanging(color);
 		_appearance.ActiveColor=color;
 		OnActiveColorChanged();
 	}
 }
 
-Gdiplus::Color CDrawObject::GetActiveColor()
+Gdiplus::Color DrawObject::GetActiveColor()
 {
 	return _appearance.ActiveColor;
 }
-void CDrawObject::OnActiveColorChanging(Gdiplus::Color & color)
+void DrawObject::OnActiveColorChanging(Gdiplus::Color & color)
 {
 	Notify(DNM_ACTIVE_COLOR_CHANGING, 0, &color);
 }
-void CDrawObject::OnActiveColorChanged()
+void DrawObject::OnActiveColorChanged()
 {
 	Notify(DNM_ACTIVE_COLOR_CHANGED);
 }
-void CDrawObject::SetActive( bool isActived )
+void DrawObject::SetActive( bool isActived )
 {
 	if(_isActive!=isActived)
 	{
@@ -1390,26 +904,26 @@ void CDrawObject::SetActive( bool isActived )
 		OnActiveChanged();
 	}
 }
-void CDrawObject::OnActiveChanging(bool &isActived)
+void DrawObject::OnActiveChanging(bool &isActived)
 {
 	Notify(DNM_ACTIVE_CHANGING, 0, &isActived);
 }
-void CDrawObject::OnActiveChanged()
+void DrawObject::OnActiveChanged()
 {
 	Notify(DNM_ACTIVE_CHANGED);
 }
 
-bool CDrawObject::GetActive()
+bool DrawObject::GetActive()
 {
 	return _isActive;
 }
 
-void CDrawObject::ScaleAt( double scaleX, double scaleY, Gdiplus::Point origin )
+void DrawObject::ScaleAt( double scaleX, double scaleY, Gdiplus::Point origin )
 {
 	Scale(scaleX, scaleY);
 }
 
-void CDrawObject::SetFontFace( const CString & fontFace )
+void DrawObject::SetFontFace( const CString & fontFace )
 {
 	if(_appearance.FontName!=fontFace)
 	{
@@ -1420,22 +934,22 @@ void CDrawObject::SetFontFace( const CString & fontFace )
 	}
 }
 
-CString CDrawObject::GetFontFace()
+CString DrawObject::GetFontFace()
 {
 	return _appearance.FontName;
 }
 
-void CDrawObject::OnFontFaceChanging( CString & faceName )
+void DrawObject::OnFontFaceChanging( CString & faceName )
 {
 	Notify(DNM_FONT_FACE_CHANGING, 0, &faceName);
 }
 
-void CDrawObject::OnFontFaceChanged()
+void DrawObject::OnFontFaceChanged()
 {
 	Notify(DNM_FONT_FACE_CHANGED);
 }
 
-void CDrawObject::SetFontStyle( INT style )
+void DrawObject::SetFontStyle( INT style )
 {
 	if(_appearance.FontStyle !=style)
 	{
@@ -1445,17 +959,17 @@ void CDrawObject::SetFontStyle( INT style )
 	}
 }
 
-void CDrawObject::OnFontStyleChanging( INT & style )
+void DrawObject::OnFontStyleChanging( INT & style )
 {
-    Notify(DNM_FONT_STYLE_CHANGING, 0, &style);
+	Notify(DNM_FONT_STYLE_CHANGING, 0, &style);
 }
 
-void CDrawObject::OnFontStyleChanged()
+void DrawObject::OnFontStyleChanged()
 {
 	Notify(DNM_FONT_STYLE_CHANGED);
 }
 
-void CDrawObject::SetFontSize( FLOAT fontSize )
+void DrawObject::SetFontSize( FLOAT fontSize )
 {
 	if(_appearance.FontSize!=fontSize)
 	{
@@ -1466,22 +980,22 @@ void CDrawObject::SetFontSize( FLOAT fontSize )
 	}
 }
 
-FLOAT CDrawObject::GetFontSize()
+FLOAT DrawObject::GetFontSize()
 {
 	return _appearance.FontSize;
 }
 
-void CDrawObject::OnFontSizeChanging( FLOAT &fontSize )
+void DrawObject::OnFontSizeChanging( FLOAT &fontSize )
 {
 	Notify(DNM_FONT_SIZE_CHANGING, 0, &fontSize);
 }
 
-void CDrawObject::OnFontSizeChanged()
+void DrawObject::OnFontSizeChanged()
 {
 	Notify(DNM_FONT_SIZE_CHANGED);
 }
 
-void CDrawObject::SetTextAlign( INT align )
+void DrawObject::SetTextAlign( INT align )
 {
 	if(_appearance.TextAlignment!=align)
 	{
@@ -1491,22 +1005,22 @@ void CDrawObject::SetTextAlign( INT align )
 	}
 }
 
-int CDrawObject::GetTextAlign()
+int DrawObject::GetTextAlign()
 {
 	return _appearance.TextAlignment;
 }
 
-void CDrawObject::OnTextAlignmentChanging( INT & align )
+void DrawObject::OnTextAlignmentChanging( INT & align )
 {
 	Notify(DNM_TEXT_ALIGN_CHANGING, 0, &align);
 }
 
-void CDrawObject::OnTextAlignmentChanged()
+void DrawObject::OnTextAlignmentChanged()
 {
 	Notify(DNM_TEXT_ALIGN_CHANGED);
 }
 
-void CDrawObject::SetTextLineAlign( INT align )
+void DrawObject::SetTextLineAlign( INT align )
 {
 	if(_appearance.LineAlignment!=align)
 	{
@@ -1516,183 +1030,52 @@ void CDrawObject::SetTextLineAlign( INT align )
 	}
 }
 
-INT CDrawObject::GetTextLineAlign()
+INT DrawObject::GetTextLineAlign()
 {
 	return _appearance.LineAlignment;
 }
 
-void CDrawObject::OnTextLineAlignChanging( INT & align )
+void DrawObject::OnTextLineAlignChanging( INT & align )
 {
 	Notify(DNM_TEXT_LINE_ALIGN_CHANGING, 0, &align);
 }
 
-void CDrawObject::OnTextLineAlignChanged()
+void DrawObject::OnTextLineAlignChanged()
 {
 	Notify(DNM_TEXT_LINE_ALIGN_CHANGED);
 }
 
-void CDrawObject::SetTextIsVert( bool isVert )
+void DrawObject::SetTextIsVertical( bool isVert )
 {
 	if(_appearance.VerticalText!=isVert)
 	{
-		OnTextVertChanging(isVert);
+		OnTextVerticalChanging(isVert);
 		_appearance.VerticalText=isVert;
-		OnTextVertChanged();
+		OnTextVerticalChanged();
 	}
 }
 
-bool CDrawObject::GetTextIsVert()
+bool DrawObject::GetTextIsVertical()
 {
 	return _appearance.VerticalText;
 }
 
-void CDrawObject::OnTextVertChanging( bool & isVert )
+void DrawObject::OnTextVerticalChanging( bool & isVert )
 {
-    Notify(DNM_TEXT_VERT_CHANGING, 0, &isVert);
+	Notify(DNM_TEXT_VERT_CHANGING, 0, &isVert);
 }
 
-void CDrawObject::OnTextVertChanged()
+void DrawObject::OnTextVerticalChanged()
 {
 	Notify(DNM_TEXT_VERT_CHANGED);
 }
 
-int CDrawObject::_findIndex( std::vector<CDrawObject*> & objects, CDrawObject* pTarget )
-{
-	for(size_t i=0; i< objects.size(); i++)
-	{
-		if(pTarget==objects[i])
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-
-CDrawObject * CDrawObject::_findObjectByName( DRAW_OBJECT_LIST &objects, const CString & innerName )
-{
-    for(DRAW_OBJECT_LIST::iterator i=objects.begin(); i!= objects.end(); ++i)
-	{
-		if(innerName==(*i)->GetInternalName())
-		{
-			return *i;
-		}
-	}
-	return nullptr;
-}
-
-int CDrawObject::GetObjectTypeID() const
-{
-	return Shape;
-}
-
-INT CDrawObject::GetFontStyle()
+INT DrawObject::GetFontStyle()
 {
 	return _appearance.FontStyle;
 }
 
-void CDrawObject::SetSelectable( bool isSelectable )
-{
-	if(isSelectable!=_bSelectable)
-	{
-		OnSelectableChanging(isSelectable);
-		_bSelectable=isSelectable;
-		OnSelectableChanged();			
-	}
-}
-
-bool CDrawObject::GetSelectable()
-{
-	return _bSelectable;
-}
-
-void CDrawObject::OnSelectableChanging( bool & isSelectable )
-{
-	Notify(DNM_SELECTABLE_CHANGING,0, &isSelectable);
-}
-
-void CDrawObject::OnSelectableChanged()
-{
-	Notify(DNM_SELECTABLE_CHANGED);
-}
-
-void CDrawObject::SetMovable( bool isMovable )
-{
-	if(isMovable!=_bMovable)
-	{
-		OnMovableChanging(isMovable);
-		_bMovable=isMovable;
-		OnMovableChanged();			
-	}
-}
-
-bool CDrawObject::GetMovable()
-{
-	return _bMovable;
-}
-
-void CDrawObject::OnMovableChanging( bool & isMovable )
-{
-	Notify(DNM_MOVABLE_CHANGING, 0, &isMovable);
-}
-
-void CDrawObject::OnMovableChanged()
-{
-	Notify(DNM_MOVABLE_CHANGED);
-}
-
-
-void CDrawObject::SetRotatable( bool isRotatable )
-{
-	if(_bRotatable!=isRotatable)
-	{
-		OnRotatableChanging(isRotatable);
-		_bRotatable=isRotatable;
-		OnRotatableChanged();
-
-	}
-}
-
-bool CDrawObject::GetRotatable()
-{
-	return _bRotatable;
-}
-
-void CDrawObject::OnRotatableChanging( bool &isRotatable )
-{
-	Notify(DNM_ROTATABLE_CHANGING, 0, &isRotatable);
-}
-
-void CDrawObject::OnRotatableChanged()
-{
-	Notify(DNM_POSITION_CHANGED);
-}
-
-void CDrawObject::SetSizable( bool isSizable )
-{
-	if(_bSizable!=isSizable)
-	{
-		OnSizableChanging(isSizable);
-		_bSizable=isSizable;
-		OnSizableChanged();
-	}
-}
-
-bool CDrawObject::GetSizable()
-{
-	return _bSizable;
-}
-
-void CDrawObject::OnSizableChanging( bool & isSizable )
-{
-	Notify(DNM_SIZABLE_CHANGING, 0, &isSizable);
-}
-
-void CDrawObject::OnSizableChanged()
-{
-	Notify(DNM_SIZABLE_CHANGED);
-}
-
-bool CDrawObject::IsInRect( const Gdiplus::Rect &rect )
+bool DrawObject::IsInRect( const Gdiplus::Rect &rect )
 {
 	Gdiplus::Point center=GetCenter();
 	Local2World(&center);
@@ -1700,160 +1083,113 @@ bool CDrawObject::IsInRect( const Gdiplus::Rect &rect )
 		center.Y > rect.GetTop() && center.Y < rect.GetBottom());
 }
 
-bool CDrawObject::GetWorldAngle(double *angle, Gdiplus::Point * rotateCenter)
+Gdiplus::Image* DrawObject::GetPicture( int width, int height, Gdiplus::Color background/*=Color::Transparent*/, DWORD flag/*=GET_PIC_FLAG_ASPECT */ )
 {
-	Gdiplus::Rect rect=GetObjectRect();
-	Gdiplus::Point ptRightTop(rect.Width,0);
-	Gdiplus::Point ptLeftTop;
-	Gdiplus::Point ptCenter;
-	Local2World(&ptLeftTop);
-	Local2World(&ptRightTop);
-	World2Local(&ptCenter);
-	
-	if(angle)
+	//TODO BUG 1 未考虑旋转及父对象影响 2 图像实际高宽未考虑线宽影响，简单缩小4个像素
+	//int w=width;
+	//int h=height;
+	int w=width-4;
+	int h=height-4;
+	int x=0;
+	int y=0;
+	Gdiplus::Size size;
+	Gdiplus::Point pt;
+	//Rect bounds=this->GetWorldBounds();
+	//bounds.GetSize(&size);
+	//bounds.GetLocation(&pt);
+	//Point localPos(0,0);
+	//Point localOffset;
+	//if(GetParent())
+	//{
+	//    GetParent()->Local2World(&localPos);
+	//    localOffset=localPos - pt;
+	//}
+	size=GetSize();
+	pt=GetPosition();
+	//float ratiox = (float)width/size.Width;
+	//float ratioy = (float)height/size.Height;
+	//计算比例时用缩小后的尺寸
+	float ratiox = (float)w/size.Width;
+	float ratioy = (float)h/size.Height;
+	float ratio=(float)size.Width/size.Height;
+	switch(flag & GET_PIC_FLAG_MASK)
 	{
-		*angle=CMathUtility::CalculateLineAngle(ptLeftTop.X, ptLeftTop.Y, ptRightTop.X, ptRightTop.Y);
+	case GET_PIC_FLAG_ASPECT:
+		if(ratiox>= ratioy) 
+		{
+			w=(int)(size.Width * ratioy);
+			//h=height;
+			ratiox=ratioy;
+		}
+		else
+		{
+			//w=width;
+			h=(int)(size.Height*ratiox);
+			ratioy=ratiox;
+		}
+		break;
+	case GET_PIC_FLAG_STRETCH:
+		//初始化时，已计算过了
+		//ratiox=(float)w/size.Height;
+		//ratioy=(float)h/size.Height;
+		//w=width;
+		//h=height;
+		break;
+	case GET_PIC_FLAG_CLIP:
+		ASSERT(FALSE);
+		//not implemented, yet
+		break;
+	default:
+		//not allowed with other input value. only one flag bit can set
+		ASSERT(FALSE);
+		break;
 	}
-	if(rotateCenter)
+	DWORD pos=flag & GET_PIC_POS_MASK;
+	if(pos & GET_PIC_POS_LEFT)
 	{
-		*rotateCenter=ptCenter;
+		x=0;
+	} 
+	else if(pos & GET_PIC_POS_RIGHT)
+	{
+		x=width-w;
 	}
-	return true;
+	else if(pos & GET_PIC_POS_HCENTER)
+	{
+		x=(width-w)/2;
+	}
+	if(pos & GET_PIC_POS_TOP)
+	{
+		y=0;
+	}
+	else if(pos & GET_PIC_POS_BOTTOM)
+	{
+		y=height-h;
+	}
+	else if(pos & GET_PIC_POS_VCENTER)
+	{
+		y=(height-h)/2;
+	}
+
+	Gdiplus::Bitmap *pBitmap=BitmapCreate(width, height, PixelFormat32bppARGB);
+
+	Gdiplus::Graphics graph(pBitmap);
+	graph.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
+	graph.Clear(background);
+
+	//抵消父对象偏移
+	//graph.TranslateTransform(localOffset.X, localOffset.Y);
+	//抵消自身偏移
+	graph.TranslateTransform((float)-pt.X, (float)-pt.Y, Gdiplus::MatrixOrderAppend);
+	//缩放
+	graph.ScaleTransform(ratiox,ratioy, Gdiplus::MatrixOrderAppend);
+	//在位图中移动
+	graph.TranslateTransform((float)x,(float)y, Gdiplus::MatrixOrderAppend);
+	Draw(graph);
+	return pBitmap;
 }
 
-void CDrawObject::SetCommonMenuId( UINT commonMenuId )
+void DrawObject::ResetContent()
 {
-
-}
-
-void CDrawObject::SetMenuId( UINT menuId )
-{
-
-}
-
-UINT CDrawObject::GetMenuId()
-{
-    return -1;
-}
-
-CMenu * CDrawObject::GetObjectMenu( CMenu * pMenu )
-{
-    return NULL;
-}
-
-void CDrawObject::OnMenuCommand( UINT command )
-{
-
-}
-
-Gdiplus::Image* CDrawObject::GetPicture( int width, int height, Gdiplus::Color background/*=Color::Transparent*/, int flag/*=GET_PIC_FLAG_ASPECT */ )
-{
-    //TODO BUG 1 未考虑旋转及父对象影响 2 图像实际高宽未考虑线宽影响，简单缩小4个像素
-    //int w=width;
-    //int h=height;
-    int w=width-4;
-    int h=height-4;
-    int x=0;
-    int y=0;
-    Gdiplus::Size size;
-    Gdiplus::Point pt;
-    //Rect bounds=this->GetWorldBounds();
-    //bounds.GetSize(&size);
-    //bounds.GetLocation(&pt);
-    //Point localPos(0,0);
-    //Point localOffset;
-    //if(GetParent())
-    //{
-    //    GetParent()->Local2World(&localPos);
-    //    localOffset=localPos - pt;
-    //}
-    size=GetSize();
-    pt=GetPosition();
-    //float ratiox = (float)width/size.Width;
-    //float ratioy = (float)height/size.Height;
-    //计算比例时用缩小后的尺寸
-    float ratiox = (float)w/size.Width;
-    float ratioy = (float)h/size.Height;
-   float ratio=(float)size.Width/size.Height;
-    switch(flag & GET_PIC_FLAG_MASK)
-    {
-    case GET_PIC_FLAG_ASPECT:
-        if(ratiox>= ratioy) 
-        {
-            w=(int)(size.Width * ratioy);
-            //h=height;
-            ratiox=ratioy;
-        }
-        else
-        {
-            //w=width;
-            h=(int)(size.Height*ratiox);
-            ratioy=ratiox;
-        }
-        break;
-    case GET_PIC_FLAG_STRETCH:
-        //初始化时，已计算过了
-        //ratiox=(float)w/size.Height;
-        //ratioy=(float)h/size.Height;
-        //w=width;
-        //h=height;
-        break;
-    case GET_PIC_FLAG_CLIP:
-        ASSERT(FALSE);
-        //not implemented, yet
-        break;
-    default:
-        //not allowed with other input value. only one flag bit can set
-        ASSERT(FALSE);
-        break;
-    }
-    DWORD pos=flag & GET_PIC_POS_MASK;
-    if(pos & GET_PIC_POS_LEFT)
-    {
-        x=0;
-    } 
-    else if(pos & GET_PIC_POS_RIGHT)
-    {
-        x=width-w;
-    }
-    else if(pos & GET_PIC_POS_HCENTER)
-    {
-        x=(width-w)/2;
-    }
-    if(pos & GET_PIC_POS_TOP)
-    {
-        y=0;
-    }
-    else if(pos & GET_PIC_POS_BOTTOM)
-    {
-        y=height-h;
-    }
-    else if(pos & GET_PIC_POS_VCENTER)
-    {
-        y=(height-h)/2;
-    }
-
-    Gdiplus::Bitmap *pBitmap=BitmapCreate(width, height, PixelFormat32bppARGB);
-
-    Gdiplus::Graphics graph(pBitmap);
-    graph.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
-    graph.Clear(background);
-    
-    //抵消父对象偏移
-    //graph.TranslateTransform(localOffset.X, localOffset.Y);
-    //抵消自身偏移
-    graph.TranslateTransform((float)-pt.X, (float)-pt.Y, Gdiplus::MatrixOrderAppend);
-    //缩放
-    graph.ScaleTransform(ratiox,ratioy, Gdiplus::MatrixOrderAppend);
-    //在位图中移动
-    graph.TranslateTransform((float)x,(float)y, Gdiplus::MatrixOrderAppend);
-    Draw(graph);
-    return pBitmap;
-}
-
-void CDrawObject::ResetContent()
-{
-
 }
 
 

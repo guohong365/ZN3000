@@ -22,7 +22,7 @@ WaveDrawer::WaveDrawer()
 }
 
 WaveDrawer::WaveDrawer(SignalChannel* pChannel, const Gdiplus::Point& pt, const Gdiplus::Size& size):
-	CDrawObject(pChannel->getLabel(), pt, size)
+	DrawObject(pChannel->getLabel(), pt, size)
 	, _pSignalChannel(pChannel)
 {
 	_initialize();
@@ -31,6 +31,61 @@ WaveDrawer::WaveDrawer(SignalChannel* pChannel, const Gdiplus::Point& pt, const 
 WaveDrawer::~WaveDrawer()
 {
 	delete _pSignalChannel;
+}
+
+SignalChannel* WaveDrawer::getChannelBuffer() const
+{
+	return _pSignalChannel;
+}
+
+void WaveDrawer::setChannelBuffer(SignalChannel* pBuffer)
+{
+	_pSignalChannel = pBuffer;
+}
+
+void WaveDrawer::SetVelocity(float velocity)
+{
+	_velocity = velocity;
+}
+
+float WaveDrawer::GetVelocity()
+{
+	return _velocity;
+}
+
+void WaveDrawer::SetBaseline(int pos)
+{
+	_baseline = pos;
+}
+
+int WaveDrawer::GetBaseline()
+{
+	return _baseline;
+}
+
+void WaveDrawer::SetWaveHeight(int height)
+{
+	_waveHeight = height;
+}
+
+int WaveDrawer::GetWaveHeight()
+{
+	return _waveHeight;
+}
+
+int WaveDrawer::GetTotalSampleCount()
+{
+	return _totalSampleCount;
+}
+
+float WaveDrawer::GetSampleDotSpacing()
+{
+	return _sampleDotSpacing;
+}
+
+DrawObject* WaveDrawer::CreateInstance()
+{
+	return new WaveDrawer;
 }
 
 void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
@@ -43,11 +98,11 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	int halfHeight=_waveHeight / 2;
 	const int offset= _baseline;// + halfHeight;
 	float startX = GetSize().Width - sampleCount * _sampleDotSpacing;
-	float startY =offset - _waveHeight * buffer.getBuffer()[startSample%buffer.getSize()] /65535;
+	float startY =offset - _waveHeight * buffer.getBuffer()[startSample%buffer.getSize()] /65535.0f;
 	for(int i= 0; i< sampleCount - 1; i +=3)
 	{
-		float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;
-		float endY = offset - buffer.getBuffer()[(i + startSample + 1) % buffer.getSize()] * _waveHeight / 65535;
+		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;
+		const float endY = offset - buffer.getBuffer()[(i + startSample + 1) % buffer.getSize()] * _waveHeight / 65535.0f;
 		graph.DrawLine(&pen, int(startX), int(startY), int(endX), int(endY));
 		startY = endY;
 		startX = endX;

@@ -19,7 +19,10 @@
 IMPLEMENT_DYNAMIC(CMainBaseCtrl, CDialog)
 
 CMainBaseCtrl::CMainBaseCtrl(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD, pParent), _pWaveDrawer(nullptr), _currentPart(PART_NONE), _pRecord(nullptr)
+	: CDialog(IDD, pParent)
+	, _pWaveDrawer(nullptr)
+	, _currentPart(PART_NONE)
+	, _pRecord(nullptr)
 {
 	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
 }
@@ -60,12 +63,12 @@ void CMainBaseCtrl::OnPaint()
 	memDC.CreateCompatibleDC(&dc);
 	CRect rect;
 	GetClientRect(&rect);
-	if(_memBitmap.GetSafeHandle()==NULL )
+	if(_memBitmap.GetSafeHandle()== nullptr )
 	{
 		_memBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
 	}
 
-	CBitmap * pOldBitmap=(CBitmap*)memDC.SelectObject(&_memBitmap);
+	CBitmap * pOldBitmap=static_cast<CBitmap*>(memDC.SelectObject(&_memBitmap));
 	memDC.SetMapMode(MM_ANISOTROPIC);
 
 	CSize sz(1000,1000);

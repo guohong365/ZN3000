@@ -5,8 +5,6 @@
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_DYNCREATE(WaveBackground, CDrawObject)
-
 
 void WaveBackground::initialize()
 {
@@ -32,7 +30,7 @@ WaveBackground::WaveBackground()
 	initialize();
 }
 WaveBackground::WaveBackground(const Gdiplus::Point &position, const Gdiplus::Size & size)
-:CDrawObject(_T(""), position, size)
+:DrawObject(_T(""), position, size)
 ,_thickGridLineWidth(3.0f)
 ,_thickGridLineStyle(Gdiplus::DashStyleSolid)
 ,_thickGridColor(Gdiplus::Color(128, 0, 128,0))
@@ -91,4 +89,9 @@ void WaveBackground::OnDrawBorder( Gdiplus::Graphics & graph )
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle((Gdiplus::DashStyle)GetLineStyle());
 	graph.DrawRectangle(&pen, x, y, w, h);
+}
+
+DrawObject* WaveBackground::CreateInstance()
+{
+	return new WaveBackground;
 }

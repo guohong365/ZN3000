@@ -201,6 +201,7 @@
     <ClInclude Include="BaseTypes.h" />
     <ClInclude Include="DrawObject.h" />
     <ClInclude Include="ImageUtility.h" />
+    <ClInclude Include="Visualized.h" />
     <ClInclude Include="LineObject.h" />
     <ClInclude Include="RectObject.h" />
     <ClInclude Include="stdafx.h" />

@@ -1,10 +1,8 @@
 #pragma once
 #include "DrawObject.h"
 
-class CRectObject:public CDrawObject
+class CRectObject:public DrawObject
 {
-protected:
-	DECLARE_SERIAL(CRectObject) 
 public:
 	CRectObject();
 	CRectObject(const CString & name, const Gdiplus::Rect & rect);

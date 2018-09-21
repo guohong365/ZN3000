@@ -1,8 +1,8 @@
 #pragma once
-#include "rectobject.h"
+#include "RectObject.h"
 #include "DrawObjectGlobal.h"
 
-typedef BOOL (*LPTEXT_EDIT_CALLBACK)(CDrawObject * pSender, CWnd *pWnd, CString & buffer);
+typedef BOOL (*LPTEXT_EDIT_CALLBACK)(DrawObject * pSender, CWnd *pWnd, CString & buffer);
 
 
 
@@ -29,14 +29,12 @@ protected:
 	virtual void OnDrawFillObject(Gdiplus::Graphics & graph);
 	//复制对象
 	//@param source 复制source对象当前数据到本对象，不复制撤销列表。
-	virtual CDrawObject *CopyFrom(CDrawObject * source);
-	virtual void Serialize(CArchive & ar);
+	virtual DrawObject *CopyFrom(DrawObject * source);
 	virtual bool OnLButtonDblClk(CWnd *pWnd, UINT nFlags, Gdiplus::Point point);
 	Gdiplus::RectF GetTextExtent();
 	Gdiplus::StringFormat * GetStringFormat();
 protected:
 	virtual void OnNameChanged();
-	virtual void OnDrawTracker(Gdiplus::Graphics & graph);
 private:
 	Gdiplus::StringFormat * m_pStringFormat;
 };

@@ -10,28 +10,26 @@ static char THIS_FILE[]=__FILE__;
 #endif
 using namespace Gdiplus;
 
-IMPLEMENT_SERIAL(CRectObject, CDrawObject, 0)
-
 CRectObject::CRectObject()
 {
 
 }
-CRectObject::CRectObject(const CString & name, int x, int y, int width, int height):CDrawObject(name, x, y, width, height)
+CRectObject::CRectObject(const CString & name, int x, int y, int width, int height):DrawObject(name, x, y, width, height)
 {
 
 }
-CRectObject::CRectObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size):CDrawObject(name, point, size)
+CRectObject::CRectObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size):DrawObject(name, point, size)
 {
 
 }
-CRectObject::CRectObject(const CString & name, const Gdiplus::Rect & rect):CDrawObject(name, rect)
+CRectObject::CRectObject(const CString & name, const Gdiplus::Rect & rect):DrawObject(name, rect)
 {
 
 }
 
 void CRectObject::OnDraw(Gdiplus::Graphics & graph)
 {
-    CDrawObject::OnDraw(graph);
+    DrawObject::OnDraw(graph);
 }
 
 void CRectObject::OnDrawBorder(Gdiplus::Graphics & graph)

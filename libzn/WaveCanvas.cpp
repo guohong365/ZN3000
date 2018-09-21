@@ -4,11 +4,6 @@
 #include "../libDrawObject/ImageUtility.h"
 #include "../libDrawObject/UIHelper.h"
 
-//#ifdef _DEBUG
-//#define new DEBUG_NEW
-//#endif
-
-IMPLEMENT_DYNCREATE(WaveCanvas, CDrawObject)
 void WaveCanvas::initialize()
 {
 	_pBackground= nullptr;
@@ -29,7 +24,7 @@ WaveCanvas::WaveCanvas()
 }
 
 WaveCanvas::WaveCanvas( const Gdiplus::Point &pt, const Gdiplus::Size & size )
-:CDrawObject(_T(""), pt, size)
+:DrawObject(_T(""), pt, size)
 {
 	initialize();
 }
@@ -42,6 +37,26 @@ WaveCanvas::~WaveCanvas()
 	{
 		delete _waveDrawers[i];
 	}
+}
+
+void WaveCanvas::AddWave(SignalChannel* pChannel, int percent)
+{
+	WaveDrawer* pDrawer = new WaveDrawer(pChannel, Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
+	pDrawer->SetParent(this);
+	_waveDrawers.push_back(pDrawer);
+	_layoutRatio.push_back(percent);
+	_pWaveBackground->AddBaseline(0, 5, DEFAULT_WAVE_BASELINE_COLOR);
+}
+
+int WaveCanvas::GetWaveCount() const
+{
+	return _waveDrawers.size();
+}
+
+WaveDrawer* WaveCanvas::GetWave(int i)
+{
+	ASSERT(i>=0 && i< _waveDrawers.size());
+	return _waveDrawers[i];
 }
 
 //void WaveCanvas::AddWave( WaveBuffer<long> * pBuffer, int percent )
@@ -59,10 +74,10 @@ void WaveCanvas::OnSizeChanged()
 	__super::OnSizeChanged();
 	_pWaveBackground->SetPosition(Gdiplus::Point(100,100));
 	_pWaveBackground->SetSize(Gdiplus::Size(GetSize().Width - 200, GetSize().Height - 200));
-	CalcLayout();
+	_calcLayout();
 }
 
-void WaveCanvas::CalcLayout()
+void WaveCanvas::_calcLayout()
 {
 	int sum = 0;
 	for(int i=0; i< _layoutRatio.size(); i++)
@@ -103,7 +118,7 @@ void WaveCanvas::OnDraw( Gdiplus::Graphics & graph )
 }
 
 //dx, dy, 设备坐标单位——像素
-void WaveCanvas::DrawBackground()
+void WaveCanvas::_drawBackground()
 {
 
 }
@@ -118,14 +133,14 @@ void WaveCanvas::PrepareCanvas( int dx, int dy )
 	_pWaveBackground->Draw(graph);
 	for (int i=0; i< _waveDrawers.size(); i ++)
 	{
-		DrawLabel(graph, 0,_waveDrawers[i]->GetPosition().Y,
+		_drawLabel(graph, 0,_waveDrawers[i]->GetPosition().Y,
 			_waveDrawers[i]->GetPosition().X - 10, _waveDrawers[i]->GetSize().Height,
 			_pWaveBackground->GetPosition().X + _pWaveBackground->GetBaseline(i));
 	}
-	DrawHorizontalLabel(graph);
+	_drawHorizontalLabel(graph);
 }
 
-void WaveCanvas::DrawLabel( Gdiplus::Graphics &graph, int x, int y, int width, int height, int baseline )
+void WaveCanvas::_drawLabel( Gdiplus::Graphics &graph, int x, int y, int width, int height, int baseline )
 {
 	CString strLebel;
 	int upperStep=(baseline - y ) / _labelInterval -1;
@@ -155,7 +170,7 @@ void WaveCanvas::DrawLabel( Gdiplus::Graphics &graph, int x, int y, int width, i
 	}
 }
 
-void WaveCanvas::DrawHorizontalLabel(Gdiplus::Graphics & graph)
+void WaveCanvas::_drawHorizontalLabel(Gdiplus::Graphics & graph)
 {
 	if(_waveDrawers.empty())return;
 	Gdiplus::SolidBrush brush(Gdiplus::Color::LightGreen);
@@ -179,4 +194,9 @@ void WaveCanvas::DrawHorizontalLabel(Gdiplus::Graphics & graph)
 	layout.X = _pWaveBackground->GetPosition().X + _pWaveBackground->GetSize().Width;
 	stringFormat.SetAlignment(Gdiplus::StringAlignmentNear);
 	graph.DrawString(_T("(s)"), -1, _pFont,layout, &stringFormat, &brush);
+}
+
+DrawObject* WaveCanvas::CreateInstance()
+{
+	return new WaveCanvas;
 }
