@@ -4,6 +4,10 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+#define LEN_ARGB_COLOR_VALUE 9
+#define LEN_RGB_COLOR_VALUE 7
+
 int CIniFile::isSection(const TCHAR *buf)
 {
 	if(buf[0]==_T('['))
@@ -254,12 +258,70 @@ const TCHAR *CIniFile::GetConfigString(const TCHAR *section, const TCHAR *itemNa
 	return defaultV;
 }
 
-double CIniFile::GetConfigDouble(const TCHAR *Section, const TCHAR *ItemName, double defaultV)
+double CIniFile::GetConfigDouble(const TCHAR *section, const TCHAR *itemName, double defaultV)
 {
-	ConfigItemImpl* pConfig = findItem(Section, ItemName);
+	ConfigItemImpl* pConfig = findItem(section, itemName);
 	if(pConfig && pConfig->Value[0]!=0)
 	{
 		return _tstol(pConfig->Value);
+	}
+	return defaultV;
+}
+bool parseHexToLow4Bits(const TCHAR c, unsigned char &outChar)
+{
+	if(c >= _T('0') && c <= _T('9'))
+	{
+		outChar |= c-_T('0');
+		return true;
+	}
+	if(c >= _T('a') && c <= _T('f'))
+	{
+		outChar |= 0x0A + c - _T('a');
+		return true;
+	}
+	if(c >= _T('A') && c <= _T('F'))
+	{
+		outChar |= 0x0A + c - _T('A');
+		return true;
+	}
+	return false;
+}
+bool parseHexChar(const TCHAR*buffer, unsigned char &outChar)
+{
+	if(parseHexToLow4Bits(buffer[0], outChar))
+	{
+		outChar <<= 4;
+		return parseHexToLow4Bits(buffer[1], outChar);
+	}
+	return false;	
+}
+unsigned int parseColor(const TCHAR* buffer, unsigned int defaultV)
+{
+	if(buffer[0]!=_T('#')) return defaultV;
+	const size_t len=_tcslen(buffer);
+	if(len!= LEN_ARGB_COLOR_VALUE && len!=LEN_RGB_COLOR_VALUE) return defaultV;
+	unsigned char a, r, g, b;
+	int index=0;
+	if(len==LEN_RGB_COLOR_VALUE)
+	{
+		a=0xFF;
+	}
+	else
+	{
+		if(!parseHexChar(buffer, a)) return defaultV;
+		index += 2;
+	}
+	if(!parseHexChar(buffer + index, r)) return defaultV;
+	if(!parseHexChar(buffer + index + 2, g)) return defaultV;
+	if(!parseHexChar(buffer + index + 4, b)) return defaultV;
+	return (a << 24)|(r << 16)|(g << 8)|b;
+}
+unsigned long CIniFile::GetConfigColor(const TCHAR* section, const TCHAR* itemName, unsigned long defaultV)
+{
+	ConfigItemImpl*pConfig=findItem(section, itemName);
+	if(pConfig && pConfig->Value[0]!=0)
+	{
+		return parseColor(pConfig->Value, defaultV);
 	}
 	return defaultV;
 }
@@ -432,6 +494,7 @@ long CIniFile::DeleteConfigSection(const TCHAR *section)
 			_iniItems.erase(_iniItems.begin()+i);
 		}
 	}
+	return 0;
 }
 
 long CIniFile::WriteIniFile(const TCHAR*IniFileName)

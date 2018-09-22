@@ -20,7 +20,9 @@
 CZN2000Dlg::CZN2000Dlg(CWnd* pParent /*=NULL*/)
 	: CXTResizeDialog(CZN2000Dlg::IDD, pParent)
 	  , _pRecord(nullptr)
-	  , _pCurrentChannel(nullptr)
+	  , _pFeedback(nullptr)
+	  , _pAdmittance(nullptr)
+	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)
 	  , _currentPart(PART_NONE)
 	  , _dwState(OS_IDLE)
@@ -64,17 +66,14 @@ BEGIN_MESSAGE_MAP(CZN2000Dlg, CXTResizeDialog)
 	ON_WM_KEYDOWN()
 	ON_MESSAGE(WM_KICKIDLE, OnKickIdle)
 
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
-
-// CZN2000Dlg 消息处理程序
 
 BOOL CZN2000Dlg::OnInitDialog()
 {
 	CXTResizeDialog::OnInitDialog();
 
-	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
-	//  执行此操作
 	SetIcon(_hIcon, TRUE);			// 设置大图标
 	SetIcon(_hIcon, FALSE);		// 设置小图标
 
@@ -89,7 +88,7 @@ BOOL CZN2000Dlg::OnInitDialog()
 	SetResize(IDC_MAIN_BASE, SZ_TOP_LEFT, SZ_BOTTOM_RIGHT);
 	SetResize(IDC_INFO_PANE, SZ_TOP_RIGHT, SZ_BOTTOM_RIGHT);
 	ShowWindow(SW_MAXIMIZE);
-
+	
 	_btnPartSelect.SetPushButtonStyle(xtpButtonDropDown);
 
 	CRect rect;
@@ -103,12 +102,27 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_infoPane.MoveWindow(&rect, TRUE);
 	_InfoPaneFrame.ShowWindow(SW_HIDE);
 	_infoPane.ShowWindow(SW_SHOW);
+	CZN2000App *pApp=DYNAMIC_DOWNCAST(CZN2000App, AfxGetApp());
+	Settings & settings=pApp->getSettings();
+	const ValueScopeDouble scope=settings.getDevicePhysicalScope();
+	const double frequency=settings.getFrequency();
+	const SIZE_T bufferSize=settings.getBufferSize();
+	_pFeedback = new ZnSignalChannelImpl(frequency, scope.LowValue, scope.HighValue,
+	                                     _T("Feedback"), bufferSize, _T("Feedback"), PART_NONE);
+	_pAdmittance = new ZnSignalChannelImpl(frequency, scope.LowValue, scope.HighValue, _T(""), bufferSize,
+	                                       _T("Admittance"), PART_NONE);
+	_pDifferential = new ZnSignalChannelImpl(frequency, scope.LowValue, scope.HighValue, _T("HEART"), bufferSize,
+	                                         _T("Differential"), PART_HEART);
+	_pEcg = new ZnSignalChannelImpl(frequency, scope.LowValue, scope.HighValue, _T("ECG"), bufferSize, _T("ECG"),
+	                                PART_HEART_ECG);
+	_sampler.attachBuffer(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
+	_sampler.attachBuffer(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
+	_sampler.attachBuffer(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
+	_sampler.attachBuffer(ECG_INDEX, &_pEcg->getSignalBuffer());
+	_sampler.begin();
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
-
-// 如果向对话框添加最小化按钮，则需要下面的代码
-//  来绘制该图标。对于使用文档/视图模型的 MFC 应用程序，
-//  这将由框架自动完成。
 
 void CZN2000Dlg::OnPaint()
 {
@@ -119,8 +133,8 @@ void CZN2000Dlg::OnPaint()
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
 		// 使图标在工作区矩形中居中
-		int cxIcon = GetSystemMetrics(SM_CXICON);
-		int cyIcon = GetSystemMetrics(SM_CYICON);
+		const int cxIcon = GetSystemMetrics(SM_CXICON);
+		const int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
 		GetClientRect(&rect);
 		int x = (rect.Width() - cxIcon + 1) / 2;
@@ -145,7 +159,6 @@ HCURSOR CZN2000Dlg::OnQueryDragIcon()
 
 BOOL CZN2000Dlg::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: 在此添加专用代码和/或调用基类
 	//cs.style|=WS_MAXIMIZE;
 	return CXTResizeDialog::PreCreateWindow(cs);
 }
@@ -226,10 +239,12 @@ void CZN2000Dlg::OnPartSelected( UINT part )
 		_pRecord=new ZnRecordImpl();
 		_infoPane.SetRecord(_pRecord);
 	}
-
 	_btnPartSelect.SetWindowText(text);
-	SignalChannel * pChannel=ZnHelper::createSignalChannel(partId, ZN_SAMPLE_FREQUENCY);
-	dynamic_cast<ZnRecord*>(_pRecord)->addChannel(pChannel);	
+	if(partId != PART_HEART)
+	{
+		_pAdmittance->setLabel(text);
+	}
+	_sampler.resetBuffer();
 	_dwState |=OS_SELECT_PART;
 }
 
@@ -239,7 +254,7 @@ HRESULT CZN2000Dlg::OnKickIdle(WPARAM, LPARAM)
 	return 0;
 }
 
-void CZN2000Dlg::OnUpdateBtnBegin(CCmdUI* pCmdUI)
+void CZN2000Dlg::OnUpdateBtnBegin(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(_dwState == (OS_PARAM_INPUT | OS_SELECT_PART) || (_dwState & OS_PAUSE));
 }
@@ -279,7 +294,7 @@ void CZN2000Dlg::OnBnClickedInput()
 	CPersonInfoInpputDlg dlg;
 	if(dlg.DoModal()==IDOK)
 	{
-		__time64_t time=_time64(nullptr);
+		const __time64_t time=_time64(nullptr);
 		_pRecord->setPatientId(dlg._Id);
 		_pRecord->setPatientName(dlg._Name);
 		_pRecord->setGender(dlg._gender);
@@ -309,4 +324,12 @@ void CZN2000Dlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CZN2000Dlg::OnBnClickedCalc()
 {
 	_dwState |=OS_CALC;
+}
+
+
+void CZN2000Dlg::OnDestroy()
+{
+	_mainBaseCtrl.stop();
+	_sampler.quit();
+	CXTResizeDialog::OnDestroy();
 }

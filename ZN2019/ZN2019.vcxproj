@@ -150,6 +150,7 @@
     <None Include="res\zn2000.rc2" />
     <None Include="ReadMe.txt" />
     <None Include="doc\ZN3000数据格式.docx" />
+    <None Include="ZN3000.ini" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zn2000.rc" />

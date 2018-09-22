@@ -32,9 +32,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="AnyBuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="IniFile.h">
       <Filter>头文件</Filter>
     </ClInclude>

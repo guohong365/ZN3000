@@ -51,7 +51,7 @@ class SignalBuffer
 public:
 	template<typename ValueType2>
 	explicit SignalBuffer(const SignalBuffer<ValueType2>& buffer);
-	explicit SignalBuffer(size_t size);
+	explicit SignalBuffer(SIZE_T size);
 
 	SIZE_T getLength() const;
 	void setLength(SIZE_T length);
@@ -90,8 +90,8 @@ SignalBuffer<ValueType>::SignalBuffer(const SignalBuffer<ValueType2>& buffer)
 }
 
 template <typename ValueType>
-SignalBuffer<ValueType>::SignalBuffer(const size_t size)
-	: _size(size)
+SignalBuffer<ValueType>::SignalBuffer(const SIZE_T size)
+	: _size(size), _length(0), _normalized(false)
 {
 	ASSERT(_size > 0);
 	_pBuffer = new ValueType[_size];

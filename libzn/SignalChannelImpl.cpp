@@ -136,12 +136,12 @@ Annotations& SignalChannelImpl::getAnnotations()
 	return _annotations;
 }
 
-const SignalBuffer<SHORT>& SignalChannelImpl::getSignalBuffer() const
+const SignalBuffer<unsigned short>& SignalChannelImpl::getSignalBuffer() const
 {
 	return _signalBuffer;
 }
 
-SignalBuffer<SHORT>& SignalChannelImpl::getSignalBuffer()
+SignalBuffer<unsigned short>& SignalChannelImpl::getSignalBuffer()
 {
 	return _signalBuffer;
 }

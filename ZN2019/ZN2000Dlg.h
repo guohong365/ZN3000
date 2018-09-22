@@ -6,13 +6,17 @@
 #include "MainBaseCtrl.h"
 #include "InfoPane.h"
 #include "../libzn/ZNDData.h"
+#include "../libzn/SerialPortSampler.h"
 
 
 // CZN2000Dlg ¶Ô»°¿ò
 class CZN2000Dlg : public CXTResizeDialog
 {
+	SerialPortSampler _sampler;
 	ZnRecordImpl *_pRecord;
-	SignalChannel * _pCurrentChannel;
+	SignalChannel * _pFeedback;
+	SignalChannel * _pAdmittance;
+	SignalChannel * _pDifferential;
 	SignalChannel * _pEcg;
 	PartId _currentPart;
 	DWORD _dwState;
@@ -68,4 +72,5 @@ public:
 	afx_msg void OnUpdateBtnQuit(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateBtnPartSelect(CCmdUI* pCmdUI);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnDestroy();
 };

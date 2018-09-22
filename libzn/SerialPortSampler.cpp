@@ -8,17 +8,20 @@ SerialPortSampler(const CString& portName, DWORD baudRate, BYTE dataBits, BYTE p
 	  , _hThread(nullptr)
 	  , _hResume(nullptr)
 	  , _dwThreadId(0)
-	  , _buffers(nullptr)
 	  , _quit(false)
 	  , _paused(false)
-{
+{	
+	_buffers[0]=_buffers[1]=_buffers[2]=_buffers[3]=nullptr;
 }
 
 bool SerialPortSampler::begin()
 {
-	_quit = false;
-	_hResume = CreateEvent(nullptr, TRUE, false, nullptr);
-	_hThread = CreateThread(nullptr, 0, samplerFunc, this, 0, &_dwThreadId);
+	if(_serialPort.open())
+	{
+		_quit = false;
+		_hResume = CreateEvent(nullptr, TRUE, false, nullptr);
+		_hThread = CreateThread(nullptr, 0, samplerFunc, this, 0, &_dwThreadId);
+	}
 	return _hThread != nullptr;
 }
 
@@ -29,13 +32,64 @@ void SerialPortSampler::pause()
 
 void SerialPortSampler::resume()
 {
-	SetEvent(_hResume);
+	if(_paused)
+	{
+		SetEvent(_hResume);
+	}
 }
 
 void SerialPortSampler::quit()
 {
 	_quit=true;
 	WaitForSingleObject(_hThread, INFINITE);
+}
+
+Sampler::SamplerState SerialPortSampler::getState()
+{
+	if(_paused) return PAUSED;
+	DWORD code=0;
+	GetExitCodeThread(_hThread, &code);
+	if(code==STILL_ACTIVE) return RUNNING;
+	return STOPPED;
+}
+
+bool SerialPortSampler::setMode(const BYTE mode)
+{
+	CommandPacket command = {0xCB, mode, 0, 0, 0xF1};
+	command.CheckSum = 0xCB + mode;
+	pause();
+	Sleep(200);
+	const DWORD ret = _serialPort.write(&command, sizeof(CommandPacket));
+	resetBuffer();
+	resume();
+	return ret == sizeof(CommandPacket);
+}
+
+void SerialPortSampler::resetBuffer()
+{
+	if(getState()==RUNNING)
+	{
+		pause();
+		Sleep(200);
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		_buffers[0]->clear();
+	}
+	resume();
+}
+
+SignalBuffer<unsigned short>* SerialPortSampler::getBuffer(int index)
+{
+	return _buffers[index];
+}
+
+void SerialPortSampler::attachBuffer(const int index, SignalBuffer<unsigned short>* pBuffer)
+{
+	if(index >=0 && index < 4)
+	{
+		_buffers[index]=pBuffer;
+	}
 }
 
 SerialPortSampler::~SerialPortSampler()
@@ -61,6 +115,7 @@ DWORD SerialPortSampler::samplerFunc(LPVOID lpParam)
 			{
 				continue;
 			}
+			ResetEvent(pThis->_hResume);
 			pThis->_paused=false;
 			pThis->_serialPort.clear();
 		}
@@ -82,9 +137,23 @@ DWORD SerialPortSampler::samplerFunc(LPVOID lpParam)
 				DataBuffer* pPacket = reinterpret_cast<DataBuffer*>(buffer);
 				if (checkPacket(pPacket))
 				{
-					//TODO
-					//addData(buffer);
-					//reset();						
+					revertPacket(pPacket);
+					if(pThis->_buffers[FEEDBACK_INDEX])
+					{
+						pThis->_buffers[FEEDBACK_INDEX]->append(pPacket->Paket.Feedback);
+					}
+					if(pThis->_buffers[ADMITTANCE_INDEX])
+					{
+						pThis->_buffers[ADMITTANCE_INDEX]->append(pPacket->Paket.Admittance);
+					}
+					if(pThis->_buffers[DIFFERENTIAL_INDEX])
+					{
+						pThis->_buffers[DIFFERENTIAL_INDEX]->append(pPacket->Paket.Differential);
+					}
+					if(pThis->_buffers[ECG_INDEX])
+					{
+						pThis->_buffers[ECG_INDEX]->append(pPacket->Paket.ECG);
+					}
 				}
 				else
 				{

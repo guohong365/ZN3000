@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="doc">
+      <UniqueIdentifier>{a847b794-c351-46b5-86b7-32db27bd5ca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="配置文件">
+      <UniqueIdentifier>{9cc62462-41fc-4e37-add8-8048e88f253e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InfoPane.cpp">
@@ -77,7 +83,12 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="ReadMe.txt" />
-    <None Include="doc\ZN3000数据格式.docx" />
+    <None Include="doc\ZN3000数据格式.docx">
+      <Filter>doc</Filter>
+    </None>
+    <None Include="ZN3000.ini">
+      <Filter>配置文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zn2000.rc">

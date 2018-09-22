@@ -64,9 +64,9 @@ public:
 	{
 		return isAnalysisSection ? BODY_STRING[partId] : BODY_STRING[partId] + CString(" A");
 	}
-	static SignalChannel* createSignalChannel(PartId partId, double frequency)
+	static SignalChannel* createSignalChannel(PartId partId, double frequency, SIZE_T bufferSize)
 	{
-		return new ZnSignalChannelImpl(frequency, 0, 43.45, _T("mƱ"), ZND_DATA_SIZE,
+		return new ZnSignalChannelImpl(frequency, 0, 43.45, _T("mƱ"), bufferSize,
 		                               partId == PART_HEART ? _T("Differential") : _T("Admittance"), partId);
 	}
 	static SignalChannel* createAnalysisSection(PartId partId, SIZE_T offset, SIZE_T length);

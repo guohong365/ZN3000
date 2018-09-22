@@ -90,7 +90,7 @@ DrawObject* WaveDrawer::CreateInstance()
 
 void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 {
-	SignalBuffer<short> & buffer=_pSignalChannel->getSignalBuffer();
+	SignalBuffer<unsigned short> & buffer=_pSignalChannel->getSignalBuffer();
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
 	const int sampleCount = min(_totalSampleCount, buffer.getLength());

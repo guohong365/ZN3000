@@ -41,7 +41,7 @@ bool SerialPort::open()
 	if (!SetCommState(_handle, &dcb)) return false;
 	if (!PurgeComm(_handle, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT)) return false;
 	DWORD dwError;
-	COMSTAT comStat;
+	COMSTAT comStat;	
 	return ClearCommError(_handle, &dwError, &comStat)==TRUE;
 }
 
@@ -79,4 +79,9 @@ void SerialPort::clear() const
 	if(_handle !=INVALID_HANDLE_VALUE){
 		PurgeComm(_handle, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
 	}
+}
+
+bool SerialPort::isOpened() const
+{
+	return _handle!=INVALID_HANDLE_VALUE;
 }

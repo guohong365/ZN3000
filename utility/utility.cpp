@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "utility.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -19,20 +19,17 @@ public:
 		BYTE stopBits = ONESTOPBIT);
 
 	~SerialPort();
-
 	bool open();
-
 	DWORD read(LPVOID lpBytes, DWORD length) const;
-
 	DWORD write(LPVOID lpBytes, DWORD length) const;
-
 	void close();
 	void clear() const;
+	bool isOpened() const;
 private:
 	HANDLE _handle;
 	CString _portName;
 	DWORD _baudRate;
 	BYTE _dataBits;
 	BYTE _parity;
-	BYTE _stopBits;
+	BYTE _stopBits;	
 };

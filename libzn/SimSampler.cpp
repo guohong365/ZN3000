@@ -7,9 +7,9 @@ SimSampler::SimSampler( SimSampleGenerator * pCallBack, size_t count)
 :_pCallBack(pCallBack)
 {
 	ASSERT(_pCallBack);
-	_pHeartBuffer=ZnHelper::createSignalChannel(PART_HEART, ZN_SAMPLE_FREQUENCY);	
+	_pHeartBuffer=ZnHelper::createSignalChannel(PART_HEART, 1000, 100000);	
 	_pCallBack->generator(_pHeartBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
-	_pAdmittanceBuffer=ZnHelper::createSignalChannel(PART_HEART_ECG, ZN_SAMPLE_FREQUENCY);
+	_pAdmittanceBuffer=ZnHelper::createSignalChannel(PART_HEART_ECG, 1000, 100000);
 	_pAdmittanceBuffer->setLabel(_T("Î¢·Ö"));
 	_pCallBack->generator(_pAdmittanceBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
 }

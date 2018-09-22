@@ -10,6 +10,7 @@
 
 #include "resource.h"		// Ö÷·ûºÅ
 #include <MMSystem.h>
+#include "Settings.h"
 
 
 // CZN2000App:
@@ -18,10 +19,11 @@
 
 class CZN2000App : public CWinAppEx
 {
+	Settings* _pSettings;
 	TIMECAPS _timeCaps;
 public:
 	CZN2000App();
-
+	Settings& getSettings() const;
 // ÖØÐ´
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();

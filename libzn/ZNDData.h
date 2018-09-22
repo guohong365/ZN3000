@@ -1,11 +1,9 @@
 #pragma once
 
 #define ZND_ID "ZND"
-#define ZND_DATA_SIZE 102400
 #define ZND_MARK_MAX  10
 #define ZND_PARAM_MAX 30
 #define ZND_FILE_LENGTH 30100
-#define ZN_SAMPLE_FREQUENCY 1000
 #define MAX_WAVE_LENGTH  4000
 #define MAX_WAVE_BUFFER_LENGTH  1024000
 

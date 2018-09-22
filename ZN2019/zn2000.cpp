@@ -20,8 +20,12 @@ END_MESSAGE_MAP()
 
 CZN2000App::CZN2000App()
 {
-	// TODO: 在此处添加构造代码，
-	// 将所有重要的初始化放置在 InitInstance 中
+	
+}
+
+Settings& CZN2000App::getSettings() const
+{
+	return *_pSettings;
 }
 
 
@@ -58,7 +62,14 @@ BOOL CZN2000App::InitInstance()
 	// 更改用于存储设置的注册表项
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名
-	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+	SetRegistryKey(_T("UC"));
+
+	_pSettings=new Settings();
+	if(_pSettings->load()!=0)
+	{
+		AfxMessageBox(_T("错误"));
+		return FALSE;
+	}
 
 	CZN2000Dlg dlg;
 	m_pMainWnd = &dlg;

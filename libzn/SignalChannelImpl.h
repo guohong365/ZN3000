@@ -30,8 +30,8 @@ public:
 	virtual void setSampleFrequency(DOUBLE sampleFrequency);
 	virtual const Annotations& getAnnotations() const;
 	virtual Annotations& getAnnotations();
-	virtual const SignalBuffer<SHORT>& getSignalBuffer() const;
-	virtual SignalBuffer<SHORT>& getSignalBuffer();
+	virtual const SignalBuffer<unsigned short>& getSignalBuffer() const;
+	virtual SignalBuffer<unsigned short>& getSignalBuffer();
 	virtual SIZE_T getSampleCount() const;
 	virtual void setPhysicalMaximum(double physicalMaximum);
 private:
@@ -47,6 +47,6 @@ private:
 	double _notchFilter;
 	double _sampleFrequency;
 	Annotations _annotations;
-	SignalBuffer<short> _signalBuffer;
+	SignalBuffer<unsigned short> _signalBuffer;
 };
 
