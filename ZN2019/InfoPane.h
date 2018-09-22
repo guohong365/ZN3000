@@ -44,4 +44,7 @@ private:
 	CString _weight;
 	CString _bloodPressure;
 	CString _heartRate;
+	CFont _bigFont;
+public:
+	virtual BOOL OnInitDialog();
 };

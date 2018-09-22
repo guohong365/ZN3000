@@ -165,22 +165,16 @@ BOOL CZN2000Dlg::PreCreateWindow(CREATESTRUCT& cs)
 
 HBRUSH CZN2000Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CXTResizeDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-
 	switch(nCtlColor)
 	{
 	case CTLCOLOR_DLG:
-		hbr=HBRUSH(GetStockObject(BLACK_BRUSH));
 		break;
 	case CTLCOLOR_STATIC:
 		pDC->SetTextColor(RGB(0, 255, 0));
 		pDC->SetBkMode(TRANSPARENT);
 		break;
-	default: 
-		hbr=HBRUSH(GetStockObject(BLACK_BRUSH));
-		break;
 	}
-	return hbr;
+	return HBRUSH(GetStockObject(BLACK_BRUSH));
 }
 
 void CZN2000Dlg::OnBnClickedBegin()
@@ -237,6 +231,14 @@ void CZN2000Dlg::OnPartSelected( UINT part )
 			return;
 		}
 		_pRecord=new ZnRecordImpl();
+		_pRecord->setPatientName(dlg._Name);
+		_pRecord->setPatientId(dlg._Id);
+		_pRecord->setAge(dlg._age);
+		_pRecord->setElevation(dlg._electrodeDistance);
+		_pRecord->setDiastolicBloodPressure(dlg._diastolicBloodPresure);
+		_pRecord->setHeight(dlg._height);
+		_pRecord->setWeight(dlg._weight);
+		_pRecord->setGender(dlg._gender == 0 ? _T('M') : _T('F'));
 		_infoPane.SetRecord(_pRecord);
 	}
 	_btnPartSelect.SetWindowText(text);

@@ -52,8 +52,8 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
     "LANGUAGE 4, 2\r\n"
     "#pragma code_page(936)\r\n"
-    "#include ""res\\zn2000.rc2""  // ·? Microsoft Visual C++ ±à?-μ?×ê?′\r\n"
-    "#include ""l.CHS\\afxres.rc""      // ±ê×?×é?t\r\n"
+    "#include ""res\\zn2000.rc2""  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ?à¨o?á??á¨|?t\r\n"
     "#endif\r\n"
     "\0"
 END
@@ -106,7 +106,7 @@ BEGIN
     LTEXT           "姓名：",IDC_STATIC_NAME,7,19,87,8,0,WS_EX_TRANSPARENT
     LTEXT           "身高：",IDC_STATIC_HEIGHT,7,43,87,8,0,WS_EX_TRANSPARENT
     LTEXT           "体重：",IDC_STATIC_WEIGHT,7,55,87,8,0,WS_EX_TRANSPARENT
-    LTEXT           "心率：",IDC_STATIC_BEAT_RATE,7,89,87,8,0,WS_EX_TRANSPARENT
+    LTEXT           "心率：",IDC_STATIC_BEAT_RATE,7,89,87,29,0,WS_EX_TRANSPARENT
     LTEXT           "血压：",IDC_STATIC_BLOOD_PRESURE,7,67,87,8,0,WS_EX_TRANSPARENT
     LTEXT           "性别：",IDC_STATIC_GEBDER,7,31,87,8,0,WS_EX_TRANSPARENT
 END
@@ -334,8 +334,8 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE 4, 2
 #pragma code_page(936)
-#include "res\zn2000.rc2"  // 非 Microsoft Visual C++ 编辑的资源
-#include "l.CHS\afxres.rc"      // 标准组件
+#include "res\zn2000.rc2"  // ·? Microsoft Visual C++ ±à?-μ?×ê?′
+#include "l.CHS\afxres.rc"      // ±ê×?×é?t
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

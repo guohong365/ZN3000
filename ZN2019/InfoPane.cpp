@@ -32,11 +32,13 @@ CInfoPane::CInfoPane(CWnd* pParent /*=NULL*/)
 
 CInfoPane::~CInfoPane()
 {
+	_bigFont.DeleteObject();
 }
 
 void CInfoPane::SetRecord(RheographyRecord* pRecord)
 {
 	_pRecord = pRecord;
+	RefreshInfo();
 }
 
 void CInfoPane::RefreshInfo()
@@ -116,6 +118,7 @@ HBRUSH CInfoPane::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		if(pWnd->GetDlgCtrlID()==IDC_STATIC_BEAT_RATE)
 		{
 			pDC->SetTextColor(RGB(255, 0, 0));
+			pDC->SelectObject(&_bigFont);
 		}
 		else
 		{
@@ -128,4 +131,15 @@ HBRUSH CInfoPane::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 	return HBRUSH(GetStockObject(BLACK_BRUSH));
 	//return hbr;
+}
+
+
+BOOL CInfoPane::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+	_bigFont.CreateFont(30, 0, 0, 0, FW_BOLD, 0, 0, 0,DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+	                    ANTIALIASED_QUALITY, FF_DONTCARE, _T("ºÚÌå"));
+	
+	return TRUE;  // return TRUE unless you set the focus to a control
+	
 }
