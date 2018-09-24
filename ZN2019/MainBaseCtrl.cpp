@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MainBaseCtrl.h"
 #include "../libzn/Sampler.h"
-#include "../libDrawObject/UIHelper.h"
 
 #define GRID_LARGE_INTERVAL 10.0f
 #define GRID_SMALL_INTERVAL 1.0f
@@ -22,7 +21,9 @@ CMainBaseCtrl::CMainBaseCtrl(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD, pParent)
 	, _pWaveDrawer(nullptr)
 	, _currentPart(PART_NONE)
-	, _pRecord(nullptr)
+	, _pAdmittance(nullptr)
+	, _pDifferential(nullptr)
+	, _pEcg(nullptr)
 {
 	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
 }
@@ -31,6 +32,33 @@ CMainBaseCtrl::~CMainBaseCtrl()
 {
 	delete _pCanvas;
 	_memBitmap.DeleteObject();
+}
+
+void CMainBaseCtrl::SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
+                               SignalChannel* pEcg)
+{
+	_pAdmittance = pAdmittance;
+	_pDifferential = pDifferential;
+	_pEcg = pEcg;
+}
+
+void CMainBaseCtrl::SetCurrentPart(PartId part)
+{
+	if(part == _currentPart) return;
+	_currentPart = part;
+	_pCanvas->Clear();
+	switch (part)
+	{
+	case PART_NONE:
+		break;
+	case PART_HEART:		
+		_pCanvas->AddWave(_pDifferential, 60);
+		_pCanvas->AddWave(_pEcg, 40);
+		break;
+	default:
+		_pCanvas->AddWave(_pAdmittance, 100);
+		break;
+	}
 }
 
 void CMainBaseCtrl::DoDataExchange(CDataExchange* pDX)
@@ -78,7 +106,7 @@ void CMainBaseCtrl::OnPaint()
 
 	CSize sz(1000,1000);
 	memDC.SetWindowExt(sz);
-	CUICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
+	UICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
 	memDC.SetViewportExt(sz);
 
 	Gdiplus::Graphics graph(memDC.GetSafeHdc());
@@ -92,10 +120,11 @@ void CMainBaseCtrl::OnSize(UINT nType, int cx, int cy)
 {
 	CSize sz(cx, cy);
 	CDialog::OnSize(nType, cx, cy);
-	CUICoordinateHelper::GetHelper().DPtoLP(&sz, 1);
-	//_pCavase->SetSize(Gdiplus::Size(cx/_screenInfo.GetDpmmX()*10, cy/_screenInfo.GetDpmmY()* 10));
-	_pCanvas->SetSize(Gdiplus::Size(sz.cx, sz.cy));
 	_pCanvas->PrepareCanvas(cx, cy);
+	UICoordinateHelper::GetHelper().DPtoLP(&sz, 1);
+	//_pCanvase->SetSize(Gdiplus::Size(cx/ ScreenInfo::GetScreenInfo().GetDpmmX()*10, cy/ ScreenInfo::GetScreenInfo().GetDpmmY()* 10));	
+	//_pCanvas->SetSize(Gdiplus::Size(sz.cx, sz.cy));
+
 	//CPaintDC dc(this);
 	//_MemBitmap.DeleteObject();
 	//_MemBitmap.CreateCompatibleBitmap(&dc, cx, cy);
@@ -114,9 +143,8 @@ BOOL CMainBaseCtrl::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 	
 }
-
 void CMainBaseCtrl::OnTimer(UINT_PTR nIDEvent)
-{
+{	
 	if(nIDEvent==1)
 	{
 		Invalidate(TRUE);
@@ -126,11 +154,6 @@ void CMainBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 BOOL CMainBaseCtrl::OnEraseBkgnd( CDC* /*pDC*/ )
 {
 	return TRUE;
-}
-
-void CMainBaseCtrl::SetRecord(RheographyRecord* pRecord)
-{
-	_pRecord = pRecord;
 }
 
 void CMainBaseCtrl::stop()

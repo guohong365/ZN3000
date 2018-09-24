@@ -24,9 +24,6 @@
     <ClCompile Include="DrawObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ImageUtility.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="LineObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -39,27 +36,15 @@
     <ClCompile Include="TextObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="UIHelper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MathUtility.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageUtility.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="LineObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="RectObject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UIHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TextObject.h">

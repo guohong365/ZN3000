@@ -15,18 +15,19 @@ class WaveCanvas : public DrawObject
 public:
 	WaveCanvas(const Gdiplus::Point &pt, const Gdiplus::Size & size);
 	~WaveCanvas();
-	void AddWave(SignalChannel* pChannel, int percent);
+	void AddWave(SignalChannel* pChannel, double percent);
 	void OnSizeChanged();
 	void OnDraw(Gdiplus::Graphics & graph);
 	void PrepareCanvas(int dx, int dy);
 	int GetWaveCount() const;
 
 	WaveDrawer* GetWave(int i);
+	void Clear();
 protected:
 	WaveCanvas();
 	void _calcLayout();
 	void _drawBackground();
-	void _drawLabel(Gdiplus::Graphics &graph,int x, int y, int width, int height, int baseline);
+	void _drawLabel(Gdiplus::Graphics &graph,int x, int y, int width, int height, int baseline) const;
 	void _drawHorizontalLabel(Gdiplus::Graphics & graph);
 public:
 	virtual DrawObject* CreateInstance();
@@ -35,6 +36,5 @@ private:
 	Gdiplus::Bitmap * _pBackground;
 	WaveBackground * _pWaveBackground;
 	std::vector<WaveDrawer *> _waveDrawers;
-	std::vector<int> _layoutRatio;
 	int _labelInterval;
 };

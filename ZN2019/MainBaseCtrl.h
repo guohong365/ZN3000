@@ -14,10 +14,13 @@ class CMainBaseCtrl : public CDialog, public SampleController
 	DECLARE_DYNAMIC(CMainBaseCtrl)
 
 public:
-	CMainBaseCtrl(CWnd* pParent = NULL);   // 标准构造函数
+	CMainBaseCtrl(CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CMainBaseCtrl();
+	void SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
+	                SignalChannel* pEcg);
+	void SetCurrentPart(PartId part);
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_MAIN_BASE_CTRL };
 
 protected:
@@ -33,7 +36,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	void SetRecord(RheographyRecord* pRecord);
 
 	virtual void start();
 	virtual void stop();
@@ -43,6 +45,8 @@ private:
 	WaveCanvas *_pCanvas;
 	CBitmap  _memBitmap;
 	PartId _currentPart;
-	RheographyRecord* _pRecord;
-
+	SignalChannel* _pAdmittance;
+	SignalChannel* _pDifferential;
+	SignalChannel* _pEcg;
+	ULONG _current;
 };

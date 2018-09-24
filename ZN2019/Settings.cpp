@@ -359,7 +359,7 @@ SIZE_T Settings::getBufferSize()
 
 double Settings::getFrequency()
 {
-	return GetConfigDouble(SECTION_SAMPLE, ITEM_DEVICE_FREQUENCY, DEFAULT_DEVICE_FREQUENCY);
+	return GetConfigDouble(SECTION_DEVICE, ITEM_DEVICE_FREQUENCY, DEFAULT_DEVICE_FREQUENCY);
 }
 
 double Settings::getEvaluate()
@@ -394,17 +394,17 @@ DWORD Settings::getBaudRate()
 
 BYTE Settings::getDataBits()
 {
-	return GetConfigInt(SECTION_COM, ITEM_DATA_BITS, DEFAULT_DATA_BITS);
+	return BYTE(GetConfigInt(SECTION_COM, ITEM_DATA_BITS, DEFAULT_DATA_BITS));
 }
 
 BYTE Settings::getStopBits()
 {
-	return GetConfigInt(SECTION_COM, ITEM_STOP_BITS, DEFAULT_STOP_BITS);
+	return BYTE(GetConfigInt(SECTION_COM, ITEM_STOP_BITS, DEFAULT_STOP_BITS));
 }
 
 BYTE Settings::getParity()
 {
-	return GetConfigInt(SECTION_COM, ITEM_PARITY, DEFAULT_PARITY);
+	return BYTE(GetConfigInt(SECTION_COM, ITEM_PARITY, DEFAULT_PARITY));
 }
 
 CString Settings::getDeviceVersion()

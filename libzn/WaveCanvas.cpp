@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "WaveBackgronud.h"
 #include "WaveCanvas.h"
-#include "../libDrawObject/ImageUtility.h"
-#include "../libDrawObject/UIHelper.h"
 
 void WaveCanvas::initialize()
 {
@@ -33,19 +31,16 @@ WaveCanvas::~WaveCanvas()
 {
 	delete _pWaveBackground;
 	delete _pBackground;
-	for(int i=0; i< _waveDrawers.size(); i ++)
-	{
-		delete _waveDrawers[i];
-	}
+	Clear();
 }
 
-void WaveCanvas::AddWave(SignalChannel* pChannel, int percent)
+void WaveCanvas::AddWave(SignalChannel* pChannel, const double percent)
 {
-	WaveDrawer* pDrawer = new WaveDrawer(pChannel, Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
+	WaveDrawer* pDrawer = new WaveDrawer(pChannel, percent);
 	pDrawer->SetParent(this);
 	_waveDrawers.push_back(pDrawer);
-	_layoutRatio.push_back(percent);
 	_pWaveBackground->AddBaseline(pChannel->getLabel(), 0, 5, DEFAULT_WAVE_BASELINE_COLOR);
+	_calcLayout();
 }
 
 int WaveCanvas::GetWaveCount() const
@@ -59,15 +54,14 @@ WaveDrawer* WaveCanvas::GetWave(int i)
 	return _waveDrawers[i];
 }
 
-//void WaveCanvas::AddWave( WaveBuffer<long> * pBuffer, int percent )
-//{
-//	WaveDrawer * pDrawer=new WaveDrawer(pBuffer, Gdiplus::Point(0,0), Gdiplus::Size(0,0));
-//	pDrawer->SetParent(this);
-//	_waveDrawers.push_back(pDrawer);
-//	_layoutRatio.push_back(percent);
-//	_pWaveBackground->AddBaseline(0, 5, DEFAULT_WAVE_BASELINE_COLOR);
-//}
-
+void WaveCanvas::Clear()
+{
+	for (int i = 0; i < _waveDrawers.size(); i ++)
+	{
+		delete _waveDrawers[i];
+	}
+	_waveDrawers.clear();
+}
 
 void WaveCanvas::OnSizeChanged()
 {
@@ -79,10 +73,10 @@ void WaveCanvas::OnSizeChanged()
 
 void WaveCanvas::_calcLayout()
 {
-	int sum = 0;
-	for(int i=0; i< _layoutRatio.size(); i++)
+	double sum = 0;
+	for(int i=0; i< _waveDrawers.size(); i++)
 	{
-		sum +=_layoutRatio[i];
+		sum +=_waveDrawers[i]->GetLayoutPercent();
 	}
 	Gdiplus::Point pos=_pWaveBackground->GetPosition();
 	Gdiplus::Size size=GetSize();
@@ -90,7 +84,7 @@ void WaveCanvas::_calcLayout()
 	size.Width = _pWaveBackground->GetSize().Width;
 	for (int i=0; i< _waveDrawers.size(); i++)
 	{
-		size.Height = _pWaveBackground->GetSize().Height * _layoutRatio[i] / sum;
+		size.Height = _pWaveBackground->GetSize().Height * _waveDrawers[i]->GetLayoutPercent() / sum;
 		_waveDrawers[i]->SetPosition(pos);
 		_waveDrawers[i]->SetSize(size);
 		baselinePos.Y = _waveDrawers[i]->GetBaseline();
@@ -128,7 +122,7 @@ void WaveCanvas::PrepareCanvas( int dx, int dy )
 	delete _pBackground;
 	_pBackground=BitmapCreate(dx, dy, PixelFormat32bppRGB);
 	Gdiplus::Graphics graph(_pBackground);
-	graph.ScaleTransform(1.0f/CUICoordinateHelper::GetHelper()._horzLMPerDeviceUnit , 1.0f/CUICoordinateHelper::GetHelper()._vertLMPerDeviceUnit);	
+	graph.ScaleTransform(1.0f/UICoordinateHelper::GetHelper().HorizontalLmPerDeviceUnit, 1.0f/UICoordinateHelper::GetHelper().VerticalLmPerDeviceUnit);	
 	_pWaveBackground->Draw(graph);
 	for (int i=0; i< _waveDrawers.size(); i ++)
 	{
@@ -139,11 +133,11 @@ void WaveCanvas::PrepareCanvas( int dx, int dy )
 	_drawHorizontalLabel(graph);
 }
 
-void WaveCanvas::_drawLabel( Gdiplus::Graphics &graph, int x, int y, int width, int height, int baseline )
+void WaveCanvas::_drawLabel( Gdiplus::Graphics &graph, int x, int y, int width, int height, int baseline ) const
 {
-	CString strLebel;
-	int upperStep=(baseline - y ) / _labelInterval -1;
-	int downStep= (height + y - baseline) / _labelInterval -1;
+	CString strLabel;
+	const int upperStep=(baseline - y ) / _labelInterval -1;
+	const int downStep= (height + y - baseline) / _labelInterval -1;
 	
 	
 
@@ -157,15 +151,15 @@ void WaveCanvas::_drawLabel( Gdiplus::Graphics &graph, int x, int y, int width, 
 	for(int i = 1; i <= upperStep; i++ )
 	{
 		layout.Y =baseline  - i * _labelInterval  - _labelInterval;
-		strLebel.Format(_T("%d"), i * 10);
-		graph.DrawString(strLebel, strLebel.GetLength(), _pFont, layout, &stringFormat, &brush);
+		strLabel.Format(_T("%d"), i * 10);
+		graph.DrawString(strLabel, strLabel.GetLength(), _pFont, layout, &stringFormat, &brush);
 	}
 	layout.Y = baseline;
 	for(int i = 1; i< downStep; i++)
 	{
 		layout.Y = baseline + i * _labelInterval - _labelInterval;
-		strLebel.Format(_T("-%d"), i * 10);
-		graph.DrawString(strLebel, strLebel.GetLength(), _pFont,layout, &stringFormat, &brush);
+		strLabel.Format(_T("-%d"), i * 10);
+		graph.DrawString(strLabel, strLabel.GetLength(), _pFont,layout, &stringFormat, &brush);
 	}
 }
 

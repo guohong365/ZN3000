@@ -11,7 +11,6 @@
 
 #include "ZN2000ViewDoc.h"
 #include "ZN2000ViewView.h"
-#include "../libDrawObject/UIHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

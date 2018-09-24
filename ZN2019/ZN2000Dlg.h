@@ -34,13 +34,14 @@ class CZN2000Dlg : public CXTResizeDialog
 	CInfoPane _infoPane;
 	public:
 	CZN2000Dlg(CWnd* pParent = nullptr);	// 标准构造函数
+	virtual ~CZN2000Dlg();
 
 // 对话框数据
 	enum { IDD = IDD_ZN2000_DIALOG };
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-	
+	Settings& getSettings() const;
 
 // 实现
 protected:

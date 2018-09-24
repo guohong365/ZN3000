@@ -11,7 +11,6 @@
 #include "../libzn/WaveCanvas.h"
 #include "TestViewDoc.h"
 #include "TestViewView.h"
-#include "../libDrawObject/UIHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,7 +74,7 @@ void CTestViewView::OnDraw(CDC* pDC)
 
 	CSize sz(1000,1000);
 	memDC.SetWindowExt(sz);
-	CUICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
+	UICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
 	memDC.SetViewportExt(sz);
 
 	Gdiplus::Graphics graph(memDC.GetSafeHdc());
@@ -164,6 +163,6 @@ void CTestViewView::OnSize(UINT nType, int cx, int cy)
 
 	if(GetDocument()->GetCanvas()== nullptr) return;
 	CSize sz(cx, cy);	
-	CUICoordinateHelper::GetHelper().DPtoLP(&sz, 1);	
+	UICoordinateHelper::GetHelper().DPtoLP(&sz, 1);	
 	GetDocument()->GetCanvas()->SetSize(Gdiplus::Size(sz.cx, sz.cy));
 }

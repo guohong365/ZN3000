@@ -3,9 +3,9 @@
 //
 
 #include "stdafx.h"
+
 #include "zn2000.h"
 #include "ZN2000Dlg.h"
-#include "../libDrawObject/ImageUtility.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,7 +30,7 @@ Settings& CZN2000App::getSettings() const
 
 
 // 唯一的一个 CZN2000App 对象
-GdiplusEnveriment GdiPlusEnv;
+GdiplusEnvironment GdiPlusEnv;
 
 CZN2000App TheApp;
 
@@ -84,14 +84,13 @@ BOOL CZN2000App::InitInstance()
 		// TODO: 在此放置处理何时用
 		//  “取消”来关闭对话框的代码
 	}
-
-	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
-	//  而不是启动应用程序的消息泵。
+	
 	return FALSE;
 }
 
 int CZN2000App::ExitInstance()
 {
 	timeEndPeriod(_timeCaps.wPeriodMin);
+	delete _pSettings;
 	return __super::ExitInstance();
 }

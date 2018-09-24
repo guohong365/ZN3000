@@ -11,7 +11,6 @@
 #include "ChildFrm.h"
 #include "TestViewDoc.h"
 #include "TestViewView.h"
-#include "../libDrawObject/ImageUtility.h"
 
 
 #ifdef _DEBUG

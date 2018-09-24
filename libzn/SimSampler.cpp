@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SimSampler.h"
+#include "ZnRecord.h"
 #include <cmath>
-#include "../ZN2019/ZN2000Dlg.h"
 
 SimSampler::SimSampler( SimSampleGenerator * pCallBack, size_t count)
 :_pCallBack(pCallBack)

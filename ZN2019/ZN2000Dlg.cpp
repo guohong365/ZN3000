@@ -19,6 +19,8 @@
 
 CZN2000Dlg::CZN2000Dlg(CWnd* pParent /*=NULL*/)
 	: CXTResizeDialog(CZN2000Dlg::IDD, pParent)
+	, _sampler(getSettings().getSerialPort(), getSettings().getBaudRate(), getSettings().getDataBits(),
+	           getSettings().getParity(), getSettings().getStopBits())	
 	  , _pRecord(nullptr)
 	  , _pFeedback(nullptr)
 	  , _pAdmittance(nullptr)
@@ -28,6 +30,14 @@ CZN2000Dlg::CZN2000Dlg(CWnd* pParent /*=NULL*/)
 	  , _dwState(OS_IDLE)
 {
 	_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+CZN2000Dlg::~CZN2000Dlg()
+{
+	delete _pAdmittance;
+	delete _pDifferential;
+	delete _pEcg;
+	delete _pFeedback;
 }
 
 void CZN2000Dlg::DoDataExchange(CDataExchange* pDX)
@@ -42,6 +52,12 @@ void CZN2000Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_INPUT, _btnInputParam);
 	DDX_Control(pDX, IDC_SEARCH, _btnSearch);
 	DDX_Control(pDX, IDCANCEL, _btnQuit);
+}
+
+Settings& CZN2000Dlg::getSettings() const
+{
+	CZN2000App* app = DYNAMIC_DOWNCAST(CZN2000App ,AfxGetApp());
+	return app->getSettings();
 }
 
 BEGIN_MESSAGE_MAP(CZN2000Dlg, CXTResizeDialog)
@@ -102,8 +118,7 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_infoPane.MoveWindow(&rect, TRUE);
 	_InfoPaneFrame.ShowWindow(SW_HIDE);
 	_infoPane.ShowWindow(SW_SHOW);
-	CZN2000App *pApp=DYNAMIC_DOWNCAST(CZN2000App, AfxGetApp());
-	Settings & settings=pApp->getSettings();
+	Settings & settings=getSettings();
 	const ValueScopeDouble scope=settings.getDevicePhysicalScope();
 	const double frequency=settings.getFrequency();
 	const SIZE_T bufferSize=settings.getBufferSize();
@@ -120,7 +135,7 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_sampler.attachBuffer(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
 	_sampler.attachBuffer(ECG_INDEX, &_pEcg->getSignalBuffer());
 	_sampler.begin();
-
+	_mainBaseCtrl.SetBuffers(_pAdmittance, _pDifferential, _pEcg);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -223,7 +238,7 @@ void CZN2000Dlg::OnPartSelected( UINT part )
 {
 	const PartId partId=PartId(part-IDM_PART_HEART);
 	const CString text=BODY_STRING[part-IDM_PART_HEART];	
-	if(!_pRecord)
+	if(!_pRecord) //首次运行，需录入患者信息
 	{		
 		CPersonInfoInpputDlg dlg;
 		if(dlg.DoModal()!=IDOK)
@@ -231,22 +246,26 @@ void CZN2000Dlg::OnPartSelected( UINT part )
 			return;
 		}
 		_pRecord=new ZnRecordImpl();
+		_pRecord->setHospital(getSettings().getHospital());
+		_pRecord->setDepartment(getSettings().getDepartment());
+		_pRecord->setElevation(getSettings().getEvaluate());
 		_pRecord->setPatientName(dlg._Name);
 		_pRecord->setPatientId(dlg._Id);
-		_pRecord->setAge(dlg._age);
-		_pRecord->setElevation(dlg._electrodeDistance);
+		_pRecord->setAge(dlg._age);		
 		_pRecord->setDiastolicBloodPressure(dlg._diastolicBloodPresure);
 		_pRecord->setHeight(dlg._height);
 		_pRecord->setWeight(dlg._weight);
 		_pRecord->setGender(dlg._gender == 0 ? _T('M') : _T('F'));
 		_infoPane.SetRecord(_pRecord);
+		_dwState |=OS_PARAM_INPUT;
 	}
 	_btnPartSelect.SetWindowText(text);
 	if(partId != PART_HEART)
 	{
 		_pAdmittance->setLabel(text);
 	}
-	_sampler.resetBuffer();
+	_mainBaseCtrl.SetCurrentPart(partId);
+	//_sampler.resetBuffer();
 	_dwState |=OS_SELECT_PART;
 }
 
@@ -333,5 +352,6 @@ void CZN2000Dlg::OnDestroy()
 {
 	_mainBaseCtrl.stop();
 	_sampler.quit();
+
 	CXTResizeDialog::OnDestroy();
 }

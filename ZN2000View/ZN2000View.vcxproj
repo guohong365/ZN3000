@@ -52,7 +52,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Source;../include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Source;../include;$(LIB_UC_ROOT)/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

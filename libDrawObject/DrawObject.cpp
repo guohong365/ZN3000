@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <Rpc.h>
 #include "DrawObject.h"
-#include "ImageUtility.h"
 #include "BaseTypes.h"
 
 #ifdef _DEBUG

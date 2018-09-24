@@ -11,7 +11,7 @@ class WaveDrawer:public DrawObject
 	//draw componets
 	int  _baseline;
 	int _waveHeight;
-
+	double _layoutPercent;
 	//data
 	SignalChannel * _pSignalChannel;
 	int _totalSampleCount;
@@ -19,7 +19,7 @@ class WaveDrawer:public DrawObject
 	void _initialize();
 public:
 	WaveDrawer();
-	WaveDrawer(SignalChannel* pChannel, const Gdiplus::Point& pt, const Gdiplus::Size& size);
+	WaveDrawer(SignalChannel* pChannel, double layoutPercent);
 	virtual ~WaveDrawer();
 	SignalChannel* getChannelBuffer() const;
 	void setChannelBuffer(SignalChannel* pBuffer);
@@ -34,4 +34,6 @@ public:
 	virtual void OnSizeChanged();
 	virtual void OnDraw(Gdiplus::Graphics & graph);
 	virtual DrawObject* CreateInstance();
+	double GetLayoutPercent() const;
+	void SetLayoutPercent(double layoutPercent);
 };

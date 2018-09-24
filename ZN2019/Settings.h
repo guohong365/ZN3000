@@ -1,5 +1,5 @@
 #pragma once
-#include "../utility/IniFile.h"
+#include <IniFile.h>
 #define SETTING_FILE_NAME _T("ZN3000.ini")
 
 struct ValueScopeInt
@@ -14,7 +14,7 @@ struct ValueScopeDouble
 	double HighValue;
 };
 
-class Settings : public CIniFile
+class Settings : public IniFile
 {
 	CString _iniFile;
 public:

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "WaveDrawer.h"
-#include "../libDrawObject/ImageUtility.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,21 +15,22 @@ void WaveDrawer::_initialize()
 }
 
 WaveDrawer::WaveDrawer()
-:_pSignalChannel(nullptr)
+	:_layoutPercent(1)
+	,_pSignalChannel(nullptr)
 {
 	_initialize();
 }
 
-WaveDrawer::WaveDrawer(SignalChannel* pChannel, const Gdiplus::Point& pt, const Gdiplus::Size& size):
-	DrawObject(pChannel->getLabel(), pt, size)
+WaveDrawer::WaveDrawer(SignalChannel* pChannel, double layoutPercent)
+	:DrawObject(pChannel->getLabel(), Gdiplus::Point(0,0), Gdiplus::Size(0,0))
+	, _layoutPercent(layoutPercent)
 	, _pSignalChannel(pChannel)
 {
 	_initialize();
 }
 
 WaveDrawer::~WaveDrawer()
-{
-	delete _pSignalChannel;
+{	
 }
 
 SignalChannel* WaveDrawer::getChannelBuffer() const
@@ -86,6 +86,16 @@ float WaveDrawer::GetSampleDotSpacing()
 DrawObject* WaveDrawer::CreateInstance()
 {
 	return new WaveDrawer;
+}
+
+double WaveDrawer::GetLayoutPercent() const
+{
+	return _layoutPercent;
+}
+
+void WaveDrawer::SetLayoutPercent(double layoutPercent)
+{
+	_layoutPercent = layoutPercent;
 }
 
 void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
