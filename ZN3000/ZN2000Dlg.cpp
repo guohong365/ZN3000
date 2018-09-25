@@ -108,7 +108,7 @@ BOOL CZN2000Dlg::OnInitDialog()
 	_btnPartSelect.SetPushButtonStyle(xtpButtonDropDown);
 
 	CRect rect;
-	_mainBaseCtrl.Create(CMainBaseCtrl::IDD, this);
+	_mainBaseCtrl.Create(CWaveBaseCtrl::IDD, this);
 	_mainBaseFrame.GetWindowRect(&rect);
 	_mainBaseCtrl.MoveWindow(&rect, TRUE);
 	_mainBaseFrame.ShowWindow(SW_HIDE);

@@ -4,7 +4,6 @@
 //
 #define IDD_ZN2000_DIALOG               102
 #define IDR_MAINFRAME                   128
-#define IDD_MAIN_BASE_CTRL              129
 #define IDD_INFO_PANE                   130
 #define IDD_PERSON_INFO                 131
 #define IDD_SETTINGD                    132

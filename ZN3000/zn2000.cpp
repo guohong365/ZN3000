@@ -18,9 +18,8 @@ BEGIN_MESSAGE_MAP(CZN2000App, CWinAppEx)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-CZN2000App::CZN2000App()
+CZN2000App::CZN2000App(): _pSettings(nullptr)
 {
-	
 }
 
 Settings& CZN2000App::getSettings() const
@@ -53,8 +52,6 @@ BOOL CZN2000App::InitInstance()
 	CWinAppEx::InitInstance();
 
 	AfxEnableControlContainer();
-	timeGetDevCaps(&_timeCaps, sizeof(_timeCaps));
-	timeBeginPeriod(_timeCaps.wPeriodMin);
 	// 标准初始化
 	// 如果未使用这些功能并希望减小
 	// 最终可执行文件的大小，则应移除下列
@@ -90,7 +87,6 @@ BOOL CZN2000App::InitInstance()
 
 int CZN2000App::ExitInstance()
 {
-	timeEndPeriod(_timeCaps.wPeriodMin);
 	delete _pSettings;
 	return __super::ExitInstance();
 }

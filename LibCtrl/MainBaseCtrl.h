@@ -7,15 +7,15 @@
 #include "../libzn/SampleController.h"
 
 
-// CMainBaseCtrl 对话框
+// CWaveBaseCtrl 对话框
 
-class CMainBaseCtrl : public CDialog, public SampleController
+class AFX_EXT_CLASS  CWaveBaseCtrl : public CDialog, public SampleController
 {
-	DECLARE_DYNAMIC(CMainBaseCtrl)
+	DECLARE_DYNAMIC(CWaveBaseCtrl)
 
 public:
-	CMainBaseCtrl(CWnd* pParent = nullptr);   // 标准构造函数
-	virtual ~CMainBaseCtrl();
+	CWaveBaseCtrl(CWnd* pParent = nullptr);   // 标准构造函数
+	virtual ~CWaveBaseCtrl();
 	void SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
 	                SignalChannel* pEcg);
 	void SetCurrentPart(PartId part);

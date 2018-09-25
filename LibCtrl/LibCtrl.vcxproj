@@ -11,22 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{29E2C214-DE6D-47F3-AD6D-8025544D576E}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>libzn</RootNamespace>
+    <ProjectGuid>{88A09BC1-A1A4-4921-95CA-B5285EB3A7AF}</ProjectGuid>
+    <RootNamespace>LibCtrl</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -38,20 +39,36 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Source;../include;$(LIB_UC_ROOT)/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(LIB_UC_ROOT)/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>.\LibCtrl.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(LIB_UC_ROOT)/$(Configuration);../$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libzn.lib;libDraw.lib</AdditionalDependencies>
     </Link>
-    <Lib />
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -60,69 +77,54 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\LibCtrl.def</ModuleDefinitionFile>
     </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="LibCtrl.def" />
     <None Include="ReadMe.txt" />
+    <None Include="res\LibCtrl.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnnotationImpl.h" />
-    <ClInclude Include="DataLoader.h" />
-    <ClInclude Include="Record.h" />
-    <ClInclude Include="Settings.h" />
-    <ClInclude Include="SignalChannelImpl.h" />
-    <ClInclude Include="GridBackgroundAppearance.h" />
-    <ClInclude Include="ZnEdfFile.h" />
-    <ClInclude Include="EdfReader.h" />
-    <ClInclude Include="EdfWriter.h" />
-    <ClInclude Include="Packet.h" />
-    <ClInclude Include="RecordReader.h" />
-    <ClInclude Include="RecordWriter.h" />
-    <ClInclude Include="RheographyRecordImpl.h" />
-    <ClInclude Include="SampleController.h" />
-    <ClInclude Include="Sampler.h" />
-    <ClInclude Include="ScpLoader.h" />
-    <ClInclude Include="SerialPort.h" />
-    <ClInclude Include="SerialPortSampler.h" />
-    <ClInclude Include="SignalBuffer.h" />
-    <ClInclude Include="SimSampler.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="GridBackgronud.h" />
-    <ClInclude Include="WaveCanvas.h" />
-    <ClInclude Include="WaveDrawer.h" />
-    <ClInclude Include="ZNDData.h" />
-    <ClInclude Include="ZnRecord.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AnnotationImpl.cpp" />
-    <ClCompile Include="EdfReader.cpp" />
-    <ClCompile Include="EdfWriter.cpp" />
-    <ClCompile Include="RecordReader.cpp" />
-    <ClCompile Include="RecordWriter.cpp" />
-    <ClCompile Include="RheographyRecordImpl.cpp" />
-    <ClCompile Include="ScpLoader.cpp" />
-    <ClCompile Include="SerialPort.cpp" />
-    <ClCompile Include="SerialPortSampler.cpp" />
-    <ClCompile Include="Settings.cpp" />
-    <ClCompile Include="SignalChannelImpl.cpp" />
-    <ClCompile Include="SimSampler.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="LibCtrl.cpp" />
+    <ClCompile Include="MainBaseCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GridBackgronud.cpp" />
-    <ClCompile Include="GridBackgroundAppearance.cpp" />
-    <ClCompile Include="WaveCanvas.cpp" />
-    <ClCompile Include="WaveDrawer.cpp" />
-    <ClCompile Include="ZnRecord.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainBaseCtrl.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LibCtrl.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

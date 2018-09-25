@@ -52,8 +52,8 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
     "LANGUAGE 4, 2\r\n"
     "#pragma code_page(936)\r\n"
-    "#include ""res\\zn2000.rc2""  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???\r\n"
-    "#include ""l.CHS\\afxres.rc""      // ?à¨o?á??á¨|?t\r\n"
+    "#include ""res\\zn2000.rc2""  // ??è? Microsoft Visual C++ ?¨¤?§?è?-|¨???¨￠?§o???\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ?¨¤?§o?¨￠??¨￠?§|?t\r\n"
     "#endif\r\n"
     "\0"
 END
@@ -83,19 +83,13 @@ BEGIN
     LTEXT           "检测部位：",IDC_STATIC_PART,7,7,39,14,SS_CENTERIMAGE,WS_EX_TRANSPARENT
     PUSHBUTTON      "",IDC_BUTTON_PART,48,7,50,14
     CONTROL         "",IDC_MAIN_BASE,"Static",SS_BLACKFRAME,7,23,287,262
-    CONTROL         "",IDC_INFO_PANE,"Static",SS_BLACKFRAME,295,24,100,261
+    CONTROL         "",IDC_INFO_PANE,"Static",SS_BLACKFRAME,295,23,100,262
     DEFPUSHBUTTON   "开始检查",IDC_BEGIN,21,298,50,14
     PUSHBUTTON      "暂停采样",IDC_PAUSE,83,298,50,14
     PUSHBUTTON      "测量计算",IDC_CALC,145,298,50,14
     PUSHBUTTON      "输入参数",IDC_INPUT,207,298,50,14
     PUSHBUTTON      "查询结果",IDC_SEARCH,269,298,50,14
     PUSHBUTTON      "退出程序",IDCANCEL,331,298,50,14
-END
-
-IDD_MAIN_BASE_CTRL DIALOGEX 0, 0, 316, 180
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
 END
 
 IDD_INFO_PANE DIALOGEX 0, 0, 101, 332
@@ -234,14 +228,6 @@ BEGIN
         BOTTOMMARGIN, 312
     END
 
-    IDD_MAIN_BASE_CTRL, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 309
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 173
-    END
-
     IDD_INFO_PANE, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -334,8 +320,8 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE 4, 2
 #pragma code_page(936)
-#include "res\zn2000.rc2"  // ·? Microsoft Visual C++ ±à?-μ?×ê?′
-#include "l.CHS\afxres.rc"      // ±ê×?×é?t
+#include "res\zn2000.rc2"  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???
+#include "l.CHS\afxres.rc"      // ?à¨o?á??á¨|?t
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

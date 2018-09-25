@@ -3,10 +3,11 @@
 //
 
 #pragma once
-#include "MainBaseCtrl.h"
+#include "../LibCtrl/MainBaseCtrl.h"
 #include "InfoPane.h"
 #include "../libzn/ZNDData.h"
 #include "../libzn/SerialPortSampler.h"
+#include "../libzn/ZnRecord.h"
 
 
 // CZN2000Dlg 对话框
@@ -30,7 +31,7 @@ class CZN2000Dlg : public CXTResizeDialog
 	CXTPButton _btnQuit;
 	CStatic _mainBaseFrame;
 	CStatic _InfoPaneFrame;
-	CMainBaseCtrl _mainBaseCtrl;
+	CWaveBaseCtrl _mainBaseCtrl;
 	CInfoPane _infoPane;
 	public:
 	CZN2000Dlg(CWnd* pParent = nullptr);	// 标准构造函数

@@ -13,11 +13,11 @@
 
 #define SAMPLE_SHOW_TIMER_ID 1
 #define SAMPLE_SHOW_ELAPSE   100
-// CMainBaseCtrl 对话框
+// CWaveBaseCtrl 对话框
 
-IMPLEMENT_DYNAMIC(CMainBaseCtrl, CDialog)
+IMPLEMENT_DYNAMIC(CWaveBaseCtrl, CDialog)
 
-CMainBaseCtrl::CMainBaseCtrl(CWnd* pParent /*=NULL*/)
+CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD, pParent)
 	, _pWaveDrawer(nullptr)
 	, _currentPart(PART_NONE)
@@ -28,13 +28,13 @@ CMainBaseCtrl::CMainBaseCtrl(CWnd* pParent /*=NULL*/)
 	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
 }
 
-CMainBaseCtrl::~CMainBaseCtrl()
+CWaveBaseCtrl::~CWaveBaseCtrl()
 {
 	delete _pCanvas;
 	_memBitmap.DeleteObject();
 }
 
-void CMainBaseCtrl::SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
+void CWaveBaseCtrl::SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
                                SignalChannel* pEcg)
 {
 	_pAdmittance = pAdmittance;
@@ -42,7 +42,7 @@ void CMainBaseCtrl::SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDiffe
 	_pEcg = pEcg;
 }
 
-void CMainBaseCtrl::SetCurrentPart(PartId part)
+void CWaveBaseCtrl::SetCurrentPart(PartId part)
 {
 	if(part == _currentPart) return;
 	_currentPart = part;
@@ -61,13 +61,13 @@ void CMainBaseCtrl::SetCurrentPart(PartId part)
 	}
 }
 
-void CMainBaseCtrl::DoDataExchange(CDataExchange* pDX)
+void CWaveBaseCtrl::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(CMainBaseCtrl, CDialog)
+BEGIN_MESSAGE_MAP(CWaveBaseCtrl, CDialog)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
 	ON_WM_CTLCOLOR()
@@ -75,15 +75,15 @@ BEGIN_MESSAGE_MAP(CMainBaseCtrl, CDialog)
 	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
-void CMainBaseCtrl::OnCancel()
+void CWaveBaseCtrl::OnCancel()
 {
 }
 
-void CMainBaseCtrl::OnOK()
+void CWaveBaseCtrl::OnOK()
 {
 }
 
-void CMainBaseCtrl::OnPaint()
+void CWaveBaseCtrl::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 
@@ -117,7 +117,7 @@ void CMainBaseCtrl::OnPaint()
 	memDC.SelectObject(pOldBitmap);
 }
 
-void CMainBaseCtrl::OnSize(UINT nType, int cx, int cy)
+void CWaveBaseCtrl::OnSize(UINT nType, int cx, int cy)
 {
 	Gdiplus::Size sz(cx, cy);
 	CDialog::OnSize(nType, cx, cy);
@@ -125,20 +125,20 @@ void CMainBaseCtrl::OnSize(UINT nType, int cx, int cy)
 	_pCanvas->SetSize(sz);
 }
 
-HBRUSH CMainBaseCtrl::OnCtlColor(CDC* /*pDC*/, CWnd* /*pWnd*/, UINT /*nCtlColor*/)
+HBRUSH CWaveBaseCtrl::OnCtlColor(CDC* /*pDC*/, CWnd* /*pWnd*/, UINT /*nCtlColor*/)
 {
 	return HBRUSH(GetStockObject(BLACK_BRUSH));
 }
 
 
-BOOL CMainBaseCtrl::OnInitDialog()
+BOOL CWaveBaseCtrl::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	
 }
-void CMainBaseCtrl::OnTimer(UINT_PTR nIDEvent)
+void CWaveBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 {	
 	if(nIDEvent==1)
 	{
@@ -146,17 +146,17 @@ void CMainBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 	}
 }
 
-BOOL CMainBaseCtrl::OnEraseBkgnd( CDC* /*pDC*/ )
+BOOL CWaveBaseCtrl::OnEraseBkgnd( CDC* /*pDC*/ )
 {
 	return TRUE;
 }
 
-void CMainBaseCtrl::stop()
+void CWaveBaseCtrl::stop()
 {
 	KillTimer(SAMPLE_SHOW_TIMER_ID);
 }
 
-void CMainBaseCtrl::start()
+void CWaveBaseCtrl::start()
 {
 	SetTimer(SAMPLE_SHOW_TIMER_ID, SAMPLE_SHOW_ELAPSE, nullptr);
 }

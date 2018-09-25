@@ -90,7 +90,6 @@
 #include <atlimage.h>
 #include <GdiPlus.h>
 #include <vector>
-#include <XTToolkitPro.h>    // Xtreme Toolkit Pro components
 #include <libUI.h>
 
 HMODULE AfxGetTemplateModule();
