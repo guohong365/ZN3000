@@ -60,7 +60,7 @@ public:
 	const ValueType* getBuffer() const;
 	ValueType operator[](int index) const;
 	ValueType& operator[](int index);
-	void append(ValueType val);
+	template<typename T> void append(T val);
 	ValueType maxValue();
 	ValueType minValue();
 	void normalize();
@@ -141,9 +141,10 @@ ValueType& SignalBuffer<ValueType>::operator[](const int index)
 }
 
 template <typename ValueType>
-void SignalBuffer<ValueType>::append(ValueType val)
+template <typename T>
+void SignalBuffer<ValueType>::append(T val)
 {
-	_pBuffer[_length % _size] = val;
+	_pBuffer[_length % _size] = static_cast<ValueType>(val);
 	_length ++;
 }
 

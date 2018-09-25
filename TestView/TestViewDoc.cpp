@@ -10,14 +10,16 @@
 #endif
 #include "../libzn/WaveCanvas.h"
 #include "TestViewDoc.h"
-
+#include "../libzn/Packet.h"
 #include <propkey.h>
 #include "../libzn/SignalBuffer.h"
+#include <libini.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+#define LEN_BUFFER 10240
 // CTestViewDoc
 
 IMPLEMENT_DYNCREATE(CTestViewDoc, CDocument)
@@ -62,24 +64,44 @@ void CTestViewDoc::Serialize(CArchive& ar)
 	}
 	else
 	{
-		short temp[LEN_BUFFER]={};
-		ar.Read(temp, LEN_BUFFER * sizeof(short));
-		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
+		BYTE *pTemp=new BYTE[LEN_BUFFER*sizeof(Packet)];
+		ar.Read(pTemp, LEN_BUFFER * sizeof(Packet));		
 		SignalChannel* pBuffer[4];
-		pBuffer[0]=new SignalChannelImpl(_T("a"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
-		pBuffer[1]=new SignalChannelImpl(_T("b"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
-		pBuffer[2]=new SignalChannelImpl(_T("c"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
-		pBuffer[3]=new SignalChannelImpl(_T("d"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
+		pBuffer[0]=new SignalChannelImpl(_T("Feedback"), 100, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[1]=new SignalChannelImpl(_T("Admittance"), 100, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[2]=new SignalChannelImpl(_T("Differential"), 100, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[3]=new SignalChannelImpl(_T("ECG"), 100, 0, 10, _T("V"),LEN_BUFFER);
 		int index=0;
-		for(int i=0; i< LEN_BUFFER; i++)
+		BYTE * p=pTemp;
+		for(int i=0; i< (LEN_BUFFER -1) * sizeof(Packet); i++)
 		{
-			pBuffer[i%4]->getSignalBuffer().append(temp[i]);
-			index += 4;
+			if(p[i] != 0xCA || p[sizeof(Packet) -1]!=0xF1)
+			{
+				continue;
+			}
+			DataBuffer* pData = reinterpret_cast<DataBuffer*>(p);
+			if(!checkPacket(pData))
+			{
+				continue;
+			}
+			index=i;
+			do
+			{
+				pData=reinterpret_cast<DataBuffer*>(p + index);
+				pBuffer[0]->getSignalBuffer().append(RevertUInt16(pData->Paket.Feedback));
+				pBuffer[1]->getSignalBuffer().append(RevertUInt16(pData->Paket.Admittance));
+				pBuffer[2]->getSignalBuffer().append(RevertUInt16(pData->Paket.Differential));
+				pBuffer[3]->getSignalBuffer().append(RevertUInt16(pData->Paket.ECG));
+				index +=sizeof(Packet);
+			}while(index< (LEN_BUFFER -1) * sizeof(Packet));
+			break;
 		}
+		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
 		_pCanvas->AddWave(pBuffer[0], 25);
 		_pCanvas->AddWave(pBuffer[1], 25);
 		_pCanvas->AddWave(pBuffer[2], 25);
 		_pCanvas->AddWave(pBuffer[3], 25);
+		delete []pTemp;
 	}
 }
 

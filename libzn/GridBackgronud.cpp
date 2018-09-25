@@ -33,6 +33,15 @@ GridBackground::GridBackground(const Gdiplus::Point &position, const Gdiplus::Si
 {
 	_initialize();
 }
+
+GridBackground::~GridBackground()
+{
+	for(std::vector<LineObject*>::iterator it=_baselines.begin(); it!=_baselines.end(); ++it)
+	{
+		delete *it;
+	}
+}
+
 void GridBackground::OnDraw(Gdiplus::Graphics & graph)
 {
 	

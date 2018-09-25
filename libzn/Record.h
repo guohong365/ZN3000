@@ -48,8 +48,8 @@ public:
 	virtual unsigned long getSampleCount() const=0;
 	virtual const Annotations & getAnnotations() const=0;
 	virtual Annotations & getAnnotations()=0;
-	virtual const SignalBuffer<unsigned short> &getSignalBuffer() const=0;
-	virtual SignalBuffer<unsigned short>& getSignalBuffer()=0;
+	virtual const SignalBuffer<float> &getSignalBuffer() const=0;
+	virtual SignalBuffer<float>& getSignalBuffer()=0;
 };
 
 typedef std::vector<SignalChannel *> SignalChannels;

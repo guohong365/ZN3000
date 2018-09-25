@@ -10,7 +10,7 @@ class GridBackground:public DrawObject
 public:
 	GridBackground();
 	GridBackground(const Gdiplus::Point &position, const Gdiplus::Size & size);	
-	
+	virtual ~GridBackground();
 	virtual void SetShowThickGrid(bool isShow);
 
 	virtual bool GetShowThickGrid();

@@ -200,7 +200,7 @@ void CZN2000ViewView::OnSize(UINT nType, int cx, int cy)
 	CView::OnSize(nType, cx, cy);
 	if(_pCanvase== nullptr) return;
 	CSize sz(cx, cy);	
-	CUICoordinateHelper::GetHelper().DPtoLP(&sz, 1);	
+	UICoordinateHelper::GetHelper().DPtoLP(&sz, 1);	
 	_pCanvase->SetSize(Gdiplus::Size(sz.cx, sz.cy));
 	//_pCanvase->PrepareCanvas(cx, cy);
 }

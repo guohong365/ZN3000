@@ -85,12 +85,12 @@ void SerialPortSampler::resetBuffer()
 	resume();
 }
 
-SignalBuffer<unsigned short>* SerialPortSampler::getBuffer(int index)
+SignalBuffer<float>* SerialPortSampler::getBuffer(int index)
 {
 	return _buffers[index];
 }
 
-void SerialPortSampler::attachBuffer(const int index, SignalBuffer<unsigned short>* pBuffer)
+void SerialPortSampler::attachBuffer(const int index, SignalBuffer<float>* pBuffer)
 {
 	if(index >=0 && index < 4)
 	{

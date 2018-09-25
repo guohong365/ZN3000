@@ -13,6 +13,7 @@ struct Packet
     UINT16 ECG;                       //心电通道数据（原始数据，大端格式）
     BYTE CheckSum;                   //和校验
     BYTE Tail;
+
 };
 typedef union _tagDataBuffer
 {

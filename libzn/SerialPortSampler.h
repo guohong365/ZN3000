@@ -28,8 +28,8 @@ public:
 	virtual SamplerState getState();
 	bool setMode(BYTE mode);
 	void resetBuffer();
-	SignalBuffer<unsigned short>* getBuffer(int index);
-	void attachBuffer(int index, SignalBuffer<unsigned short> * pBuffer);
+	SignalBuffer<float>* getBuffer(int index);
+	void attachBuffer(int index, SignalBuffer<float> * pBuffer);
 private:
 	/**扫描缓冲区，标记出现合法Packe结构的位置。
 	 *
@@ -39,6 +39,8 @@ private:
 	 */
 	static long scanPacket(const unsigned char* pBuffer, long size);
 	/**同步读取缓冲，使得采样循环可以完整帧读取，并处理数据
+	 *
+	 *@return 0 - 成功， < 0 读串口错误。
 	 */
 	int synchronizePacket() const;
 	/**采样线程
@@ -54,7 +56,7 @@ private:
 	HANDLE _hThread;
 	HANDLE _hResume;
 	DWORD _dwThreadId;
-	SignalBuffer<unsigned short> *_buffers[4];
+	SignalBuffer<float> *_buffers[4];
 	bool _quit;
 	bool _paused;
 	SamplerProgressCallback* _progressCallback;

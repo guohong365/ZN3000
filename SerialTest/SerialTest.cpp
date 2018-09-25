@@ -17,7 +17,8 @@ void parseBuffer(BYTE * buffer,BYTE * data, size_t packetCount)
 	ULONG index=0;
 	do
 	{
-		if(buffer[pos]==0xCA && buffer[pos + sizeof(Packet) -1]==0xF1) // maybe a packet
+		if(buffer[pos]==0xCA && 
+			buffer[pos + sizeof(Packet) -1]==0xF1) // maybe a packet
 		{
 			Packet * pPacket=reinterpret_cast<Packet*>(buffer + pos);
 			BYTE sum=0;
@@ -102,6 +103,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	fwrite(buffer, sizeof(Packet),LEN_BUFFER, fp);
 	fclose(fp);
 	_tprintf(_T("file 1 write ok!"));
+	/*
 	BYTE data[LEN_BUFFER * sizeof(short) * 4];
 	parseBuffer(reinterpret_cast<BYTE*>(buffer), data, LEN_BUFFER);
 	
@@ -136,6 +138,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	fwrite(data, sizeof(short)*4, LEN_BUFFER, fp);
 	fclose(fp);
+	*/
 	return 0;
 }
 

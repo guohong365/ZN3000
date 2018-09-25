@@ -9,8 +9,6 @@
 
 #include "resource.h"       // 主符号
 
-#define LEN_BUFFER 51200
-
 // CTestViewApp:
 // 有关此类的实现，请参阅 TestView.cpp
 //

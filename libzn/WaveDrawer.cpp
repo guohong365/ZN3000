@@ -100,7 +100,7 @@ void WaveDrawer::SetLayoutPercent(double layoutPercent)
 
 void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 {
-	SignalBuffer<unsigned short> & buffer=_pSignalChannel->getSignalBuffer();
+	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
 	const int sampleCount = min(_totalSampleCount, buffer.getLength());

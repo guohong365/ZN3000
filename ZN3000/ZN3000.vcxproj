@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>ZN2019</ProjectName>
+    <ProjectName>ZN3000</ProjectName>
     <ProjectGuid>{2D0287D5-1753-4280-9D2B-D5FD26A4AA3C}</ProjectGuid>
     <RootNamespace>zn2000</RootNamespace>
     <Keyword>MFCProj</Keyword>
