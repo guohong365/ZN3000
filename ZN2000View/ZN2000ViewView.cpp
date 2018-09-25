@@ -77,7 +77,7 @@ void CZN2000ViewView::OnDraw(CDC* pDC)
 
 	CSize sz(1000,1000);
 	memDC.SetWindowExt(sz);
-	CUICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
+	UICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
 	memDC.SetViewportExt(sz);
 
 	Gdiplus::Graphics graph(memDC.GetSafeHdc());

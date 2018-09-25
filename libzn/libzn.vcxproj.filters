@@ -42,9 +42,6 @@
     <ClInclude Include="SignalBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WaveBackgronud.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WaveDrawer.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -93,12 +90,15 @@
     <ClInclude Include="ZnRecord.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GridBackgronud.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridBackgroundAppearance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveBackgronud.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WaveCanvas.cpp">
@@ -141,6 +141,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ZnRecord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridBackgronud.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridBackgroundAppearance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

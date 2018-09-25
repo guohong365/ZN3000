@@ -56,7 +56,7 @@ CTestViewApp::CTestViewApp()
 // 唯一的一个 CTestViewApp 对象
 
 CTestViewApp theApp;
-GdiplusEnveriment enveriment;
+GdiplusEnvironment enveiroment;
 
 // CTestViewApp 初始化
 

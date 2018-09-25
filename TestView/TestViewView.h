@@ -9,7 +9,8 @@
 class CTestViewView : public CView
 {
 	
-	CBitmap _MemBitmap;
+	CBitmap _memBitmap;
+	Gdiplus::Bitmap* _pBackground;
 protected: // 仅从序列化创建
 	CTestViewView();
 	DECLARE_DYNCREATE(CTestViewView)
@@ -49,6 +50,7 @@ protected:
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 #ifndef _DEBUG  // TestViewView.cpp 中的调试版本

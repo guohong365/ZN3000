@@ -20,49 +20,50 @@ static char THIS_FILE[]=__FILE__;
 #if(_HAS_ITERATOR_DEBUGGING!=0)
 #endif
 
-//坐标单位
 Gdiplus::Unit DrawObject::Unit = Gdiplus::UnitPixel;
+Appearance DrawObject::_basicAppearance;
 
-void DrawObject::Initialize()
+void DrawObject::_initialize()
 {
+	_pAppearance=new Appearance(_basicAppearance);
 	_name=_T("");
 	_bUsingClip = false;
 	_bVisible = true;
 	_isActive=false;
 	_bSelected = false;	
 	_pParent = nullptr;
-	//_appearance.FontSize=FontSizeArray[DEFAULT_FONT_SIZE_INDEX].SizePoint*FONT_SIZE_FACETOR;
+	//GetAppearance().FontSize=FontSizeArray[DEFAULT_FONT_SIZE_INDEX].SizePoint*FONT_SIZE_FACTOR;
 
 	_internalName = GenerateUniqueName();
 }
 
 DrawObject::DrawObject()
 {
-	Initialize();
+	_initialize();
 }
 
 DrawObject::DrawObject(const CString & name)
 {
-	Initialize();
+	_initialize();
 	_name = name;
 }
 DrawObject::DrawObject(const CString & name, int x, int y, int width, int height)
 {
-	Initialize();
+	_initialize();
 	_name = name;
 	_position = Gdiplus::Point(x, y);
 	_size = Gdiplus::Size(width, height);
 }
 DrawObject::DrawObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size)
 {
-	Initialize();
+	_initialize();
 	_name = name;
 	_position = point;
 	_size = size;
 }
 DrawObject::DrawObject(const CString & name, const Gdiplus::Rect & rect)
 {
-	Initialize();
+	_initialize();
 	_name = name;
 	_position = Gdiplus::Point(rect.X, rect.Y); 
 	_size =Gdiplus::Size(rect.Width, rect.Height); 
@@ -70,6 +71,7 @@ DrawObject::DrawObject(const CString & name, const Gdiplus::Rect & rect)
 
 DrawObject::~DrawObject()
 {
+	delete _pAppearance;
 }
 
 CString DrawObject::GenerateUniqueName()
@@ -82,8 +84,6 @@ CString DrawObject::GenerateUniqueName()
 	return name;
 }
 
-
-//对象名称
 void DrawObject::SetName(CString name)
 {
 	if (_name != name)
@@ -109,17 +109,14 @@ void DrawObject::OnNameChanged()
 
 //////////////////////////////////////////////////////////////////////////
 
-//几何属性。，角度单位（度）
-
-//坐标单位
 void DrawObject::SetUnit(Gdiplus::Unit unit)
 {
-	DrawObject::Unit = unit;
+	Unit = unit;
 }
 
 Gdiplus::Unit DrawObject::GetUnit()
 {
-	return DrawObject::Unit;
+	return Unit;
 }
 
 //位置
@@ -172,11 +169,25 @@ void DrawObject::OnSizeChanged()
 	Notify(DNM_SIZE_CHANGED);
 }
 
+void DrawObject::SetAppearance(Appearance& appearance)
+{
+	delete _pAppearance;
+	_pAppearance=appearance.Clone();
+}
+
+Appearance& DrawObject::GetAppearance()
+{
+	return *_pAppearance;
+}
+
+Appearance& DrawObject::GetAppearance() const
+{
+	return *_pAppearance;
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 
-//绘图属性
-
-//剪切边框
 void DrawObject::SetClipRect(Gdiplus::Rect rect)
 {
 	if (!_clipRect.Equals(rect))
@@ -201,7 +212,6 @@ void DrawObject::OnClipRectChanged()
 	Notify(DNM_CLIP_RECT_CHANGED);
 }
 
-//是否剪切
 void DrawObject::SetUsingClip(bool isUsingClip)
 {
 	if (_bUsingClip != isUsingClip)
@@ -225,7 +235,6 @@ void DrawObject::OnUsingClipChanged()
 	Notify(DNM_USING_CLIP_CHANGED);
 }
 
-//是否显示
 void DrawObject::SetVisible(bool isVisible)
 {
 	if (isVisible != _bVisible)
@@ -249,19 +258,18 @@ void DrawObject::OnVisibleChanged()
 	Notify(DNM_VISIBLE_CHANGED);
 }
 
-//是否填充
 void DrawObject::SetFilled(bool isFilled)
 {
-	if (_appearance.ShowFill != isFilled)
+	if (GetAppearance().ShowFill != isFilled)
 	{
 		OnFilledChanging(isFilled);
-		_appearance.ShowFill = isFilled;
+		GetAppearance().ShowFill = isFilled;
 		OnFilledChanged();
 	}
 }
 bool DrawObject::GetFilled() const 
 {
-	return _appearance.ShowFill;
+	return GetAppearance().ShowFill;
 }
 
 void DrawObject::OnFilledChanging(bool & newFilled)
@@ -273,19 +281,18 @@ void DrawObject::OnFilledChanged()
 	Notify(DNM_FILLED_CHANGED);
 }
 
-//是否绘制边框
 void DrawObject::SetShowBorder(bool isShowBorder)
 {
-	if (_appearance.ShowBorder != isShowBorder)
+	if (GetAppearance().ShowBorder != isShowBorder)
 	{
 		OnShowBorderChanging(isShowBorder);
-		_appearance.ShowBorder = isShowBorder;
+		GetAppearance().ShowBorder = isShowBorder;
 		OnVisibleChanged();
 	}
 }
 bool DrawObject::GetShowBorder() const 
 {
-	return _appearance.ShowBorder;
+	return GetAppearance().ShowBorder;
 }
 
 void DrawObject::OnShowBorderChanging(bool & newShowBorder)
@@ -298,16 +305,16 @@ void DrawObject::OnShowBorderChanged()
 }
 void DrawObject::SetShowTracker(bool isShowTracker)
 {
-	if (isShowTracker != _appearance.ShowTrack)
+	if (isShowTracker != GetAppearance().ShowTrack)
 	{
 		OnShowTrackerChanging(isShowTracker);
-		_appearance.ShowTrack = isShowTracker;
+		GetAppearance().ShowTrack = isShowTracker;
 		OnShowTrackerChanged();
 	}
 }
 bool DrawObject::GetShowTracker() const 
 {
-	return _appearance.ShowTrack;
+	return GetAppearance().ShowTrack;
 }
 
 void DrawObject::OnShowTrackerChanging(bool & newShowTracker)
@@ -321,17 +328,17 @@ void DrawObject::OnShowTrackerChanged()
 
 void DrawObject::SetTrackerColor(Gdiplus::Color color)
 {
-	if (color.GetValue() != _appearance.TraceColor.GetValue())
+	if (color.GetValue() != GetAppearance().TraceColor)
 	{
 		OnTrackerColorChanging(color);
-		_appearance.TraceColor = color;
+		GetAppearance().TraceColor = color.GetValue();
 		OnTrackerColorChanged();
 	}
 }
 
 Gdiplus::Color DrawObject::GetTrackerColor() const
 {
-	return _appearance.TraceColor;
+	return GetAppearance().TraceColor;
 }
 
 void DrawObject::OnTrackerColorChanging(Gdiplus::Color & color)
@@ -346,16 +353,16 @@ void DrawObject::OnTrackerColorChanged()
 //透明度
 void DrawObject::SetTransparent(float transparent)
 {
-	if (_appearance.Transparent != transparent)
+	if (GetAppearance().Transparent != transparent)
 	{
 		OnTransparentChanging(transparent);
-		_appearance.Transparent = transparent;
+		GetAppearance().Transparent = transparent;
 		OnTransparentChanged();
 	}
 }
 float DrawObject::GetTransparent() const 
 {
-	return _appearance.Transparent;
+	return GetAppearance().Transparent;
 }
 void DrawObject::OnTransparentChanging(float &newTransparent)
 {
@@ -367,20 +374,19 @@ void DrawObject::OnTransparentChanged()
 }
 
 
-//填充颜色
 void DrawObject::SetFillColor(Gdiplus::Color color)
 {
-	if (_appearance.FillColor.GetValue() != color.GetValue())
+	if (GetAppearance().FillColor != color.GetValue())
 	{
 		OnFillColorChanging(color);
-		_appearance.FillColor = color;
+		GetAppearance().FillColor = color.GetValue();
 		OnFillColorChanged();
 	}
 }
 
 Gdiplus::Color DrawObject::GetFillColor() const
 {
-	return _appearance.FillColor;
+	return GetAppearance().FillColor;
 }
 
 void DrawObject::OnFillColorChanging(Gdiplus::Color & newColor)
@@ -395,17 +401,17 @@ void DrawObject::OnFillColorChanged()
 //边框颜色
 void DrawObject::SetLineColor(Gdiplus::Color color)
 {
-	if (_appearance.LineColor.GetValue() != color.GetValue())
+	if (GetAppearance().LineColor != color.GetValue())
 	{
 		OnLineColorChanging(color);
-		_appearance.LineColor = color;
+		GetAppearance().LineColor = color.GetValue();
 		OnLineColorChanged();
 	}
 }
 
 Gdiplus::Color DrawObject::GetLineColor() const
 {
-	return _appearance.LineColor;
+	return GetAppearance().LineColor;
 }
 
 void DrawObject::OnLineColorChanging(Gdiplus::Color & newColor)
@@ -419,16 +425,16 @@ void DrawObject::OnLineColorChanged()
 
 void DrawObject::SetLineWidth(float width)
 {
-	if (_appearance.LineWidth != width)
+	if (GetAppearance().LineWidth != width)
 	{
 		OnLineWidthChanging(width);
-		_appearance.LineWidth = width;
+		GetAppearance().LineWidth = width;
 		OnLineWidthChanged();
 	}
 }
 float DrawObject::GetLineWidth()
 {
-	return _appearance.LineWidth;
+	return GetAppearance().LineWidth;
 }
 void DrawObject::OnLineWidthChanging(float &width)
 {
@@ -439,20 +445,19 @@ void DrawObject::OnLineWidthChanged()
 	Notify(DNM_LINE_WIDTH_CHANGED);
 }
 
-//字体颜色
 void DrawObject::SetFontColor(Gdiplus::Color color)
 {
-	if (_appearance.FontColor.GetValue() != color.GetValue())
+	if (GetAppearance().FontColor != color.GetValue())
 	{
 		OnFontColorChanging(color);
-		_appearance.FontColor = color;
+		GetAppearance().FontColor = color.GetValue();
 		OnFontColorChanged();
 	}
 }
 
 Gdiplus::Color DrawObject::GetFontColor() const
 {
-	return _appearance.FontColor;
+	return GetAppearance().FontColor;
 }
 
 void DrawObject::OnFontColorChanging(Gdiplus::Color & newFontColor)
@@ -463,12 +468,6 @@ void DrawObject::OnFontColorChanged()
 {
 	Notify(DNM_FONT_COLOR_CHANGED);
 }
-
-//////////////////////////////////////////////////////////////////////////
-
-//控制属性
-
-//////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -502,11 +501,6 @@ void DrawObject::OnParentChanged()
 
 LOGFONTW OBJECT_DEFAULT_FONT = { 0 };
 
-//////////////////////////////////////////////////////////////////////////
-//撤销列表支持
-//////////////////////////////////////////////////////////////////////////
-//复制对象
-//@param source 复制source对象当前数据到本对象，不复制撤销列表。
 DrawObject *DrawObject::CopyFrom(DrawObject * source)
 {
 	_name = source->_name;
@@ -515,14 +509,11 @@ DrawObject *DrawObject::CopyFrom(DrawObject * source)
 	_clipRect = source->_clipRect;
 	_bUsingClip = source->_bUsingClip;
 	_bVisible = source->_bVisible;
-	_appearance=source->_appearance;
+	_pAppearance=source->_pAppearance->Clone();
 	_bSelected = source->_bSelected;
 	return this;
 }
 
-
-//创建副本
-//分配新的对象空间，复制当前数据到新对象，但不复制撤销列表。
 DrawObject *DrawObject::Clone()
 {
 	DrawObject *pObject = CreateInstance();
@@ -530,13 +521,6 @@ DrawObject *DrawObject::Clone()
 	pObject->CopyFrom(this);
 	return pObject;
 }
-
-//////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////
-//绘图支持
-//////////////////////////////////////////////////////////////////////////
 
 void DrawObject::Draw(Gdiplus::Graphics & graph)
 {
@@ -568,6 +552,7 @@ void DrawObject::Draw(Gdiplus::Graphics & graph)
 			setClip = true;
 		}
 	}
+	DrawFillObject(graph);
 	OnDraw(graph);
 	if(setClip)
 	{
@@ -578,8 +563,7 @@ void DrawObject::Draw(Gdiplus::Graphics & graph)
 
 }
 void DrawObject::OnDraw(Gdiplus::Graphics & graph)
-{
-	DrawFillObject(graph);
+{	
 }
 
 void DrawObject::DrawBorder(Gdiplus::Graphics & graph)
@@ -606,12 +590,9 @@ void DrawObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 
 }
 
-//////////////////////////////////////////////////////////////////////////
-//几何操作
-//////////////////////////////////////////////////////////////////////////
 Gdiplus::Point DrawObject::GetCenter()
 {
-	Gdiplus::Rect rect = GetObjectRect();
+	const Gdiplus::Rect rect = GetObjectRect();
 	return Gdiplus::Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
 }
 
@@ -630,56 +611,56 @@ void DrawObject::GetObjectRegion(Gdiplus::GraphicsPath & region)
 
 Gdiplus::Rect DrawObject::GetBounds()
 {
-	Gdiplus::Rect rect=GetObjectRect();
+	const Gdiplus::Rect rect=GetObjectRect();
 	Gdiplus::Point pt[4];
 	pt[0] =Gdiplus::Point(rect.X,rect.Y);
 	pt[1] = Gdiplus::Point(rect.X, rect.Y + rect.Height);
 	pt[2] = Gdiplus::Point(rect.X + rect.Width,rect.Y);
 	pt[3] = Gdiplus::Point(rect.X + rect.Width, rect.Y + rect.Height);
 	Local2Global(pt, 4);
-	int minx, maxx;
-	minx = maxx = pt[0].X;
-	int miny, maxy;
-	miny = maxy = pt[0].Y;
+	int maxX;
+	int minX = maxX = pt[0].X;
+	int maxY;
+	int minY = maxY = pt[0].Y;
 	for (int i = 1; i < 4; i++)
 	{
-		if (minx > pt[i].X)
-			minx = pt[i].X;
-		if (maxx < pt[i].X)
-			maxx = pt[i].X;
-		if (miny > pt[i].Y)
-			miny = pt[i].Y;
-		if (maxy < pt[i].Y)
-			maxy = pt[i].Y;
+		if (minX > pt[i].X)
+			minX = pt[i].X;
+		if (maxX < pt[i].X)
+			maxX = pt[i].X;
+		if (minY > pt[i].Y)
+			minY = pt[i].Y;
+		if (maxY < pt[i].Y)
+			maxY = pt[i].Y;
 	}
-	return Gdiplus::Rect(minx, miny, maxx - minx, maxy - miny);
+	return Gdiplus::Rect(minX, minY, maxX - minX, maxY - minY);
 }
 
 Gdiplus::Rect DrawObject::GetWorldBounds()
 {
-	Gdiplus::Rect rect=GetObjectRect();
+	const Gdiplus::Rect rect=GetObjectRect();
 	Gdiplus::Point pt[4];
 	pt[0] =Gdiplus::Point(rect.X,rect.Y);
 	pt[1] = Gdiplus::Point(rect.X, rect.Y + rect.Height);
 	pt[2] = Gdiplus::Point(rect.X + rect.Width,rect.Y);
 	pt[3] = Gdiplus::Point(rect.X + rect.Width, rect.Y + rect.Height);
 	Local2World(pt, 4);
-	int minx, maxx;
-	minx = maxx = pt[0].X;
-	int miny, maxy;
-	miny = maxy = pt[0].Y;
+	int maxX;
+	int minX = maxX = pt[0].X;
+	int maxY;
+	int minY = maxY = pt[0].Y;
 	for (int i = 1; i < 4; i++)
 	{
-		if (minx > pt[i].X)
-			minx = pt[i].X;
-		if (maxx < pt[i].X)
-			maxx = pt[i].X;
-		if (miny > pt[i].Y)
-			miny = pt[i].Y;
-		if (maxy < pt[i].Y)
-			maxy = pt[i].Y;
+		if (minX > pt[i].X)
+			minX = pt[i].X;
+		if (maxX < pt[i].X)
+			maxX = pt[i].X;
+		if (minY > pt[i].Y)
+			minY = pt[i].Y;
+		if (maxY < pt[i].Y)
+			maxY = pt[i].Y;
 	}
-	return Gdiplus::Rect(minx, miny, maxx - minx, maxy - miny);
+	return Gdiplus::Rect(minX, minY, maxX - minX, maxY - minY);
 }
 
 
@@ -846,18 +827,18 @@ Gdiplus::RectF DrawObject::MeasureString( const CStringW & text, Gdiplus::Font *
 
 void DrawObject::SetLineStyle( INT style )
 {
-	if(_appearance.LineStyle!=style)
+	if(GetAppearance().LineStyle!=style)
 	{
 		INT s=style;
 		OnLineStyleChanging(s);
-		_appearance.LineStyle=s;
+		GetAppearance().LineStyle=s;
 		OnLineStyleChanged();
 	}
 }
 
 INT DrawObject::GetLineStyle()
 {
-	return _appearance.LineStyle;
+	return GetAppearance().LineStyle;
 }
 
 void DrawObject::OnLineStyleChanging(INT & style )
@@ -872,18 +853,18 @@ void DrawObject::OnLineStyleChanged()
 
 void DrawObject::SetActiveColor( Gdiplus::Color activeColor )
 {
-	if(activeColor.GetValue()!=_appearance.ActiveColor.GetValue())
+	if(activeColor.GetValue()!=GetAppearance().ActiveColor)
 	{
 		Gdiplus::Color color=activeColor;
 		OnActiveColorChanging(color);
-		_appearance.ActiveColor=color;
+		GetAppearance().ActiveColor=color.GetValue();
 		OnActiveColorChanged();
 	}
 }
 
 Gdiplus::Color DrawObject::GetActiveColor()
 {
-	return _appearance.ActiveColor;
+	return GetAppearance().ActiveColor;
 }
 void DrawObject::OnActiveColorChanging(Gdiplus::Color & color)
 {
@@ -893,7 +874,7 @@ void DrawObject::OnActiveColorChanged()
 {
 	Notify(DNM_ACTIVE_COLOR_CHANGED);
 }
-void DrawObject::SetActive( bool isActived )
+void DrawObject::SetActive(const bool isActived )
 {
 	if(_isActive!=isActived)
 	{
@@ -924,18 +905,18 @@ void DrawObject::ScaleAt( double scaleX, double scaleY, Gdiplus::Point origin )
 
 void DrawObject::SetFontFace( const CString & fontFace )
 {
-	if(_appearance.FontName!=fontFace)
+	if(GetAppearance().FontName!=fontFace)
 	{
 		CString f=fontFace;
 		OnFontFaceChanging(f);
-		_appearance.FontName=f;
+		GetAppearance().FontName=f;
 		OnFontFaceChanged();
 	}
 }
 
 CString DrawObject::GetFontFace()
 {
-	return _appearance.FontName;
+	return GetAppearance().FontName;
 }
 
 void DrawObject::OnFontFaceChanging( CString & faceName )
@@ -950,10 +931,10 @@ void DrawObject::OnFontFaceChanged()
 
 void DrawObject::SetFontStyle( INT style )
 {
-	if(_appearance.FontStyle !=style)
+	if(GetAppearance().FontStyle !=style)
 	{
 		OnFontStyleChanging(style);
-		_appearance.FontStyle=style;
+		GetAppearance().FontStyle=style;
 		OnFontStyleChanged();
 	}
 }
@@ -970,18 +951,18 @@ void DrawObject::OnFontStyleChanged()
 
 void DrawObject::SetFontSize( FLOAT fontSize )
 {
-	if(_appearance.FontSize!=fontSize)
+	if(GetAppearance().FontSize!=fontSize)
 	{
 		FLOAT f=fontSize;
 		OnFontSizeChanging(f);
-		_appearance.FontSize=f;
+		GetAppearance().FontSize=f;
 		OnFontSizeChanged();
 	}
 }
 
 FLOAT DrawObject::GetFontSize()
 {
-	return _appearance.FontSize;
+	return GetAppearance().FontSize;
 }
 
 void DrawObject::OnFontSizeChanging( FLOAT &fontSize )
@@ -996,17 +977,17 @@ void DrawObject::OnFontSizeChanged()
 
 void DrawObject::SetTextAlign( INT align )
 {
-	if(_appearance.TextAlignment!=align)
+	if(GetAppearance().TextAlignment!=align)
 	{
 		OnTextAlignmentChanging(align);
-		_appearance.TextAlignment=align;
+		GetAppearance().TextAlignment=align;
 		OnTextAlignmentChanged();
 	}
 }
 
 int DrawObject::GetTextAlign()
 {
-	return _appearance.TextAlignment;
+	return GetAppearance().TextAlignment;
 }
 
 void DrawObject::OnTextAlignmentChanging( INT & align )
@@ -1021,17 +1002,17 @@ void DrawObject::OnTextAlignmentChanged()
 
 void DrawObject::SetTextLineAlign( INT align )
 {
-	if(_appearance.LineAlignment!=align)
+	if(GetAppearance().LineAlignment!=align)
 	{
 		OnTextLineAlignChanging(align);
-		_appearance.LineAlignment=align;
+		GetAppearance().LineAlignment=align;
 		OnTextLineAlignChanged();
 	}
 }
 
 INT DrawObject::GetTextLineAlign()
 {
-	return _appearance.LineAlignment;
+	return GetAppearance().LineAlignment;
 }
 
 void DrawObject::OnTextLineAlignChanging( INT & align )
@@ -1044,24 +1025,24 @@ void DrawObject::OnTextLineAlignChanged()
 	Notify(DNM_TEXT_LINE_ALIGN_CHANGED);
 }
 
-void DrawObject::SetTextIsVertical( bool isVert )
+void DrawObject::SetTextIsVertical( bool isVertical )
 {
-	if(_appearance.VerticalText!=isVert)
+	if(GetAppearance().VerticalText!=isVertical)
 	{
-		OnTextVerticalChanging(isVert);
-		_appearance.VerticalText=isVert;
+		OnTextVerticalChanging(isVertical);
+		GetAppearance().VerticalText=isVertical;
 		OnTextVerticalChanged();
 	}
 }
 
 bool DrawObject::GetTextIsVertical()
 {
-	return _appearance.VerticalText;
+	return GetAppearance().VerticalText;
 }
 
-void DrawObject::OnTextVerticalChanging( bool & isVert )
+void DrawObject::OnTextVerticalChanging( bool & isVertical )
 {
-	Notify(DNM_TEXT_VERT_CHANGING, 0, &isVert);
+	Notify(DNM_TEXT_VERT_CHANGING, 0, &isVertical);
 }
 
 void DrawObject::OnTextVerticalChanged()
@@ -1071,7 +1052,7 @@ void DrawObject::OnTextVerticalChanged()
 
 INT DrawObject::GetFontStyle()
 {
-	return _appearance.FontStyle;
+	return GetAppearance().FontStyle;
 }
 
 bool DrawObject::IsInRect( const Gdiplus::Rect &rect )
@@ -1091,8 +1072,6 @@ Gdiplus::Image* DrawObject::GetPicture( int width, int height, Gdiplus::Color ba
 	int h=height-4;
 	int x=0;
 	int y=0;
-	Gdiplus::Size size;
-	Gdiplus::Point pt;
 	//Rect bounds=this->GetWorldBounds();
 	//bounds.GetSize(&size);
 	//bounds.GetLocation(&pt);
@@ -1103,28 +1082,28 @@ Gdiplus::Image* DrawObject::GetPicture( int width, int height, Gdiplus::Color ba
 	//    GetParent()->Local2World(&localPos);
 	//    localOffset=localPos - pt;
 	//}
-	size=GetSize();
-	pt=GetPosition();
+	const Gdiplus::Size size = GetSize();
+	const Gdiplus::Point pt = GetPosition();
 	//float ratiox = (float)width/size.Width;
 	//float ratioy = (float)height/size.Height;
 	//计算比例时用缩小后的尺寸
-	float ratiox = (float)w/size.Width;
-	float ratioy = (float)h/size.Height;
-	float ratio=(float)size.Width/size.Height;
+	float ratioX = float(w)/size.Width;
+	float ratioY = float(h)/size.Height;
+	float ratio=float(size.Width)/size.Height;
 	switch(flag & GET_PIC_FLAG_MASK)
 	{
 	case GET_PIC_FLAG_ASPECT:
-		if(ratiox>= ratioy) 
+		if(ratioX>= ratioY) 
 		{
-			w=(int)(size.Width * ratioy);
+			w=int(size.Width * ratioY);
 			//h=height;
-			ratiox=ratioy;
+			ratioX=ratioY;
 		}
 		else
 		{
 			//w=width;
-			h=(int)(size.Height*ratiox);
-			ratioy=ratiox;
+			h=int(size.Height * ratioX);
+			ratioY=ratioX;
 		}
 		break;
 	case GET_PIC_FLAG_STRETCH:
@@ -1143,7 +1122,7 @@ Gdiplus::Image* DrawObject::GetPicture( int width, int height, Gdiplus::Color ba
 		ASSERT(FALSE);
 		break;
 	}
-	DWORD pos=flag & GET_PIC_POS_MASK;
+	const DWORD pos=flag & GET_PIC_POS_MASK;
 	if(pos & GET_PIC_POS_LEFT)
 	{
 		x=0;
@@ -1178,11 +1157,11 @@ Gdiplus::Image* DrawObject::GetPicture( int width, int height, Gdiplus::Color ba
 	//抵消父对象偏移
 	//graph.TranslateTransform(localOffset.X, localOffset.Y);
 	//抵消自身偏移
-	graph.TranslateTransform((float)-pt.X, (float)-pt.Y, Gdiplus::MatrixOrderAppend);
+	graph.TranslateTransform(float(-pt.X), float(-pt.Y), Gdiplus::MatrixOrderAppend);
 	//缩放
-	graph.ScaleTransform(ratiox,ratioy, Gdiplus::MatrixOrderAppend);
+	graph.ScaleTransform(ratioX,ratioY, Gdiplus::MatrixOrderAppend);
 	//在位图中移动
-	graph.TranslateTransform((float)x,(float)y, Gdiplus::MatrixOrderAppend);
+	graph.TranslateTransform(float(x),float(y), Gdiplus::MatrixOrderAppend);
 	Draw(graph);
 	return pBitmap;
 }

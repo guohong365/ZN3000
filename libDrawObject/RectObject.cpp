@@ -10,36 +10,36 @@ static char THIS_FILE[]=__FILE__;
 #endif
 using namespace Gdiplus;
 
-CRectObject::CRectObject()
+RectObject::RectObject()
 {
 
 }
-CRectObject::CRectObject(const CString & name, int x, int y, int width, int height):DrawObject(name, x, y, width, height)
+RectObject::RectObject(const CString & name, int x, int y, int width, int height):DrawObject(name, x, y, width, height)
 {
 
 }
-CRectObject::CRectObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size):DrawObject(name, point, size)
+RectObject::RectObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size):DrawObject(name, point, size)
 {
 
 }
-CRectObject::CRectObject(const CString & name, const Gdiplus::Rect & rect):DrawObject(name, rect)
+RectObject::RectObject(const CString & name, const Gdiplus::Rect & rect):DrawObject(name, rect)
 {
 
 }
 
-void CRectObject::OnDraw(Gdiplus::Graphics & graph)
+void RectObject::OnDraw(Gdiplus::Graphics & graph)
 {
     DrawObject::OnDraw(graph);
 }
 
-void CRectObject::OnDrawBorder(Gdiplus::Graphics & graph)
+void RectObject::OnDrawBorder(Gdiplus::Graphics & graph)
 {
     Gdiplus::Pen pen(GetActive()? GetActiveColor() : GetLineColor(),GetLineWidth());
 	pen.SetDashStyle((DashStyle)GetLineStyle());
     graph.DrawRectangle(&pen, 0, 0, GetSize().Width, GetSize().Height);
 }
 
-void CRectObject::OnDrawFillObject(Gdiplus::Graphics & graph)
+void RectObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 {
     Gdiplus::Color color = GetFillColor();
     BYTE alpha = (BYTE) (GetTransparent() * 255);

@@ -6,7 +6,7 @@ typedef BOOL (*LPTEXT_EDIT_CALLBACK)(DrawObject * pSender, CWnd *pWnd, CString &
 
 
 
-class CTextObject:public CRectObject
+class CTextObject:public RectObject
 {
 private:
 	static LPTEXT_EDIT_CALLBACK _pTextEditCallback;

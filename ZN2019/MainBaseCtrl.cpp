@@ -91,12 +91,13 @@ void CMainBaseCtrl::OnPaint()
 	memDC.CreateCompatibleDC(&dc);
 	CRect rect;
 	GetClientRect(&rect);
-	if(_memBitmap.GetSafeHandle()== nullptr )
+	if(_memBitmap.GetSafeHandle()== nullptr ||
+		_memBitmap.GetBitmapDimension().cx!= rect.Width() ||
+		_memBitmap.GetBitmapDimension().cy != rect.Height())
 	{
-		_memBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
-	}
-	if(_background.GetSafeHandle()==nullptr)
-	{
+		_memBitmap.DeleteObject();
+		_background.DeleteObject();
+		_memBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());	
 		_background.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
 
 	}
@@ -118,16 +119,10 @@ void CMainBaseCtrl::OnPaint()
 
 void CMainBaseCtrl::OnSize(UINT nType, int cx, int cy)
 {
-	CSize sz(cx, cy);
+	Gdiplus::Size sz(cx, cy);
 	CDialog::OnSize(nType, cx, cy);
-	_pCanvas->PrepareCanvas(cx, cy);
 	UICoordinateHelper::GetHelper().DPtoLP(&sz, 1);
-	//_pCanvase->SetSize(Gdiplus::Size(cx/ ScreenInfo::GetScreenInfo().GetDpmmX()*10, cy/ ScreenInfo::GetScreenInfo().GetDpmmY()* 10));	
-	//_pCanvas->SetSize(Gdiplus::Size(sz.cx, sz.cy));
-
-	//CPaintDC dc(this);
-	//_MemBitmap.DeleteObject();
-	//_MemBitmap.CreateCompatibleBitmap(&dc, cx, cy);
+	_pCanvas->SetSize(sz);
 }
 
 HBRUSH CMainBaseCtrl::OnCtlColor(CDC* /*pDC*/, CWnd* /*pWnd*/, UINT /*nCtlColor*/)

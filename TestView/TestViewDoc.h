@@ -9,16 +9,21 @@ class WaveCanvas;
 
 class CTestViewDoc : public CDocument
 {
-	WaveCanvas *_pCanvase;
+	WaveCanvas *_pCanvas;
+	GridBackground *_pBackground;
 protected: // 仅从序列化创建
 	CTestViewDoc();
 	DECLARE_DYNCREATE(CTestViewDoc)
 
 // 特性
 public:
-	WaveCanvas * GetCanvas()
+	WaveCanvas * GetCanvas() const
 	{
-		return _pCanvase;
+		return _pCanvas;
+	}
+	GridBackground *GetBackground() const
+	{
+		return _pBackground;
 	}
 // 操作
 public:

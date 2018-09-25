@@ -11,7 +11,6 @@
 #include "ChildFrm.h"
 #include "ZN2000ViewDoc.h"
 #include "ZN2000ViewView.h"
-#include "../libDrawObject/ImageUtility.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,7 +55,7 @@ CZN2000ViewApp::CZN2000ViewApp()
 // 唯一的一个 CZN2000ViewApp 对象
 
 CZN2000ViewApp theApp;
-GdiplusEnveriment enveriment;
+GdiplusEnvironment environment;
 
 // CZN2000ViewApp 初始化
 

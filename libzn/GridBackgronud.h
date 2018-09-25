@@ -3,14 +3,14 @@
 #include <vector>
 #include "../libDrawObject/DrawObject.h"
 #include "../libDrawObject/LineObject.h"
+#include "GridBackgroundAppearance.h"
 
-class WaveBackground:public DrawObject
+class GridBackground:public DrawObject
 {
 public:
-	WaveBackground();
-	WaveBackground(const Gdiplus::Point &position, const Gdiplus::Size & size);
-	virtual void OnDraw(Gdiplus::Graphics & graph);
-
+	GridBackground();
+	GridBackground(const Gdiplus::Point &position, const Gdiplus::Size & size);	
+	
 	virtual void SetShowThickGrid(bool isShow);
 
 	virtual bool GetShowThickGrid();
@@ -55,7 +55,7 @@ public:
 
 	virtual void AddBaseline(const CString& name, int y, float width, Gdiplus::Color color);
 
-	virtual CLineObject* GetBaseline(int i);
+	virtual LineObject* GetBaseline(int i);
 
 	virtual void SetBaseline(int i, int y);
 
@@ -68,29 +68,20 @@ public:
 	virtual Gdiplus::Color GetBaselineColor(int i);
 
 protected:
-	void DrawGrid(Gdiplus::Graphics & graph, Gdiplus::Pen * pPen, 
+	static void _drawGrid(Gdiplus::Graphics & graph, Gdiplus::Pen * pPen, 
 		const Gdiplus::Point &pos, const Gdiplus::Size & size, int interval);
-	
-private:
-	void initialize();
-
 	virtual void OnDrawBorder( Gdiplus::Graphics & graph );
+	virtual void OnDraw(Gdiplus::Graphics & graph);
+	virtual void OnDrawFillObject(Gdiplus::Graphics& graph);
+	virtual void OnSizeChanged();
+private:
+	void _initialize();
+	GridBackgroundAppearance & _getThisAppearance();
 
 public:
 	virtual DrawObject* CreateInstance();
 private:
-	bool _isDrawThickGrid;
-	bool _isDrawThinGrid;
-	float _thickGridLineWidth;  //0.1mm
-	float _thinGridLineWidth;   //0.1mm
-	Gdiplus::DashStyle _thickGridLineStyle;
-	Gdiplus::DashStyle _thinGridLineStyle;
-	int _thickGridSpacing;   //mm
-	int _thinGridSpacing;    //mm
-	Gdiplus::Color _thickGridColor;
-	Gdiplus::Color _thinGridLineColor;
-
-	std::vector<CLineObject*> _baselines;
+	std::vector<LineObject*> _baselines;
 };
 
 

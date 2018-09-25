@@ -3,6 +3,7 @@
 #define DEFAULT_TEXT_COLOR        RGB(0,0,0)
 #define DEFAULT_LINE_COLOR        RGB(0,0,0)
 #define DEFAULT_FILL_COLOR        RGB(255,255,255)
+#define DEFAULT_FILL_STYLE        0 //SOLID 
 #define DEFAULT_ACTIVE_COLOR      RGB(255,0,0)
 #define DEFAULT_TRACK_COLOR       RGB(0,255,0)
 #define DEFAULT_LINE_STYLE        0 //SOLID

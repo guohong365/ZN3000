@@ -2,16 +2,16 @@
 #include "RectObject.h"
 
 
-class CLineObject :
-	public CRectObject
+class LineObject :
+	public RectObject
 {
 protected:
-	CLineObject();
+	LineObject();
 public:
-	virtual ~CLineObject();
-	CLineObject(const CString & name, const Gdiplus::Rect & rect);
-	CLineObject(const CString & name, int x, int y, int width, int height);
-	CLineObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size &size );
+	virtual ~LineObject();
+	LineObject(const CString & name, const Gdiplus::Rect & rect);
+	LineObject(const CString & name, int x, int y, int width, int height);
+	LineObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size &size );
 
 	virtual void OnDraw(Gdiplus::Graphics &graph);
 	virtual void OnDrawBorder(Gdiplus::Graphics &graph);
@@ -19,5 +19,5 @@ public:
 
 	virtual int GetHandleCount();
 	virtual int HitTest(const Gdiplus::Point &pt);
-	virtual DrawObject* CreateInstance(){return new CLineObject();}
+	virtual DrawObject* CreateInstance(){return new LineObject();}
 };

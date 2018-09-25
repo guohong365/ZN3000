@@ -14,10 +14,9 @@ struct FontInfo
 
 class DrawObject: public Visualized
 {
-public:
-	void Initialize();	
-
+	void _initialize();	
 protected:
+
 	DrawObject();
 public:  
     //Visualized
@@ -76,7 +75,9 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	//绘图属性
-
+	virtual void SetAppearance(Appearance & pAppearance);
+	virtual Appearance & GetAppearance();
+	virtual Appearance & GetAppearance() const;
 	//剪切边框
 	virtual void SetClipRect(Gdiplus::Rect rect);
 	virtual Gdiplus::Rect GetClipRect() const;
@@ -332,6 +333,7 @@ public:
 	static Gdiplus::Unit Unit;
 
 private:
+	static Appearance _basicAppearance;
 	//基本属性
 	DrawObject * _pParent;
 
@@ -358,8 +360,7 @@ private:
 	//是否显示
 	bool _bVisible;
 
-	Appearance _appearance;
-
+	Appearance * _pAppearance;
 	//////////////////////////////////////////////////////////////////////////
 
 	//控制属性

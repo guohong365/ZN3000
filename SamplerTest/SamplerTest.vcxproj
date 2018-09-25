@@ -41,7 +41,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -56,7 +55,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/$(Platform)/$(Configuration);D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Lib\vc100</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../$(Configuration);D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Lib\vc100;$(LIB_UC_ROOT)/$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libzn.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

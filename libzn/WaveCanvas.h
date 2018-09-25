@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "WaveDrawer.h"
-#include "WaveBackgronud.h"
+#include "GridBackgronud.h"
 #define DEFAULT_WAVE_BACKGROUND_COLOR (RGB(0, 64, 0)|0xFF000000)
 #define DEFAULT_WAVE_COLOR            (RGB(0, 255, 0)|0xFF000000)
 #define DEFAULT_THICK_GRID_LINE_COLOR (RGB(0, 255, 0)|0xFF000000)
@@ -16,11 +16,10 @@ public:
 	WaveCanvas(const Gdiplus::Point &pt, const Gdiplus::Size & size);
 	~WaveCanvas();
 	void AddWave(SignalChannel* pChannel, double percent);
-	void OnSizeChanged();
+	virtual void OnSizeChanged();
 	void OnDraw(Gdiplus::Graphics & graph);
-	void PrepareCanvas(int dx, int dy);
 	int GetWaveCount() const;
-
+	void SetPadding(int left, int top, int right, int bottom);
 	WaveDrawer* GetWave(int i);
 	void Clear();
 protected:
@@ -32,9 +31,14 @@ protected:
 public:
 	virtual DrawObject* CreateInstance();
 private:
+	int _paddingLeft;
+	int _paddingTop;
+	int _paddingRight;
+	int _paddingBottom;
+
 	Gdiplus::Font *_pFont;
 	Gdiplus::Bitmap * _pBackground;
-	WaveBackground * _pWaveBackground;
+	GridBackground * _pWaveBackground;
 	std::vector<WaveDrawer *> _waveDrawers;
 	int _labelInterval;
 };

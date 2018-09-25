@@ -1,19 +1,26 @@
 #include "stdafx.h"
-#include "WaveBackgronud.h"
 #include "WaveCanvas.h"
-
+#include "GridBackgronud.h"
+#define DEFAULT_PADDING_LEFT 400
+#define DEFAULT_PADDING_RIGHT 400
+#define DEFAULT_PADDING_TOP 200
+#define DEFAULT_PADDING_BOTTOM 200
+#define DEFAULT_CANVAS_BACKGROUND_COLOR 0xFF000000
 void WaveCanvas::initialize()
 {
 	_pBackground= nullptr;
-	_pWaveBackground=new WaveBackground();
-	_pWaveBackground->SetFillColor(Gdiplus::Color(DEFAULT_WAVE_BACKGROUND_COLOR));
-
+	_pWaveBackground=new GridBackground();
 	_pWaveBackground->SetParent(this);
+	SetFillColor(DEFAULT_CANVAS_BACKGROUND_COLOR);
 	SetFontFace(_T("Arial"));
 	SetFontSize(40.0f);
 	SetFontStyle(Gdiplus::FontStyleRegular);
-	_pFont=new Gdiplus::Font(GetFontFace(), GetFontSize(), GetFontStyle(), Gdiplus::UnitPixel, NULL);	
+	_pFont=new Gdiplus::Font(GetFontFace(), GetFontSize(), GetFontStyle(), Gdiplus::UnitPixel, nullptr);	
 	_labelInterval = 100;
+	_paddingLeft=DEFAULT_PADDING_LEFT;
+	_paddingRight=DEFAULT_PADDING_RIGHT;
+	_paddingTop=DEFAULT_PADDING_TOP;
+	_paddingBottom=DEFAULT_PADDING_BOTTOM;
 }
 
 WaveCanvas::WaveCanvas()
@@ -22,7 +29,7 @@ WaveCanvas::WaveCanvas()
 }
 
 WaveCanvas::WaveCanvas( const Gdiplus::Point &pt, const Gdiplus::Size & size )
-:DrawObject(_T(""), pt, size)
+	:DrawObject(_T(""), pt, size)
 {
 	initialize();
 }
@@ -48,6 +55,14 @@ int WaveCanvas::GetWaveCount() const
 	return _waveDrawers.size();
 }
 
+void WaveCanvas::SetPadding(int left, int top, int right, int bottom)
+{
+	_paddingLeft=left;
+	_paddingTop=top;
+	_paddingRight=right;
+	_paddingBottom=bottom;
+}
+
 WaveDrawer* WaveCanvas::GetWave(int i)
 {
 	ASSERT(i>=0 && i< _waveDrawers.size());
@@ -66,9 +81,19 @@ void WaveCanvas::Clear()
 void WaveCanvas::OnSizeChanged()
 {
 	__super::OnSizeChanged();
-	_pWaveBackground->SetPosition(Gdiplus::Point(100,100));
-	_pWaveBackground->SetSize(Gdiplus::Size(GetSize().Width - 200, GetSize().Height - 200));
+	Gdiplus::Size size=GetSize();	
+	if(size.Width > _paddingLeft+_paddingRight)
+	{
+		size.Width -= _paddingLeft+_paddingRight;
+	}
+	if(size.Height > _paddingTop + _paddingBottom)
+	{
+		size.Height -=_paddingTop + _paddingBottom;
+	}
+	_pWaveBackground->SetSize(size);
+	_pWaveBackground->SetPosition(Gdiplus::Point(_paddingLeft,_paddingTop));
 	_calcLayout();
+	_drawBackground();
 }
 
 void WaveCanvas::_calcLayout()
@@ -97,40 +122,34 @@ void WaveCanvas::_calcLayout()
 
 void WaveCanvas::OnDraw( Gdiplus::Graphics & graph )
 {
-		if(_pBackground)
-		{
-			graph.DrawImage(_pBackground, Gdiplus::Rect(Gdiplus::Point(0,0), GetSize()), 0,0, _pBackground->GetWidth(), _pBackground->GetHeight(), Gdiplus::UnitPixel);
-		}
-		else
-		{
-			_pWaveBackground->Draw(graph);
-		}
-		for(int i=0; i< _waveDrawers.size(); i ++)
-		{
-			_waveDrawers[i]->Draw(graph);
-		}
+	if(!_pBackground)
+	{
+		_drawBackground();
+	}
+	graph.DrawImage(_pBackground, Gdiplus::Rect(Gdiplus::Point(0,0), GetSize()), 0,0, _pBackground->GetWidth(), _pBackground->GetHeight(), Gdiplus::UnitPixel);
+
+	for(int i=0; i< _waveDrawers.size(); i ++)
+	{
+		_waveDrawers[i]->Draw(graph);
+	}
 }
 
 //dx, dy, 设备坐标单位——像素
 void WaveCanvas::_drawBackground()
 {
-
-}
-
-void WaveCanvas::PrepareCanvas( int dx, int dy )
-{
-	delete _pBackground;
-	_pBackground=BitmapCreate(dx, dy, PixelFormat32bppRGB);
-	Gdiplus::Graphics graph(_pBackground);
-	graph.ScaleTransform(1.0f/UICoordinateHelper::GetHelper().HorizontalLmPerDeviceUnit, 1.0f/UICoordinateHelper::GetHelper().VerticalLmPerDeviceUnit);	
-	_pWaveBackground->Draw(graph);
-	for (int i=0; i< _waveDrawers.size(); i ++)
+	Gdiplus::Size size=GetSize();
+	UICoordinateHelper::GetHelper().LPtoDP(&size, 1);
+	if(!_pBackground ||
+		_pBackground->GetWidth()!=size.Width ||
+		_pBackground->GetHeight()!=size.Height)
 	{
-		_drawLabel(graph, 0,_waveDrawers[i]->GetPosition().Y,
-			_waveDrawers[i]->GetPosition().X - 10, _waveDrawers[i]->GetSize().Height,
-			_pWaveBackground->GetPosition().X + _pWaveBackground->GetBaseline(i)->GetPosition().Y);
+		delete _pBackground;
+		_pBackground=BitmapCreate(size.Width, size.Height, PixelFormat32bppARGB);
+		Gdiplus::Graphics graphics(_pBackground);
+		graphics.ScaleTransform(1.0f/UICoordinateHelper::GetHelper().HorizontalLmPerDeviceUnit, 1.0f/UICoordinateHelper::GetHelper().VerticalLmPerDeviceUnit);	
+		graphics.Clear(GetFillColor());
+		_pWaveBackground->Draw(graphics);
 	}
-	_drawHorizontalLabel(graph);
 }
 
 void WaveCanvas::_drawLabel( Gdiplus::Graphics &graph, int x, int y, int width, int height, int baseline ) const
@@ -138,8 +157,6 @@ void WaveCanvas::_drawLabel( Gdiplus::Graphics &graph, int x, int y, int width, 
 	CString strLabel;
 	const int upperStep=(baseline - y ) / _labelInterval -1;
 	const int downStep= (height + y - baseline) / _labelInterval -1;
-	
-	
 
 	Gdiplus::SolidBrush brush(Gdiplus::Color::LightGreen);
 	Gdiplus::RectF layout(x, baseline - _labelInterval, width, _labelInterval * 2);

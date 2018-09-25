@@ -1,13 +1,13 @@
 #pragma once
 #include "DrawObject.h"
 
-class CRectObject:public DrawObject
+class RectObject:public DrawObject
 {
 public:
-	CRectObject();
-	CRectObject(const CString & name, const Gdiplus::Rect & rect);
-	CRectObject(const CString & name, int x, int y, int width, int height);
-	CRectObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size);
+	RectObject();
+	RectObject(const CString & name, const Gdiplus::Rect & rect);
+	RectObject(const CString & name, int x, int y, int width, int height);
+	RectObject(const CString & name, const Gdiplus::Point & point, const Gdiplus::Size & size);
 
 	virtual void OnDraw(Gdiplus::Graphics & graph);
 	virtual void OnDrawBorder(Gdiplus::Graphics & graph);

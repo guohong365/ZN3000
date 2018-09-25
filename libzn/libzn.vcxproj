@@ -38,9 +38,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\lib\$(Platform)\$(Configuration)\</OutDir>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -79,6 +77,7 @@
     <ClInclude Include="DataLoader.h" />
     <ClInclude Include="Record.h" />
     <ClInclude Include="SignalChannelImpl.h" />
+    <ClInclude Include="GridBackgroundAppearance.h" />
     <ClInclude Include="ZnEdfFile.h" />
     <ClInclude Include="EdfReader.h" />
     <ClInclude Include="EdfWriter.h" />
@@ -95,7 +94,7 @@
     <ClInclude Include="SimSampler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="WaveBackgronud.h" />
+    <ClInclude Include="GridBackgronud.h" />
     <ClInclude Include="WaveCanvas.h" />
     <ClInclude Include="WaveDrawer.h" />
     <ClInclude Include="ZNDData.h" />
@@ -117,7 +116,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="WaveBackgronud.cpp" />
+    <ClCompile Include="GridBackgronud.cpp" />
+    <ClCompile Include="GridBackgroundAppearance.cpp" />
     <ClCompile Include="WaveCanvas.cpp" />
     <ClCompile Include="WaveDrawer.cpp" />
     <ClCompile Include="ZnRecord.cpp" />

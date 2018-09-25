@@ -20,7 +20,7 @@ CTextObject::CTextObject(const CString & name, int x, int y,
 						 const CString & fontName,
 						 float fontSize, 
 						 int fontStyle)
-						 :CRectObject(name, x, y, 1, 1)
+						 :RectObject(name, x, y, 1, 1)
 {
     initialize();
 	DrawObject::SetFontFace(fontName);
@@ -35,7 +35,7 @@ CTextObject::CTextObject(const CString & name, const Gdiplus::Point & point,
 						 const CString & fontName,
 						 float fontSize, 
 						 int fontStyle)
-:CRectObject(name, point.X, point.Y, 1, 1)
+:RectObject(name, point.X, point.Y, 1, 1)
 {
     initialize();
 	DrawObject::SetFontFace(fontName);
@@ -119,7 +119,7 @@ void CTextObject::OnDrawFillObject(Gdiplus::Graphics & graph)
 //@param source 复制source对象当前数据到本对象，不复制撤销列表。
 DrawObject *CTextObject::CopyFrom(DrawObject * source)
 {
-    CRectObject::CopyFrom(source);
+    RectObject::CopyFrom(source);
     CTextObject *pTextObject = dynamic_cast<CTextObject*>(source);
     ASSERT(pTextObject);
 	ASSERT(m_pStringFormat);
@@ -129,7 +129,7 @@ DrawObject *CTextObject::CopyFrom(DrawObject * source)
 
 void CTextObject::OnNameChanged()
 {
-    CRectObject::OnNameChanged();
+    RectObject::OnNameChanged();
 	
 	Gdiplus::Font font(GetFontFace(), GetFontSize(), GetFontStyle(), UnitPixel);
 

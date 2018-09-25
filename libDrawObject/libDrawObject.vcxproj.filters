@@ -33,9 +33,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TextObject.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -45,9 +42,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="RectObject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="TextObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DrawObject.h">

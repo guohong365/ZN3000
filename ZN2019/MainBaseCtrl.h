@@ -1,5 +1,5 @@
 #pragma once
-#include "../libzn/WaveBackgronud.h"
+#include "../libzn/GridBackgronud.h"
 #include "../libzn/WaveDrawer.h"
 #include "../libzn/WaveCanvas.h"
 #include "../libzn/ZnRecord.h"

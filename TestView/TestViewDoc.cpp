@@ -29,12 +29,14 @@ END_MESSAGE_MAP()
 // CTestViewDoc ¹¹Ôì/Îö¹¹
 
 CTestViewDoc::CTestViewDoc()
-	:_pCanvase(nullptr)
+	:_pCanvas(nullptr)
 {
+	_pBackground=new GridBackground();	
 }
 
 CTestViewDoc::~CTestViewDoc()
 {
+	delete _pBackground;
 }
 
 BOOL CTestViewDoc::OnNewDocument()
@@ -62,22 +64,22 @@ void CTestViewDoc::Serialize(CArchive& ar)
 	{
 		short temp[LEN_BUFFER]={};
 		ar.Read(temp, LEN_BUFFER * sizeof(short));
-		_pCanvase=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
+		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
 		SignalChannel* pBuffer[4];
-		pBuffer[0]=new SignalChannelImpl(LEN_BUFFER/4);
-		pBuffer[1]=new SignalChannelImpl(LEN_BUFFER/4);
-		pBuffer[2]=new SignalChannelImpl(LEN_BUFFER/4);
-		pBuffer[3]=new SignalChannelImpl(LEN_BUFFER/4);
+		pBuffer[0]=new SignalChannelImpl(_T("a"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
+		pBuffer[1]=new SignalChannelImpl(_T("b"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
+		pBuffer[2]=new SignalChannelImpl(_T("c"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
+		pBuffer[3]=new SignalChannelImpl(_T("d"), 1000, 0, 10, _T("V"),LEN_BUFFER/4);
 		int index=0;
 		for(int i=0; i< LEN_BUFFER; i++)
 		{
 			pBuffer[i%4]->getSignalBuffer().append(temp[i]);
 			index += 4;
 		}
-		_pCanvase->AddWave(pBuffer[0], 25);
-		_pCanvase->AddWave(pBuffer[1], 25);
-		_pCanvase->AddWave(pBuffer[2], 25);
-		_pCanvase->AddWave(pBuffer[3], 25);
+		_pCanvas->AddWave(pBuffer[0], 25);
+		_pCanvas->AddWave(pBuffer[1], 25);
+		_pCanvas->AddWave(pBuffer[2], 25);
+		_pCanvas->AddWave(pBuffer[3], 25);
 	}
 }
 

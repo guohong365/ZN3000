@@ -29,18 +29,18 @@ BEGIN_MESSAGE_MAP(CTestViewView, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_SIZE()
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 // CTestViewView 构造/析构
 
-CTestViewView::CTestViewView()
-{
-	// TODO: 在此处添加构造代码
-
+CTestViewView::CTestViewView(): _pBackground(nullptr)
+{	
 }
 
 CTestViewView::~CTestViewView()
 {
+	delete _pBackground;
 }
 
 BOOL CTestViewView::PreCreateWindow(CREATESTRUCT& cs)
@@ -60,30 +60,53 @@ void CTestViewView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	CDC memDC;
-	memDC.CreateCompatibleDC(pDC);
+	//CDC memDC;
+	//memDC.CreateCompatibleDC(pDC);
 	CRect rect;
 	GetClientRect(&rect);
-	if(_MemBitmap.GetSafeHandle()==NULL )
+	if(_memBitmap.GetSafeHandle()== nullptr ||
+		_memBitmap.GetBitmapDimension().cx != rect.Width() || 
+		_memBitmap.GetBitmapDimension().cy !=rect.Height())
 	{
-		_MemBitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
+		_memBitmap.DeleteObject();		
+		_memBitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
+		_pBackground = BitmapCreate(rect.Width(), rect.Height(), PixelFormat32bppARGB);
+		Gdiplus::Graphics back(_pBackground);
+		back.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+		back.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		back.SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
+		back.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
+		CSize sz(1000,1000);
+		ScreenInfo screen;
+		back.ScaleTransform(1.0f/UICoordinateHelper::GetHelper().HorizontalLmPerDeviceUnit, 1.0f/UICoordinateHelper::GetHelper().VerticalLmPerDeviceUnit);	
+		//back.ScaleTransform(0.1/ScreenInfo::GetScreenInfo().GetDpmmX(), 0.1/ScreenInfo::GetScreenInfo().GetDpmmY());
+		GetDocument()->GetBackground()->Draw(back);
 	}
 
-	CBitmap * pOldBitmap=(CBitmap*)memDC.SelectObject(&_MemBitmap);
-	memDC.SetMapMode(MM_ANISOTROPIC);
+	//CBitmap * pOldBitmap=static_cast<CBitmap*>(memDC.SelectObject(&_memBitmap));
+	//memDC.SetMapMode(MM_ANISOTROPIC);
+	//CSize sz(1000,1000);
+	//memDC.SetWindowExt(sz);
+	//UICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
+	//memDC.SetViewportExt(sz);
+	//Gdiplus::Graphics graph(memDC.GetSafeHdc());
+	//graph.SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+	//GetDocument()->GetBackground()->Draw(graph);
 
-	CSize sz(1000,1000);
-	memDC.SetWindowExt(sz);
-	UICoordinateHelper::GetHelper().LPtoDP(&sz, 1);
-	memDC.SetViewportExt(sz);
+	//pDC->BitBlt(0,0,rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+	//memDC.SelectObject(pOldBitmap);
+	Gdiplus::Graphics graphics(pDC->GetSafeHdc());
+	Gdiplus::RectF bounds;
+	Gdiplus::Unit unit;
+	_pBackground->GetBounds(&bounds, &unit);
+	graphics.DrawImage(_pBackground, Gdiplus::Rect(0,0, rect.Width(), rect.Height()),
+		0,0, _pBackground->GetWidth(), _pBackground->GetHeight(), Gdiplus::UnitPixel);
+	if(GetDocument()->GetCanvas())
+	{
+		graphics.ScaleTransform(1.0f/UICoordinateHelper::GetHelper().HorizontalLmPerDeviceUnit, 1.0f/UICoordinateHelper::GetHelper().VerticalLmPerDeviceUnit);
+		GetDocument()->GetCanvas()->Draw(graphics);
+	}
 
-	Gdiplus::Graphics graph(memDC.GetSafeHdc());
-	//LARGE_INTEGER begin;
-	//LARGE_INTEGER end;
-	//QueryPerformanceCounter(&begin);
-	GetDocument()->GetCanvas()->Draw(graph);
-	pDC->BitBlt(0,0,rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
-	memDC.SelectObject(pOldBitmap);
 }
 
 
@@ -160,9 +183,20 @@ void CTestViewView::OnInitialUpdate()
 void CTestViewView::OnSize(UINT nType, int cx, int cy)
 {
 	CView::OnSize(nType, cx, cy);
-
-	if(GetDocument()->GetCanvas()== nullptr) return;
-	CSize sz(cx, cy);	
+	Gdiplus::Size sz(cx, cy);	
 	UICoordinateHelper::GetHelper().DPtoLP(&sz, 1);	
-	GetDocument()->GetCanvas()->SetSize(Gdiplus::Size(sz.cx, sz.cy));
+	if(GetDocument()->GetCanvas()!= nullptr)
+	{
+		GetDocument()->GetCanvas()->SetSize(sz);
+	}
+	if(GetDocument()->GetBackground()!=nullptr)
+	{
+		GetDocument()->GetBackground()->SetSize(sz);
+	}
+}
+
+
+BOOL CTestViewView::OnEraseBkgnd(CDC* pDC)
+{
+	return TRUE;
 }

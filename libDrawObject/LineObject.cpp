@@ -8,29 +8,29 @@ static char THIS_FILE[]=__FILE__;
 #endif
 using namespace Gdiplus;
 
-CLineObject::CLineObject(void)
+LineObject::LineObject(void)
 {
 }
 
-CLineObject::~CLineObject(void)
+LineObject::~LineObject(void)
 {
 }
-CLineObject::CLineObject(const CString & name, const Rect & rect)
-:CRectObject(name, rect)
-{
-
-}
-CLineObject::CLineObject(const CString & name, int x, int y, int width, int height)
-:CRectObject(name, x, y, width, height)
+LineObject::LineObject(const CString & name, const Rect & rect)
+:RectObject(name, rect)
 {
 
 }
-CLineObject::CLineObject(const CString & name, const Point & point, const Size &size )
-:CRectObject(name, point, size)
+LineObject::LineObject(const CString & name, int x, int y, int width, int height)
+:RectObject(name, x, y, width, height)
 {
 
 }
-void CLineObject::OnDraw(Graphics &graph)
+LineObject::LineObject(const CString & name, const Point & point, const Size &size )
+:RectObject(name, point, size)
+{
+
+}
+void LineObject::OnDraw(Graphics &graph)
 {
 	Color color=GetLineColor();
 	const BYTE alpha=BYTE(GetTransparent() * 255);
@@ -41,21 +41,21 @@ void CLineObject::OnDraw(Graphics &graph)
 	pen.SetDashStyle(DashStyle(GetLineStyle()));
 	graph.DrawLine(&pen, 0, 0, GetSize().Width, GetSize().Height);
 }
-void CLineObject::OnDrawBorder(Graphics &graph)
+void LineObject::OnDrawBorder(Graphics &graph)
 {
 
 }
-void CLineObject::OnDrawFillObject(Graphics &graph)
+void LineObject::OnDrawFillObject(Graphics &graph)
 {
 
 }
 
- int CLineObject::GetHandleCount()
+ int LineObject::GetHandleCount()
  {
 	 return 2;
  }
  
- int CLineObject::HitTest(const Point &pt)
+ int LineObject::HitTest(const Point &pt)
  {
 	 if (!GetVisible())
 	 {
