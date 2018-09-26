@@ -50,38 +50,18 @@ public:
 	virtual void SetThinGridSpacing(int spacing);
 
 	virtual int GetThinGridSpacing();
-
-	virtual int GetBaselineCount();
-
-	virtual void AddBaseline(const CString& name, int y, float width, Gdiplus::Color color);
-
-	virtual LineObject* GetBaseline(int i);
-
-	virtual void SetBaseline(int i, int y);
-
-	virtual void SetBaselineWidth(int i, float width);
-
-	virtual float GetBaselineWidth(int i);
-
-	virtual void SetBaselineColor(int i, Gdiplus::Color color);
-
-	virtual Gdiplus::Color GetBaselineColor(int i);
-
 protected:
 	static void _drawGrid(Gdiplus::Graphics & graph, Gdiplus::Pen * pPen, 
 		const Gdiplus::Point &pos, const Gdiplus::Size & size, int interval);
 	virtual void OnDrawBorder( Gdiplus::Graphics & graph );
 	virtual void OnDraw(Gdiplus::Graphics & graph);
 	virtual void OnDrawFillObject(Gdiplus::Graphics& graph);
-	virtual void OnSizeChanged();
 private:
 	void _initialize();
 	GridBackgroundAppearance & _getThisAppearance();
 
 public:
 	virtual DrawObject* CreateInstance();
-private:
-	std::vector<LineObject*> _baselines;
 };
 
 

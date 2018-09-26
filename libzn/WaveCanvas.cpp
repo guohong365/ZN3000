@@ -46,7 +46,6 @@ void WaveCanvas::AddWave(SignalChannel* pChannel, const double percent)
 	WaveDrawer* pDrawer = new WaveDrawer(pChannel, percent);
 	pDrawer->SetParent(this);
 	_waveDrawers.push_back(pDrawer);
-	_pWaveBackground->AddBaseline(pChannel->getLabel(), 0, 5, DEFAULT_WAVE_BASELINE_COLOR);
 	_calcLayout();
 }
 
@@ -81,6 +80,13 @@ void WaveCanvas::Clear()
 void WaveCanvas::OnSizeChanged()
 {
 	__super::OnSizeChanged();
+
+	_calcLayout();
+	_drawBackground();
+}
+
+void WaveCanvas::_calcLayout()
+{
 	Gdiplus::Size size=GetSize();	
 	if(size.Width > _paddingLeft+_paddingRight)
 	{
@@ -92,19 +98,12 @@ void WaveCanvas::OnSizeChanged()
 	}
 	_pWaveBackground->SetSize(size);
 	_pWaveBackground->SetPosition(Gdiplus::Point(_paddingLeft,_paddingTop));
-	_calcLayout();
-	_drawBackground();
-}
-
-void WaveCanvas::_calcLayout()
-{
 	double sum = 0;
 	for(int i=0; i< _waveDrawers.size(); i++)
 	{
 		sum +=_waveDrawers[i]->GetLayoutPercent();
 	}
-	Gdiplus::Point pos=_pWaveBackground->GetPosition();
-	Gdiplus::Size size=GetSize();
+	Gdiplus::Point pos=_pWaveBackground->GetPosition();	
 	Gdiplus::Point baselinePos;
 	size.Width = _pWaveBackground->GetSize().Width;
 	for (int i=0; i< _waveDrawers.size(); i++)
@@ -112,11 +111,7 @@ void WaveCanvas::_calcLayout()
 		size.Height = _pWaveBackground->GetSize().Height * _waveDrawers[i]->GetLayoutPercent() / sum;
 		_waveDrawers[i]->SetPosition(pos);
 		_waveDrawers[i]->SetSize(size);
-		baselinePos.Y = _waveDrawers[i]->GetBaseline();
-		_waveDrawers[i]->Local2Global(&baselinePos);
-		_pWaveBackground->Global2Local(&baselinePos);
-		_pWaveBackground->SetBaseline(i, baselinePos.Y);
-		pos.Y = (pos.Y + size.Height) / 100 * 100 ;
+		pos.Y  += size.Height;
 	}
 }
 

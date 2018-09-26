@@ -36,10 +36,6 @@ GridBackground::GridBackground(const Gdiplus::Point &position, const Gdiplus::Si
 
 GridBackground::~GridBackground()
 {
-	for(std::vector<LineObject*>::iterator it=_baselines.begin(); it!=_baselines.end(); ++it)
-	{
-		delete *it;
-	}
 }
 
 void GridBackground::OnDraw(Gdiplus::Graphics & graph)
@@ -54,27 +50,12 @@ void GridBackground::OnDraw(Gdiplus::Graphics & graph)
 		_drawGrid(graph, &thinGridPen, Gdiplus::Point(0,0), GetSize(), GetThinGridSpacing());
 	if(GetShowThickGrid())
 		_drawGrid(graph, &thickGridPen, Gdiplus::Point(0,0), GetSize(), GetThickGridSpacing());
-	
-	for(size_t i=0; i< _baselines.size(); i++)
-	{
-		_baselines[i]->Draw(graph);
-	}
 }
 
 void GridBackground::OnDrawFillObject(Gdiplus::Graphics& graph)
 {
 	Gdiplus::SolidBrush backgroundBrush(GetFillColor());
 	graph.FillRectangle(&backgroundBrush, 0, 0, GetSize().Width, GetSize().Height);
-}
-
-void GridBackground::OnSizeChanged()
-{
-	const Gdiplus::Size size=GetSize();
-	for (std::vector<LineObject*>::iterator it=_baselines.begin();
-		it!=_baselines.end(); ++it)
-	{
-		(*it)->SetSize(Gdiplus::Size(size.Width, 0));
-	}
 }
 
 void GridBackground::SetShowThickGrid(bool isShow)
@@ -175,50 +156,6 @@ void GridBackground::SetThinGridSpacing(int spacing)
 int GridBackground::GetThinGridSpacing()
 {
 	return _getThisAppearance().ThinGridSpacing;
-}
-
-int GridBackground::GetBaselineCount()
-{
-	return _baselines.size();
-}
-
-void GridBackground::AddBaseline(const CString& name, int y, float width, Gdiplus::Color color)
-{
-	LineObject *pLine = new LineObject(name, 0, y, GetSize().Width, 0);
-	pLine->SetParent(this);
-	pLine->SetLineColor(color);
-	pLine->SetLineWidth(width);
-	_baselines.push_back(pLine);
-}
-
-LineObject* GridBackground::GetBaseline(int i)
-{
-	return _baselines[i];
-}
-
-void GridBackground::SetBaseline(int i, int y)
-{
-	_baselines[i]->SetPosition(Gdiplus::Point(0, y));
-}
-
-void GridBackground::SetBaselineWidth(int i, float width)
-{
-	_baselines[i]->SetLineWidth(width);
-}
-
-float GridBackground::GetBaselineWidth(int i)
-{
-	return _baselines[i]->GetLineWidth();
-}
-
-void GridBackground::SetBaselineColor(int i, Gdiplus::Color color)
-{
-	_baselines[i]->SetLineColor(color);
-}
-
-Gdiplus::Color GridBackground::GetBaselineColor(int i)
-{
-	return _baselines[i]->GetLineColor();
 }
 
 void GridBackground::_drawGrid(Gdiplus::Graphics & graph, Gdiplus::Pen * pPen, 

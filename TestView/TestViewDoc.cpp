@@ -56,7 +56,14 @@ BOOL CTestViewDoc::OnNewDocument()
 
 
 // CTestViewDoc ÐòÁÐ»¯
-
+void revert(Packet * packet)
+{
+	packet->FrameCount=RevertUInt16(packet->FrameCount);
+	packet->Feedback=RevertUInt16(packet->Feedback);
+	packet->Admittance=RevertUInt16(packet->Admittance);
+	packet->Differential=RevertUInt16(packet->Differential);
+	packet->ECG=RevertUInt16(packet->ECG);
+}
 void CTestViewDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
@@ -65,21 +72,21 @@ void CTestViewDoc::Serialize(CArchive& ar)
 	else
 	{
 		BYTE *pTemp=new BYTE[LEN_BUFFER*sizeof(Packet)];
-		ar.Read(pTemp, LEN_BUFFER * sizeof(Packet));		
+		const UINT length=ar.Read(pTemp, LEN_BUFFER * sizeof(Packet));		
 		SignalChannel* pBuffer[4];
-		pBuffer[0]=new SignalChannelImpl(_T("Feedback"), 100, 0, 10, _T("V"),LEN_BUFFER);
-		pBuffer[1]=new SignalChannelImpl(_T("Admittance"), 100, 0, 10, _T("V"),LEN_BUFFER);
-		pBuffer[2]=new SignalChannelImpl(_T("Differential"), 100, 0, 10, _T("V"),LEN_BUFFER);
-		pBuffer[3]=new SignalChannelImpl(_T("ECG"), 100, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[0]=new SignalChannelImpl(_T("Feedback"), 1000, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[1]=new SignalChannelImpl(_T("Admittance"), 1000, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[2]=new SignalChannelImpl(_T("Differential"), 1000, 0, 10, _T("V"),LEN_BUFFER);
+		pBuffer[3]=new SignalChannelImpl(_T("ECG"), 1000, 0, 10, _T("V"),LEN_BUFFER);
 		int index=0;
 		BYTE * p=pTemp;
-		for(int i=0; i< (LEN_BUFFER -1) * sizeof(Packet); i++)
+		for(int i=0; i< length - sizeof(Packet); i++)
 		{
-			if(p[i] != 0xCA || p[sizeof(Packet) -1]!=0xF1)
+			if(p[i] != 0xCA || p[i + sizeof(Packet) -1]!=0xF1)
 			{
 				continue;
 			}
-			DataBuffer* pData = reinterpret_cast<DataBuffer*>(p);
+			DataBuffer* pData = reinterpret_cast<DataBuffer*>(p + i);
 			if(!checkPacket(pData))
 			{
 				continue;
@@ -88,20 +95,32 @@ void CTestViewDoc::Serialize(CArchive& ar)
 			do
 			{
 				pData=reinterpret_cast<DataBuffer*>(p + index);
-				pBuffer[0]->getSignalBuffer().append(RevertUInt16(pData->Paket.Feedback));
-				pBuffer[1]->getSignalBuffer().append(RevertUInt16(pData->Paket.Admittance));
-				pBuffer[2]->getSignalBuffer().append(RevertUInt16(pData->Paket.Differential));
-				pBuffer[3]->getSignalBuffer().append(RevertUInt16(pData->Paket.ECG));
+				revert(&pData->Paket);
+				pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback);
+				pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance);
+				pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential);
+				pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG);
+				//pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback);
+				//pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance);
+				//pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential);
+				//pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG);
 				index +=sizeof(Packet);
 			}while(index< (LEN_BUFFER -1) * sizeof(Packet));
 			break;
 		}
 		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
-		_pCanvas->AddWave(pBuffer[0], 25);
+		//_pCanvas->AddWave(pBuffer[0], 25);
 		_pCanvas->AddWave(pBuffer[1], 25);
 		_pCanvas->AddWave(pBuffer[2], 25);
-		_pCanvas->AddWave(pBuffer[3], 25);
+		//_pCanvas->AddWave(pBuffer[3], 25);
 		delete []pTemp;
+		FILE * fp;
+		_tfopen_s(&fp, _T("out.txt"), _T("w"));
+		for(int i=0; i< pBuffer[1]->getSignalBuffer().getLength(); ++i)
+		{
+			_ftprintf(fp, _T("%4.3f,"), pBuffer[1]->getSignalBuffer().getBuffer()[i]);
+		}
+		fclose(fp);
 	}
 }
 

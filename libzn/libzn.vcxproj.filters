@@ -99,6 +99,9 @@
     <ClInclude Include="Settings.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="WaveDrawerAppearance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -153,6 +156,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Settings.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveDrawerAppearance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

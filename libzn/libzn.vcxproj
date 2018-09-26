@@ -79,6 +79,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SignalChannelImpl.h" />
     <ClInclude Include="GridBackgroundAppearance.h" />
+    <ClInclude Include="WaveDrawerAppearance.h" />
     <ClInclude Include="ZnEdfFile.h" />
     <ClInclude Include="EdfReader.h" />
     <ClInclude Include="EdfWriter.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="GridBackgroundAppearance.cpp" />
     <ClCompile Include="WaveCanvas.cpp" />
     <ClCompile Include="WaveDrawer.cpp" />
+    <ClCompile Include="WaveDrawerAppearance.cpp" />
     <ClCompile Include="ZnRecord.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
