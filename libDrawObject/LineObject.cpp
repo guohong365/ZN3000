@@ -8,11 +8,11 @@ static char THIS_FILE[]=__FILE__;
 #endif
 using namespace Gdiplus;
 
-LineObject::LineObject(void)
+LineObject::LineObject()
 {
 }
 
-LineObject::~LineObject(void)
+LineObject::~LineObject()
 {
 }
 LineObject::LineObject(const CString & name, const Rect & rect)

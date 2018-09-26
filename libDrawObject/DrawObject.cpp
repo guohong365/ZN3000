@@ -3,12 +3,6 @@
 #include "DrawObject.h"
 #include "BaseTypes.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 #define STRING2x(x) #x
 #define STRINGxx(x) STRING2x(x)
 
@@ -21,11 +15,11 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 Gdiplus::Unit DrawObject::Unit = Gdiplus::UnitPixel;
-Appearance DrawObject::_basicAppearance;
+static Appearance BasicAppearance;
 
 void DrawObject::_initialize()
 {
-	_pAppearance=new Appearance(_basicAppearance);
+	_pAppearance=new Appearance(BasicAppearance);
 	_name=_T("");
 	_bUsingClip = false;
 	_bVisible = true;
@@ -33,8 +27,6 @@ void DrawObject::_initialize()
 	_bSelected = false;	
 	_pParent = nullptr;
 	//GetAppearance().FontSize=FontSizeArray[DEFAULT_FONT_SIZE_INDEX].SizePoint*FONT_SIZE_FACTOR;
-
-	_internalName = GenerateUniqueName();
 }
 
 DrawObject::DrawObject()
@@ -303,52 +295,6 @@ void DrawObject::OnShowBorderChanged()
 {
 	Notify(DNM_SHOW_BORDER_CHANGED);
 }
-void DrawObject::SetShowTracker(bool isShowTracker)
-{
-	if (isShowTracker != GetAppearance().ShowTrack)
-	{
-		OnShowTrackerChanging(isShowTracker);
-		GetAppearance().ShowTrack = isShowTracker;
-		OnShowTrackerChanged();
-	}
-}
-bool DrawObject::GetShowTracker() const 
-{
-	return GetAppearance().ShowTrack;
-}
-
-void DrawObject::OnShowTrackerChanging(bool & newShowTracker)
-{
-	Notify(DNM_SHOW_TRACKER_CHANGING, 0, &newShowTracker);
-}
-void DrawObject::OnShowTrackerChanged()
-{
-	Notify(DNM_SHOW_TRACKER_CHANGED);
-}
-
-void DrawObject::SetTrackerColor(Gdiplus::Color color)
-{
-	if (color.GetValue() != GetAppearance().TraceColor)
-	{
-		OnTrackerColorChanging(color);
-		GetAppearance().TraceColor = color.GetValue();
-		OnTrackerColorChanged();
-	}
-}
-
-Gdiplus::Color DrawObject::GetTrackerColor() const
-{
-	return GetAppearance().TraceColor;
-}
-
-void DrawObject::OnTrackerColorChanging(Gdiplus::Color & color)
-{
-	Notify(DNM_TRACKER_COLOR_CHANGING, 0,&color);
-}
-void DrawObject::OnTrackerColorChanged()
-{
-	Notify(DNM_TRACKER_COLOR_CHANGED);
-}
 
 //Í¸Ã÷¶È
 void DrawObject::SetTransparent(float transparent)
@@ -499,7 +445,7 @@ void DrawObject::OnParentChanged()
 	Notify(DNM_PARENT_CHANGED);
 }
 
-LOGFONTW OBJECT_DEFAULT_FONT = { 0 };
+LOGFONTW ObjectDefaultFont = { 0 };
 
 DrawObject *DrawObject::CopyFrom(DrawObject * source)
 {
@@ -664,25 +610,25 @@ Gdiplus::Rect DrawObject::GetWorldBounds()
 }
 
 
-void DrawObject::MoveTo(Gdiplus::Point point)
+void DrawObject::MoveTo(const Gdiplus::Point& point)
 {
 	SetPosition(point);
 }
-void DrawObject::MoveTo(int x, int y)
+void DrawObject::MoveTo(const int x, const int y)
 {
 	SetPosition(Gdiplus::Point(x, y));
 }
-void DrawObject::Offset(int x, int y)
+void DrawObject::Offset(const int x, const int y)
 {
 	Offset(Gdiplus::Point(x, y));
 }
 
-void DrawObject::Offset(Gdiplus::Point point)
+void DrawObject::Offset(const Gdiplus::Point& point)
 {
 	SetPosition(_position + point);
 }
 
-void DrawObject::Scale(double scaleX, double scaleY)
+void DrawObject::Scale(const double scaleX, const double scaleY)
 {
 	Gdiplus::Size size;
 	size.Width = int(_size.Width * scaleX);
@@ -690,36 +636,7 @@ void DrawObject::Scale(double scaleX, double scaleY)
 	SetSize(size);
 }
 
-int DrawObject::GetHandleCount()
-{
-	return 8;
-}
-
-int DrawObject::HitTest(const Gdiplus::Point & pt)
-{
-	if (!GetVisible())
-	{
-		return 0;
-	}
-	const int nHandleCount = GetHandleCount();
-
-	Gdiplus::Rect rect = GetObjectRect();
-	if (rect.Contains(pt))
-	{
-		return nHandleCount + 1;
-	}
-	return 0;
-}
-
-bool DrawObject::OnRButtonDown(CWnd * pWnd, UINT nFlags, Gdiplus::Point point)
-{
-	return false;
-}
-bool DrawObject::OnLButtonDblClk(CWnd *pWnd, UINT nFlags, Gdiplus::Point point)
-{
-	return false;
-}
-void DrawObject::Local2World(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::Local2World(Gdiplus::Point * pt, const int count /*=1*/ )
 {
 	DrawObject *pParent = GetParent();
 	Local2Global(pt, count);
@@ -730,7 +647,7 @@ void DrawObject::Local2World(Gdiplus::Point * pt, int count /*=1*/ )
 	}
 }
 
-void DrawObject::Local2World( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::Local2World( Gdiplus::Rect *rect, const int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -742,7 +659,7 @@ void DrawObject::Local2World( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void DrawObject::World2Local(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::World2Local(Gdiplus::Point * pt, const int count /*=1*/ )
 {
 	DrawObject *pParent = GetParent();
 	if (pParent)
@@ -752,7 +669,7 @@ void DrawObject::World2Local(Gdiplus::Point * pt, int count /*=1*/ )
 	Global2Local(pt, count);
 }
 
-void DrawObject::World2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::World2Local( Gdiplus::Rect *rect, const int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -764,14 +681,14 @@ void DrawObject::World2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void DrawObject::Global2Local(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::Global2Local(Gdiplus::Point * pt, const int count /*=1*/ )
 {
 	Gdiplus::Matrix matrix;
-	matrix.Translate(-Gdiplus::REAL(GetPosition().X), -(Gdiplus::REAL) GetPosition().Y);
+	matrix.Translate(-Gdiplus::REAL(GetPosition().X), -Gdiplus::REAL(GetPosition().Y));
 	matrix.TransformPoints(pt, count);
 }
 
-void DrawObject::Global2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::Global2Local( Gdiplus::Rect *rect, const int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -783,14 +700,14 @@ void DrawObject::Global2Local( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void DrawObject::Local2Global(Gdiplus::Point * pt, int count /*=1*/ )
+void DrawObject::Local2Global(Gdiplus::Point * pt, const int count /*=1*/ )
 {
 	Gdiplus::Matrix matrix;
 	matrix.Translate(Gdiplus::REAL(GetPosition().X), Gdiplus::REAL(GetPosition().Y));
 	matrix.TransformPoints(pt, count);
 }
 
-void DrawObject::Local2Global( Gdiplus::Rect *rect, int count /*= 1*/ )
+void DrawObject::Local2Global( Gdiplus::Rect *rect, const int count /*= 1*/ )
 {
 	for(int i=0; i< count; i++)
 	{
@@ -802,20 +719,20 @@ void DrawObject::Local2Global( Gdiplus::Rect *rect, int count /*= 1*/ )
 	}
 }
 
-void DrawObject::OnNotify(DrawObject * pSource, UINT messageID, DWORD_PTR wParam, LPVOID lpParam)
+void DrawObject::OnNotify(DrawObject * /*pSource*/, UINT /*messageID*/, DWORD_PTR /*wParam*/, LPVOID /*lpParam*/)
 {
 }
 
-void DrawObject::Notify(UINT msgID, DWORD_PTR wParam, LPVOID lpParam)
+void DrawObject::Notify(UINT msgId, DWORD_PTR wParam, LPVOID lpParam)
 {
 	if (GetParent())
 	{
-		GetParent()->OnNotify(this, msgID, wParam, lpParam);
+		GetParent()->OnNotify(this, msgId, wParam, lpParam);
 	}
 }
 
 
-Gdiplus::RectF DrawObject::MeasureString( const CStringW & text, Gdiplus::Font * pFont, Gdiplus::PointF origin, Gdiplus::StringFormat *pFormat)
+Gdiplus::RectF DrawObject::MeasureString( const CStringW & text, Gdiplus::Font * pFont, const Gdiplus::PointF& origin, Gdiplus::StringFormat *pFormat)
 {
 	Gdiplus::RectF retRectF;
 	Gdiplus::Bitmap bmp(1,1);
@@ -825,7 +742,7 @@ Gdiplus::RectF DrawObject::MeasureString( const CStringW & text, Gdiplus::Font *
 	return retRectF;
 }
 
-void DrawObject::SetLineStyle( INT style )
+void DrawObject::SetLineStyle(const int style )
 {
 	if(GetAppearance().LineStyle!=style)
 	{
@@ -874,19 +791,19 @@ void DrawObject::OnActiveColorChanged()
 {
 	Notify(DNM_ACTIVE_COLOR_CHANGED);
 }
-void DrawObject::SetActive(const bool isActived )
+void DrawObject::SetActive(const bool isActive )
 {
-	if(_isActive!=isActived)
+	if(_isActive!=isActive)
 	{
-		bool actived=isActived;
-		OnActiveChanging(actived);
-		_isActive=actived;
+		bool active=isActive;
+		OnActiveChanging(active);
+		_isActive=active;
 		OnActiveChanged();
 	}
 }
-void DrawObject::OnActiveChanging(bool &isActived)
+void DrawObject::OnActiveChanging(bool &isActive)
 {
-	Notify(DNM_ACTIVE_CHANGING, 0, &isActived);
+	Notify(DNM_ACTIVE_CHANGING, 0, &isActive);
 }
 void DrawObject::OnActiveChanged()
 {
@@ -898,7 +815,7 @@ bool DrawObject::GetActive()
 	return _isActive;
 }
 
-void DrawObject::ScaleAt( double scaleX, double scaleY, Gdiplus::Point origin )
+void DrawObject::ScaleAt( double scaleX, double scaleY, const Gdiplus::Point& origin )
 {
 	Scale(scaleX, scaleY);
 }

@@ -28,10 +28,8 @@ END_MESSAGE_MAP()
 
 // CZN2000ViewDoc 构造/析构
 
-CZN2000ViewDoc::CZN2000ViewDoc()
+CZN2000ViewDoc::CZN2000ViewDoc(): _pRecord(nullptr)
 {
-	// TODO: 在此添加一次性构造代码
-
 }
 
 CZN2000ViewDoc::~CZN2000ViewDoc()

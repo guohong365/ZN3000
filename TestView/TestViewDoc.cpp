@@ -6,12 +6,10 @@
 // SHARED_HANDLERS 可以在实现预览、缩略图和搜索筛选器句柄的
 // ATL 项目中进行定义，并允许与该项目共享文档代码。
 #ifndef SHARED_HANDLERS
-#include "TestView.h"
 #endif
 #include "../libzn/WaveCanvas.h"
 #include "TestViewDoc.h"
 #include "../libzn/Packet.h"
-#include <propkey.h>
 #include "../libzn/SignalBuffer.h"
 #include <libini.h>
 
@@ -78,7 +76,6 @@ void CTestViewDoc::Serialize(CArchive& ar)
 		pBuffer[1]=new SignalChannelImpl(_T("Admittance"), 1000, 0, 10, _T("V"),LEN_BUFFER);
 		pBuffer[2]=new SignalChannelImpl(_T("Differential"), 1000, 0, 10, _T("V"),LEN_BUFFER);
 		pBuffer[3]=new SignalChannelImpl(_T("ECG"), 1000, 0, 10, _T("V"),LEN_BUFFER);
-		int index=0;
 		BYTE * p=pTemp;
 		for(int i=0; i< length - sizeof(Packet); i++)
 		{
@@ -91,7 +88,7 @@ void CTestViewDoc::Serialize(CArchive& ar)
 			{
 				continue;
 			}
-			index=i;
+			int index = i;
 			do
 			{
 				pData=reinterpret_cast<DataBuffer*>(p + index);
@@ -100,19 +97,19 @@ void CTestViewDoc::Serialize(CArchive& ar)
 				pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance);
 				pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential);
 				pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG);
-				//pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback);
-				//pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance);
-				//pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential);
-				//pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG);
 				index +=sizeof(Packet);
 			}while(index< (LEN_BUFFER -1) * sizeof(Packet));
 			break;
 		}
 		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
-		//_pCanvas->AddWave(pBuffer[0], 25);
+		_pCanvas->AddWave(pBuffer[0], 25);
 		_pCanvas->AddWave(pBuffer[1], 25);
+		_pCanvas->GetWave(0)->SetLineWidth(1);
+		_pCanvas->GetWave(0)->SetShowBaseline(true);
 		_pCanvas->AddWave(pBuffer[2], 25);
-		//_pCanvas->AddWave(pBuffer[3], 25);
+		_pCanvas->GetWave(1)->SetLineWidth(1);
+		_pCanvas->GetWave(1)->SetShowBaseline(true);
+		_pCanvas->AddWave(pBuffer[3], 25);
 		delete []pTemp;
 		FILE * fp;
 		_tfopen_s(&fp, _T("out.txt"), _T("w"));

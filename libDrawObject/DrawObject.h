@@ -16,7 +16,6 @@ class DrawObject: public Visualized
 {
 	void _initialize();	
 protected:
-
 	DrawObject();
 public:  
     //Visualized
@@ -75,7 +74,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	//绘图属性
-	virtual void SetAppearance(Appearance & pAppearance);
+	virtual void SetAppearance(Appearance & appearance);
 	virtual Appearance & GetAppearance();
 	virtual Appearance & GetAppearance() const;
 	//剪切边框
@@ -103,19 +102,6 @@ public:
 	virtual bool GetShowBorder() const;
 	virtual void OnShowBorderChanging(bool & newShowBorder);
 	virtual void OnShowBorderChanged();
-
-	//是否显示对象句柄
-	virtual void SetShowTracker(bool isShowTracker);
-	virtual bool GetShowTracker() const;
-	virtual void OnShowTrackerChanging(bool & newShowTracker);
-	virtual void OnShowTrackerChanged();
-
-	//对象句柄颜色
-	virtual void SetTrackerColor(Gdiplus::Color color);
-	virtual Gdiplus::Color GetTrackerColor() const;
-	virtual void OnTrackerColorChanging(Gdiplus::Color & color);
-	virtual void OnTrackerColorChanged();
-
 
 	//透明度
 	virtual void SetTransparent(FLOAT transparent);
@@ -191,7 +177,7 @@ public:
 	//文字竖排
 	virtual void SetTextIsVertical(bool isVertical);
 	virtual bool GetTextIsVertical();
-	virtual void OnTextVerticalChanging(bool & isVert);
+	virtual void OnTextVerticalChanging(bool & isVertical);
 	virtual void OnTextVerticalChanged();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -201,7 +187,7 @@ public:
 	//对象激活状态
 	virtual void SetActive(bool isActive);
 	virtual bool GetActive();
-	virtual void OnActiveChanging(bool &isActived);
+	virtual void OnActiveChanging(bool &isActive);
 	virtual void OnActiveChanged();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -216,12 +202,9 @@ public:
 	//method
 	///
 	///消息通知
-	virtual void Notify(UINT msgID, DWORD_PTR wParam = 0, LPVOID lpParam = NULL);
+	virtual void Notify(UINT msgId, DWORD_PTR wParam = 0, LPVOID lpParam = nullptr);
 	///通知响应
-	virtual void OnNotify(DrawObject * pSource, UINT messageID, DWORD_PTR wParam, LPVOID lpParam);
-
-	virtual bool OnRButtonDown(CWnd * pWnd, UINT nFlags, Gdiplus::Point point);
-	virtual bool OnLButtonDblClk(CWnd *pWnd, UINT nFlags, Gdiplus::Point point);
+	virtual void OnNotify(DrawObject * pSource, UINT messageId, DWORD_PTR wParam, LPVOID lpParam);
 
 	//////////////////////////////////////////////////////////////////////////
 	//撤销列表支持
@@ -293,14 +276,14 @@ public:
 
 	//移动至point位置
 	//@param point 对象位置，全局坐标
-	virtual void MoveTo(Gdiplus::Point point);
+	virtual void MoveTo(const Gdiplus::Point& point);
 	virtual void MoveTo(int x, int y);
 
 	//偏移
 	//@param x x方向偏移
 	//@param y y方向偏移
 	virtual void Offset(int x, int y);
-	virtual void Offset(Gdiplus::Point point);
+	virtual void Offset(const Gdiplus::Point& point);
 
 	//缩放
 	//基于本体坐标原点缩放
@@ -309,38 +292,24 @@ public:
 	virtual void Scale(double scaleX, double scaleY);
 
 	//基于给定缩放基点缩放
-	virtual void ScaleAt(double scaleX, double scaleY, Gdiplus::Point origin);
+	virtual void ScaleAt(double scaleX, double scaleY,const Gdiplus::Point& origin);
 	
-	//取对象句柄总数
-	virtual int GetHandleCount();
-	
-	//测试pt位置与本对象的“击中”位置，用于判断鼠标点击位置选中对象的部位
-	//@param pt 用于测试的坐标点
-	//@return “击中”位置
-	//     - 0 未击中
-	//     - 1—GetHandleCount()，击中各句柄的编号
-	//     - GetHandleCount()+1， 未击中句柄，击中对象区域
-	virtual int HitTest(const Gdiplus::Point & pt);
-
 	///测试对象是否在矩形框中
 	///
 	///判断依据对象中心是否在矩形中
 	///@param rect 测试矩形，世界坐标
 	virtual bool IsInRect(const Gdiplus::Rect &rect);
 
-	static Gdiplus::RectF MeasureString( const CStringW & text, Gdiplus::Font * pFont, Gdiplus::PointF origin, Gdiplus::StringFormat *pFormat);
+	static Gdiplus::RectF MeasureString( const CStringW & text, Gdiplus::Font * pFont,const Gdiplus::PointF& origin, Gdiplus::StringFormat *pFormat);
     //坐标单位
 	static Gdiplus::Unit Unit;
 
 private:
-	static Appearance _basicAppearance;
 	//基本属性
 	DrawObject * _pParent;
 
 	//对象名称
 	CString _name;
-	//对象内部名称
-	CString _internalName;
 	//////////////////////////////////////////////////////////////////////////
 
 	//几何属性。，角度单位（度）
@@ -361,6 +330,8 @@ private:
 	bool _bVisible;
 
 	Appearance * _pAppearance;
+
+
 	//////////////////////////////////////////////////////////////////////////
 
 	//控制属性

@@ -2,31 +2,23 @@
 #include "WaveDrawer.h"
 #include "WaveDrawerAppearance.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-#define DEFAULT_WAVE_SCALE 0.6f
+#define DEFAULT_WAVE_SCALE 0.8f
 
 static WaveDrawerAppearance DefaultDrawerAppearance;
 void WaveDrawer::_initialize()
 {	
-	SetAppearance(DefaultDrawerAppearance);
-	if(GetBaselineAlignment()==MIDDLE_VALUE)
-	{
-		_baseline=GetSize().Height/2;
-	}
-	else 
-	{ 
-		_baseline = GetSize().Height*9/10;   //波形高度占80%，上下各留10%
-	}
+	SetAppearance(DefaultDrawerAppearance);	
 	_velocity = 250;
 	_scale=DEFAULT_WAVE_SCALE;
 	_waveHeight=GetSize().Height*_scale;
+	_pBaselinePen=new Gdiplus::Pen(GetBaselineColor(), GetBaselineWidth());
+	_pBaselinePen->SetDashStyle(Gdiplus::DashStyle(GetBaselineStyle()));
+	_pWaveLinePen=new Gdiplus::Pen(GetLineColor(), GetLineWidth());
+	_pWaveLinePen->SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
 }
 
 WaveDrawer::WaveDrawer()
-	:DrawObject()
-	,_layoutPercent(1)
+	: _layoutPercent(100)
 	,_pSignalChannel(nullptr)
 {
 	_initialize();
@@ -109,6 +101,81 @@ void WaveDrawer::SetLayoutPercent(double layoutPercent)
 	_layoutPercent = layoutPercent;
 }
 
+BaselineAlignment WaveDrawer::GetBaselineAlignment()
+{
+	return BaselineAlignment(getThisAppearance().BaselineAlignment);
+}
+
+void WaveDrawer::SetBaselineAlignment(BaselineAlignment alignment)
+{
+	getThisAppearance().BaselineAlignment = alignment;
+}
+
+float WaveDrawer::GetBaselineWidth()
+{
+	return getThisAppearance().BaselineWidth;
+}
+
+void WaveDrawer::SetBaselineWidth(float width)
+{
+	getThisAppearance().BaselineWidth = width;
+}
+
+Gdiplus::Color WaveDrawer::GetBaselineColor()
+{
+	return getThisAppearance().BaselineColor;
+}
+
+void WaveDrawer::SetBaselineColor(Gdiplus::Color color)
+{
+	getThisAppearance().BaselineColor = color.GetValue();
+}
+
+int WaveDrawer::GetBaselineStyle()
+{
+	return getThisAppearance().BaselineStyle;
+}
+
+void WaveDrawer::SetBaselineStyle(int style)
+{
+	getThisAppearance().BaselineStyle = style;
+}
+
+bool WaveDrawer::IsShowBaseline()
+{
+	return getThisAppearance().ShowBaseline;
+}
+
+void WaveDrawer::SetShowBaseline(bool isShow)
+{
+	getThisAppearance().ShowBaseline = isShow;
+}
+
+DrawMode WaveDrawer::GetWaveDrawMode()
+{
+	return DrawMode(getThisAppearance().WaveDrawMode);
+}
+
+void WaveDrawer::SetWaveDrawMode(DrawMode drawMode)
+{
+	getThisAppearance().WaveDrawMode = drawMode;
+}
+
+int WaveDrawer::GetEraseWidth()
+{
+	return getThisAppearance().EraseWidth;
+}
+
+void WaveDrawer::SetEraseWidth(int width)
+{
+	getThisAppearance().EraseWidth = width;
+}
+
+WaveDrawerAppearance& WaveDrawer::getThisAppearance()
+{
+	return static_cast<WaveDrawerAppearance&>(GetAppearance());
+}
+
 void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 {
 	if(IsShowBaseline())
@@ -118,15 +185,15 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
-	const int sampleCount = min(_totalSampleCount, buffer.getSize());
+	const int sampleCount = min(_totalSampleCount, buffer.getLength());
 	const int startSample=buffer.getLength() <= buffer.getSize() ? 0 : buffer.getLength() - buffer.getSize(); 
-	const int offset= GetSize().Height * 9/10;
+	const int offset= _baseline;
 	float startX = GetSize().Width - sampleCount * _sampleDotSpacing;
-	float startY =offset - GetSize().Height * _scale * buffer.getBuffer()[startSample%buffer.getSize()] /65535.0f;
-	for(int i= 0; i< sampleCount - 2; i ++)
+	float startY =offset - GetSize().Height * _scale * buffer.getBuffer()[startSample%buffer.getSize()] /32767;
+	for(int i= 0; i< sampleCount - 2; i +=3)
 	{
-		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;
-		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % buffer.getSize()] * GetSize().Height * _scale / 65535.0f;
+		const float endX = startX + _sampleDotSpacing*3;
+		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % buffer.getSize()] * GetSize().Height * _scale / 32767;
 		graph.DrawLine(&pen, int(startX), int(startY), int(endX), int(endY));
 		startY = endY;
 		startX = endX;
@@ -136,11 +203,11 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 void WaveDrawer::OnSizeChanged()
 {
 	__super::OnSizeChanged();
-	if(GetBaselineAlignment()==MIDDLE_VALUE)
+	if(GetBaselineAlignment()==ZERO_VALUE)
 	{
 		_baseline=GetSize().Height/2;
 	}
-	else if(GetBaselineAlignment()==ZERO_VALUE)
+	else
 	{
 		if(_pSignalChannel->getDigitalMinimum()>0)
 		{
@@ -151,11 +218,7 @@ void WaveDrawer::OnSizeChanged()
 			_baseline = GetSize().Height*(1 - 8*(_pSignalChannel->getDigitalMinimum()/(_pSignalChannel->getDigitalMaximum() - _pSignalChannel->getDigitalMinimum())))/10;
 		}
 	}
-	else  //MIDDLE_VALUE
-	{
-		_baseline=GetSize().Height* 9/10;
-	}
-	_waveHeight=GetSize().Height*4/5;
+	_waveHeight=GetSize().Height*_scale;
 	_totalSampleCount = int(GetSize().Width / ScreenInfo::GetScreenInfo().GetDpmmX() / _velocity *	_pSignalChannel->getSampleFrequency());
 	_sampleDotSpacing= float(GetSize().Width) / _totalSampleCount;
 }
@@ -164,5 +227,5 @@ void WaveDrawer::_drawBaseline(Gdiplus::Graphics& graph)
 {
 	Gdiplus::Pen pen(GetBaselineColor(), GetBaselineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetBaselineStyle()));
-	graph.DrawLine(&pen, 0, _baseline, 0, _baseline);
+	graph.DrawLine(&pen, 0, _baseline, GetSize().Width, _baseline);
 }
