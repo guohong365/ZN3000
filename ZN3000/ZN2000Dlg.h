@@ -3,11 +3,11 @@
 //
 
 #pragma once
-#include "../LibCtrl/MainBaseCtrl.h"
 #include "InfoPane.h"
 #include "../libzn/ZNDData.h"
 #include "../libzn/SerialPortSampler.h"
 #include "../libzn/ZnRecord.h"
+#include "../LibCtrl/WaveBaseCtrl.h"
 
 
 // CZN2000Dlg ¶Ô»°¿ò

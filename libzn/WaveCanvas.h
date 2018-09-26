@@ -22,6 +22,9 @@ public:
 	void SetPadding(int left, int top, int right, int bottom);
 	WaveDrawer* GetWave(int i);
 	void Clear();
+	void SetDrawMode(DrawMode drawMode);
+
+	DrawMode GetDrawMode() const;
 protected:
 	WaveCanvas();
 	void _calcLayout();
@@ -35,7 +38,7 @@ private:
 	int _paddingTop;
 	int _paddingRight;
 	int _paddingBottom;
-
+	DrawMode _drawMode;
 	Gdiplus::Font *_pFont;
 	Gdiplus::Bitmap * _pBackground;
 	GridBackground * _pWaveBackground;

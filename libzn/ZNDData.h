@@ -39,6 +39,7 @@ const TCHAR BODY_STRING[][20]=
 
 enum PartId
 {
+	PART_CALIBRATION =-2,
 	PART_NONE=-1,
 	PART_HEART=0,
 	PART_LUNG,

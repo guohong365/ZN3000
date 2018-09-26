@@ -190,10 +190,12 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	const int offset= _baseline;
 	float startX = GetSize().Width - sampleCount * _sampleDotSpacing;
 	float startY =offset - GetSize().Height * _scale * buffer.getBuffer()[startSample%buffer.getSize()] /32767;
-	for(int i= 0; i< sampleCount - 2; i +=3)
+	//float startY =offset - buffer.getBuffer()[startSample%buffer.getSize()];
+	for(int i= 0; i< sampleCount - 2; i +=5)
 	{
-		const float endX = startX + _sampleDotSpacing*3;
+		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;
 		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % buffer.getSize()] * GetSize().Height * _scale / 32767;
+		//const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % buffer.getSize()];
 		graph.DrawLine(&pen, int(startX), int(startY), int(endX), int(endY));
 		startY = endY;
 		startX = endX;

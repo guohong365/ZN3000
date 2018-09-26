@@ -11,6 +11,7 @@ class CTestViewDoc : public CDocument
 {
 	WaveCanvas *_pCanvas;
 	GridBackground *_pBackground;
+	SignalChannel* pBuffer[4];
 protected: // 仅从序列化创建
 	CTestViewDoc();
 	DECLARE_DYNCREATE(CTestViewDoc)

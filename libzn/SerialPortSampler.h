@@ -11,6 +11,10 @@
 
 #define ERR_SYNCHRONIZE_PACKET 1000
 #define ERR_READ_FROM_COM 1002
+
+#define WORK_MODE_CALIBRATION 0x01
+#define WORK_MODE_EXAMINE 0x00
+
 class SerialPortSampler : public Sampler
 {
 public:

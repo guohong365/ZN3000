@@ -33,7 +33,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MainBaseCtrl.cpp">
+    <ClCompile Include="WaveBaseCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MainBaseCtrl.h">
+    <ClInclude Include="WaveBaseCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

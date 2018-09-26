@@ -2,8 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "MainBaseCtrl.h"
-#include "../libzn/Sampler.h"
+#include "WaveBaseCtrl.h"
 
 #define GRID_LARGE_INTERVAL 10.0f
 #define GRID_SMALL_INTERVAL 1.0f
@@ -19,11 +18,12 @@ IMPLEMENT_DYNAMIC(CWaveBaseCtrl, CDialog)
 
 CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD, pParent)
-	, _pWaveDrawer(nullptr)
-	, _currentPart(PART_NONE)
-	, _pAdmittance(nullptr)
-	, _pDifferential(nullptr)
-	, _pEcg(nullptr)
+	  , _currentPart(PART_NONE)
+	  , _pAdmittance(nullptr)
+	  , _pDifferential(nullptr)
+	  , _pEcg(nullptr)
+	  , _current(0)
+	  , _drawMode(DRAW_ROLLING)
 {
 	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
 }
@@ -47,18 +47,39 @@ void CWaveBaseCtrl::SetCurrentPart(PartId part)
 	if(part == _currentPart) return;
 	_currentPart = part;
 	_pCanvas->Clear();
+	_pCanvas->SetDrawMode(_drawMode);
 	switch (part)
 	{
+	case PART_CALIBRATION:
+		ASSERT(_pAdmittance && _pDifferential);		
+		_pCanvas->AddWave(_pAdmittance, 50);
+		_pCanvas->AddWave(_pDifferential, 50);		
+		break;
 	case PART_NONE:
 		break;
-	case PART_HEART:		
+	case PART_HEART:
+		ASSERT(_pDifferential && _pEcg);
 		_pCanvas->AddWave(_pDifferential, 60);
 		_pCanvas->AddWave(_pEcg, 40);
 		break;
 	default:
+		ASSERT(_pAdmittance);
 		_pCanvas->AddWave(_pAdmittance, 100);
 		break;
 	}
+	Invalidate();
+}
+
+PartId CWaveBaseCtrl::GetCurrentPart() const
+{
+	return _currentPart;
+}
+
+void CWaveBaseCtrl::SetDrawMode(DrawMode drawMode)
+{
+	if(drawMode == _drawMode) return;
+	_pCanvas->SetDrawMode(drawMode);
+	Invalidate();
 }
 
 void CWaveBaseCtrl::DoDataExchange(CDataExchange* pDX)
@@ -140,7 +161,7 @@ BOOL CWaveBaseCtrl::OnInitDialog()
 }
 void CWaveBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 {	
-	if(nIDEvent==1)
+	if(nIDEvent==SAMPLE_SHOW_TIMER_ID)
 	{
 		Invalidate(TRUE);
 	}

@@ -58,10 +58,11 @@ CTestSamplerDlg::CTestSamplerDlg(CWnd* pParent /*=NULL*/)
 	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)
 	  , _sampler(
-		CTestSamplerApp::GetSettings().getSerialPort(), 
-		CTestSamplerApp::GetSettings().getBaudRate(), 
-		CTestSamplerApp::GetSettings().getDataBits(),
-		CTestSamplerApp::GetSettings().getStopBits())
+		  CTestSamplerApp::GetSettings().getSerialPort(),
+		  CTestSamplerApp::GetSettings().getBaudRate(),
+		  CTestSamplerApp::GetSettings().getDataBits(),
+		  CTestSamplerApp::GetSettings().getStopBits())
+	  , _dwState(OS_IDLE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -78,12 +79,17 @@ BEGIN_MESSAGE_MAP(CTestSamplerDlg, CXTResizeDialog)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_MESSAGE(WM_KICKIDLE, &CTestSamplerDlg::OnKickIdle)
 	ON_BN_CLICKED(IDC_BEGIN, &CTestSamplerDlg::OnBnClickedBegin)
+	ON_UPDATE_COMMAND_UI(IDC_BEGIN, &CTestSamplerDlg::OnUpdateBtnBegin)
 	ON_BN_CLICKED(IDC_STOP, &CTestSamplerDlg::OnBnClickedStop)
+	ON_UPDATE_COMMAND_UI(IDC_STOP, &CTestSamplerDlg::OnUpdateBtnStop)
 	ON_BN_CLICKED(IDC_RADIO_CALIBRATION, &CTestSamplerDlg::OnBnClickedRadioCalibration)
 	ON_BN_CLICKED(IDC_RADIO_EXAMINE, &CTestSamplerDlg::OnBnClickedRadioExamine)
 	ON_BN_CLICKED(IDC_RADIO_ROLLING, &CTestSamplerDlg::OnBnClickedRadioRolling)
 	ON_BN_CLICKED(IDC_RADIO_ERASURE, &CTestSamplerDlg::OnBnClickedRadioErasure)
+	ON_WM_KEYDOWN()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -153,14 +159,16 @@ BOOL CTestSamplerDlg::OnInitDialog()
 	                                         _T("Differential"), PART_HEART);
 	_pEcg = new ZnSignalChannelImpl(frequency, scope.LowValue, scope.HighValue, _T("ECG"), bufferSize, _T("ECG"),
 	                                PART_HEART_ECG);
+	_waveCtrl.SetBuffers(_pAdmittance, _pDifferential, _pEcg);
+	_waveCtrl.SetCurrentPart(PART_CALIBRATION);
+
 	_sampler.attachBuffer(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
 	_sampler.attachBuffer(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
 	_sampler.attachBuffer(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
 	_sampler.attachBuffer(ECG_INDEX, &_pEcg->getSignalBuffer());
 	_sampler.begin();
-	_sampler.setMode(1);
-	_waveCtrl.SetBuffers(_pAdmittance, _pDifferential, _pEcg);
-	_waveCtrl.start();
+	_sampler.setMode(WORK_MODE_CALIBRATION);
+	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -213,37 +221,88 @@ HCURSOR CTestSamplerDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+HRESULT CTestSamplerDlg::OnKickIdle(WPARAM wParam, LPARAM lParam)
+{
+	UpdateDialogControls(this, TRUE);
+	return 0;
+}
+
 void CTestSamplerDlg::OnBnClickedBegin()
 {
-	
+	_waveCtrl.start();
+	_dwState |= OS_BEGIN;
+}
+
+void CTestSamplerDlg::OnUpdateBtnBegin(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(!(_dwState & OS_BEGIN));
 }
 
 
 void CTestSamplerDlg::OnBnClickedStop()
 {
-	
+	_waveCtrl.stop();
+	_dwState &= ~OS_BEGIN;
+	_dwState |=OS_PAUSE;
+}
+
+void CTestSamplerDlg::OnUpdateBtnStop(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(_dwState & OS_BEGIN);
 }
 
 
 void CTestSamplerDlg::OnBnClickedRadioCalibration()
 {
-	
+	if(_waveCtrl.GetCurrentPart()==PART_CALIBRATION) return;
+	_sampler.pause();
+	_waveCtrl.SetCurrentPart(PART_CALIBRATION);
+	_sampler.setMode(WORK_MODE_CALIBRATION);
+	Invalidate();
 }
 
 
 void CTestSamplerDlg::OnBnClickedRadioExamine()
 {
-	
+	if(_waveCtrl.GetCurrentPart()==PART_HEART) return;
+	_sampler.pause();
+	_waveCtrl.SetCurrentPart(PART_HEART);
+	_sampler.setMode(WORK_MODE_EXAMINE);
+	Invalidate();
 }
 
 
 void CTestSamplerDlg::OnBnClickedRadioRolling()
 {
-	
+	_waveCtrl.SetDrawMode(DRAW_ROLLING);
 }
 
 
 void CTestSamplerDlg::OnBnClickedRadioErasure()
 {
-	
+	_waveCtrl.SetDrawMode(DRAW_ERASURE);
+}
+
+
+void CTestSamplerDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	switch (nChar)
+	{
+	case VK_UP:
+		//TODO: zoom in wave
+		break;
+	case VK_DOWN:
+		//TODO: zoom out wave
+		break;
+	default:
+		break;
+	}
+	CXTResizeDialog::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void CTestSamplerDlg::OnDestroy()
+{
+	_waveCtrl.stop();
+	_sampler.quit();
+	CXTResizeDialog::OnDestroy();
 }

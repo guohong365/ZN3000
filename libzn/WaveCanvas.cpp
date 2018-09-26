@@ -77,12 +77,22 @@ void WaveCanvas::Clear()
 	_waveDrawers.clear();
 }
 
+void WaveCanvas::SetDrawMode(DrawMode drawMode)
+{
+	_drawMode = drawMode;
+}
+
+DrawMode WaveCanvas::GetDrawMode() const
+{
+	return _drawMode;
+}
+
 void WaveCanvas::OnSizeChanged()
 {
 	__super::OnSizeChanged();
-
+	delete _pBackground;
+	_pBackground=nullptr;
 	_calcLayout();
-	_drawBackground();
 }
 
 void WaveCanvas::_calcLayout()
@@ -104,7 +114,6 @@ void WaveCanvas::_calcLayout()
 		sum +=_waveDrawers[i]->GetLayoutPercent();
 	}
 	Gdiplus::Point pos=_pWaveBackground->GetPosition();	
-	Gdiplus::Point baselinePos;
 	size.Width = _pWaveBackground->GetSize().Width;
 	for (int i=0; i< _waveDrawers.size(); i++)
 	{

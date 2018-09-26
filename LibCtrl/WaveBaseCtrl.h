@@ -19,6 +19,9 @@ public:
 	void SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
 	                SignalChannel* pEcg);
 	void SetCurrentPart(PartId part);
+	PartId GetCurrentPart() const;
+	void SetDrawMode(DrawMode drawMode);
+	
 
 	// 对话框数据
 	enum { IDD = IDD_MAIN_BASE_CTRL };
@@ -41,7 +44,6 @@ public:
 	virtual void stop();
 private:
 	CBitmap _background;
-	WaveDrawer* _pWaveDrawer;
 	WaveCanvas *_pCanvas;
 	CBitmap  _memBitmap;
 	PartId _currentPart;
@@ -49,4 +51,5 @@ private:
 	SignalChannel* _pDifferential;
 	SignalChannel* _pEcg;
 	ULONG _current;
+	DrawMode _drawMode;
 };

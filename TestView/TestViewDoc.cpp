@@ -29,14 +29,23 @@ END_MESSAGE_MAP()
 // CTestViewDoc ¹¹Ôì/Îö¹¹
 
 CTestViewDoc::CTestViewDoc()
-	:_pCanvas(nullptr)
+	: _pCanvas(nullptr)
 {
-	_pBackground=new GridBackground();	
+	pBuffer[0]=nullptr;
+	pBuffer[1]=nullptr;
+	pBuffer[2]=nullptr;
+	pBuffer[3]=nullptr;
+	_pBackground = new GridBackground();
 }
 
 CTestViewDoc::~CTestViewDoc()
 {
+	delete pBuffer[0];
+	delete pBuffer[1];
+	delete pBuffer[2];
+	delete pBuffer[3];
 	delete _pBackground;
+	delete _pCanvas;
 }
 
 BOOL CTestViewDoc::OnNewDocument()
@@ -71,7 +80,10 @@ void CTestViewDoc::Serialize(CArchive& ar)
 	{
 		BYTE *pTemp=new BYTE[LEN_BUFFER*sizeof(Packet)];
 		const UINT length=ar.Read(pTemp, LEN_BUFFER * sizeof(Packet));		
-		SignalChannel* pBuffer[4];
+		delete pBuffer[0];
+		delete pBuffer[1];
+		delete pBuffer[2];
+		delete pBuffer[3];
 		pBuffer[0]=new SignalChannelImpl(_T("Feedback"), 1000, 0, 10, _T("V"),LEN_BUFFER);
 		pBuffer[1]=new SignalChannelImpl(_T("Admittance"), 1000, 0, 10, _T("V"),LEN_BUFFER);
 		pBuffer[2]=new SignalChannelImpl(_T("Differential"), 1000, 0, 10, _T("V"),LEN_BUFFER);
@@ -93,10 +105,10 @@ void CTestViewDoc::Serialize(CArchive& ar)
 			{
 				pData=reinterpret_cast<DataBuffer*>(p + index);
 				revert(&pData->Paket);
-				pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback);
-				pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance);
-				pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential);
-				pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG);
+				pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback*200.0f/32767);
+				pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance*200.0f/32767);
+				pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential*200.0f/32767);
+				pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG*200.0f/32767);
 				index +=sizeof(Packet);
 			}while(index< (LEN_BUFFER -1) * sizeof(Packet));
 			break;
@@ -104,20 +116,9 @@ void CTestViewDoc::Serialize(CArchive& ar)
 		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
 		_pCanvas->AddWave(pBuffer[0], 25);
 		_pCanvas->AddWave(pBuffer[1], 25);
-		_pCanvas->GetWave(0)->SetLineWidth(1);
-		_pCanvas->GetWave(0)->SetShowBaseline(true);
 		_pCanvas->AddWave(pBuffer[2], 25);
-		_pCanvas->GetWave(1)->SetLineWidth(1);
-		_pCanvas->GetWave(1)->SetShowBaseline(true);
 		_pCanvas->AddWave(pBuffer[3], 25);
 		delete []pTemp;
-		FILE * fp;
-		_tfopen_s(&fp, _T("out.txt"), _T("w"));
-		for(int i=0; i< pBuffer[1]->getSignalBuffer().getLength(); ++i)
-		{
-			_ftprintf(fp, _T("%4.3f,"), pBuffer[1]->getSignalBuffer().getBuffer()[i]);
-		}
-		fclose(fp);
 	}
 }
 
