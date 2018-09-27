@@ -229,19 +229,21 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	{
 		_drawBaseline(graph);
 	}
-
+	
 	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
 	const SIZE_T current = buffer.getLength();
 	const SIZE_T bufferSize=buffer.getSize();
-	const int width=GetSize().Width;
-	const int height=GetSize().Height;
-	const int sampleCount = min(_totalSampleCount, current);
-	const int startSample=current <= bufferSize ? 0 : current - bufferSize; 
+	const float width=GetSize().Width;
+	const float height=GetSize().Height * _scale / 32767;
+	const SIZE_T sampleCount = min(_totalSampleCount, current);
+	const long startSample=  current <= sampleCount ? 0 : current - sampleCount;
+
 	const int offset= _baseline;
 	float startX = width - sampleCount * _sampleDotSpacing;
 	float startY =offset - height * _scale * buffer.getBuffer()[startSample%bufferSize] /32767;
+	/*
 	if(width > sampleCount)
 	{
 		_drawWaveBySamples(graph, buffer.getBuffer() + startSample, sampleCount, offset, startX, startX + width, startSample, startSample + sampleCount);
@@ -250,16 +252,24 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	{
 		_drawWaveByPixels(graph, buffer.getBuffer() + startSample, sampleCount, offset, startX, startX + width, startSample, startSample + sampleCount);
 	}
-	/*
-	for(int i= 0; i< sampleCount - 2; i +=5)
+	*/	
+	for(int i= 0; i< sampleCount - 2; i +=3)
 	{
-		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;
-		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % bufferSize] * height * _scale / 32767;
+		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;// + _sampleDotSpacing + _sampleDotSpacing;
+		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % bufferSize] * height;
 		graph.DrawLine(&pen, int(startX), int(startY), int(endX), int(endY));
 		startY = endY;
 		startX = endX;
 	}
-	*/
+	CString info;
+	Gdiplus::Font font(_T("ËÎÌו"), 50, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel, nullptr);
+	Gdiplus::StringFormat format;
+	format.SetAlignment(Gdiplus::StringAlignmentNear);
+	format.SetLineAlignment(Gdiplus::StringAlignmentNear);
+	Gdiplus::SolidBrush brush(Gdiplus::Color::White); 
+	info.Format(_T("total:%.2fs, start: %ld, length: %d. "),current/getChannelBuffer()->getSampleFrequency(), startSample, _totalSampleCount);
+	graph.DrawString(info, -1, &font,Gdiplus::PointF(0,0), &format, &brush );
+	
 }
 
 void WaveDrawer::OnSizeChanged()

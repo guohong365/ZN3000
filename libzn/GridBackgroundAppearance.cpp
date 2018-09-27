@@ -21,15 +21,15 @@ GridBackgroundAppearance::GridBackgroundAppearance(const GridBackgroundAppearanc
 
 GridBackgroundAppearance::GridBackgroundAppearance()
 :Appearance()
-, IsDrawThickGrid(DEFAULT_SHOW_THICK_GRID)
-, IsDrawThinGrid(DEFAULT_SHOW_THIN_GRID)
+, ShowThickGridLine(DEFAULT_SHOW_THICK_GRID)
+, ShowThinGridLine(DEFAULT_SHOW_THIN_GRID)
 , ThickGridLineWidth(DEFAULT_GRID_THICK_LINE_WIDTH)
 , ThinGridLineWidth(DEFAULT_GRID_THIN_LINE_WIDTH)
 , ThickGridLineStyle(DEFAULT_GRID_THICK_LINE_STYLE)
 , ThinGridLineStyle(DEFAULT_GRID_THIN_LINE_STYLE)
-, ThickGridSpacing(DEFAULT_GRID_THICK_SPACING)
-, ThinGridSpacing(DEFAULT_GRID_THIN_SPACING)
-, ThickGridColor(DEFAULT_GRID_THICK_LINE_COLOR)
+, ThickGridLineSpacing(DEFAULT_GRID_THICK_SPACING)
+, ThinGridLineSpacing(DEFAULT_GRID_THIN_SPACING)
+, ThickGridLineColor(DEFAULT_GRID_THICK_LINE_COLOR)
 , ThinGridLineColor(DEFAULT_GRID_THIN_LINE_COLOR)
 {
 	FillColor=DEFAULT_GRID_FILL_COLOR;
@@ -55,15 +55,15 @@ void GridBackgroundAppearance::CopyFrom(const Appearance& another)
 	Appearance::CopyFrom(another);
 	const GridBackgroundAppearance * pAnother=dynamic_cast<const GridBackgroundAppearance*>(&another);
 	if(pAnother==nullptr) return;
-	IsDrawThickGrid=pAnother->IsDrawThickGrid;
-	IsDrawThinGrid=pAnother->IsDrawThinGrid;
+	ShowThickGridLine=pAnother->ShowThickGridLine;
+	ShowThinGridLine=pAnother->ShowThinGridLine;
 	ThickGridLineWidth=pAnother->ThickGridLineWidth;
 	ThinGridLineWidth=pAnother->ThinGridLineWidth;
 	ThickGridLineStyle=pAnother->ThickGridLineStyle;
 	ThinGridLineStyle=pAnother->ThinGridLineStyle;
-	ThickGridSpacing=pAnother->ThickGridSpacing;
-	ThinGridSpacing=pAnother->ThinGridSpacing;
-	ThickGridColor=pAnother->ThickGridColor;
+	ThickGridLineSpacing=pAnother->ThickGridLineSpacing;
+	ThinGridLineSpacing=pAnother->ThinGridLineSpacing;
+	ThickGridLineColor=pAnother->ThickGridLineColor;
 	ThinGridLineColor=pAnother->ThinGridLineColor;
 }
 

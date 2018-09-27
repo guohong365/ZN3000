@@ -1,18 +1,8 @@
 #pragma once
 #include <IniFile.h>
+#include "GridBackgroundAppearance.h"
+#include "WaveDrawerAppearance.h"
 #define SETTING_FILE_NAME _T("ZN3000.ini")
-
-struct ValueScopeInt
-{
-	long LowValue;
-	long HighValue;
-};
-
-struct ValueScopeDouble
-{
-	double LowValue;
-	double HighValue;
-};
 
 class Settings : public IniFile
 {
@@ -22,8 +12,7 @@ public:
 	int load();
 	int save();
 
-	ValueScopeInt GetConfigValueScopeInt(const TCHAR* section, const TCHAR* item,const ValueScopeInt& defaultV);
-	ValueScopeDouble GetConfigValueScopeDouble(const TCHAR* section, const TCHAR* item,const ValueScopeDouble& defaultV);
+
 	SIZE_T getBufferSize();
 	double getFrequency();
 
@@ -51,7 +40,17 @@ public:
 	int getWaveBaseLineWidth();
 	Gdiplus::Color getWaveLineColor();
 	int getWaveLineWidth();
-	bool isShowBaseLine();
-	int getWaveShowType(); // 1 ÒÆ¶¯ 2 ²Á³ý
+	bool getShowWaveBaseLine();
+	int getWaveDrawMode(); // 0¾²Ì¬ 1 ÒÆ¶¯ 2 ²Á³ý
 	double getWaveVelocity();
+	int getGridThickLineSpacing();
+	int getGridThinLineSpacing();
+	bool getShowGridThickLine();
+	bool getShowGridThinLine();
+	bool getShowGridBorder();
+	int getGridThickLineStyle();
+	int getGridThinLineStyle();
+	int getWaveBaseLineStyle();
+	int getWaveEraseWidth();
+	int getWaveLineStyle();
 };

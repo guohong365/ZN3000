@@ -21,7 +21,9 @@ public:
 	void SetCurrentPart(PartId part);
 	PartId GetCurrentPart() const;
 	void SetDrawMode(DrawMode drawMode);
-	
+	void SetGridAppearance(GridBackgroundAppearance& backgroundAppearance);
+	void SetWaveAppearance(WaveDrawerAppearance& waveDrawerAppearance);
+
 
 	// 对话框数据
 	enum { IDD = IDD_WAVE_BASE_CTRL };
@@ -43,7 +45,6 @@ public:
 	virtual void start();
 	virtual void stop();
 private:
-	CBitmap _background;
 	WaveCanvas *_pCanvas;
 	CBitmap  _memBitmap;
 	PartId _currentPart;

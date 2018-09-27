@@ -44,6 +44,7 @@ WaveCanvas::~WaveCanvas()
 void WaveCanvas::AddWave(SignalChannel* pChannel, const double percent)
 {
 	WaveDrawer* pDrawer = new WaveDrawer(pChannel, percent);
+	pDrawer->SetAppearance(_waveAppearance);
 	pDrawer->SetParent(this);
 	_waveDrawers.push_back(pDrawer);
 	_calcLayout();
@@ -85,6 +86,21 @@ void WaveCanvas::SetDrawMode(DrawMode drawMode)
 DrawMode WaveCanvas::GetDrawMode() const
 {
 	return _drawMode;
+}
+
+void WaveCanvas::SetGridAppearance(GridBackgroundAppearance& backgroundAppearance)
+{
+	ASSERT(_pWaveBackground);
+	_pWaveBackground->SetAppearance(backgroundAppearance);
+}
+
+void WaveCanvas::SetWaveAppearance(WaveDrawerAppearance& waveDrawerAppearance)
+{
+	_waveAppearance=waveDrawerAppearance;
+	for(std::vector<WaveDrawer*>::iterator it= _waveDrawers.begin(); it!=_waveDrawers.end(); ++it)
+	{
+		(*it)->SetAppearance(_waveAppearance);
+	}
 }
 
 void WaveCanvas::OnSizeChanged()

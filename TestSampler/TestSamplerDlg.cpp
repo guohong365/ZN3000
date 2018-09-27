@@ -96,6 +96,47 @@ END_MESSAGE_MAP()
 
 // CTestSamplerDlg 消息处理程序
 
+GridBackgroundAppearance CTestSamplerDlg::createGridAppearance()
+{
+	Settings &settings =CTestSamplerApp::GetSettings();
+	GridBackgroundAppearance appearance;
+	appearance.ThickGridLineSpacing=settings.getGridThickLineSpacing();
+	appearance.ThickGridLineWidth=settings.getGridThickLineWidth();
+	appearance.ThickGridLineColor=settings.getGridThickLineColor().GetValue();
+	appearance.ThickGridLineStyle=settings.getGridThickLineStyle();
+	appearance.ShowThickGridLine=settings.getShowGridThickLine();
+
+	appearance.ThinGridLineSpacing=settings.getGridThinLineSpacing();
+	appearance.ThinGridLineWidth=settings.getGridThinLineWidth();
+	appearance.ThinGridLineColor=settings.getGridThinLineColor().GetValue();
+	appearance.ThinGridLineStyle=settings.getGridThinLineStyle();
+	appearance.ShowThinGridLine=settings.getShowGridThinLine();
+
+	appearance.ShowBorder=settings.getShowGridBorder();
+	appearance.LineColor=settings.getGridBorderColor().GetValue();
+	appearance.LineWidth=settings.getGridBorderWidth();
+	appearance.FillColor=settings.getGridBackgroundColor().GetValue();
+	return appearance;
+}
+
+WaveDrawerAppearance CTestSamplerDlg::createWaveAppearance()
+{
+	Settings &settings =CTestSamplerApp::GetSettings();
+	WaveDrawerAppearance appearance;
+	appearance.ShowBaseline=settings.getShowWaveBaseLine();
+	//appearance.BaselineAlignment=settings.getWaveBaseLineAlignment();
+	appearance.BaselineColor=settings.getWaveBaseLineColor().GetValue();
+	appearance.BaselineWidth=settings.getWaveBaseLineWidth();  //0.1mm
+	appearance.BaselineStyle=settings.getWaveBaseLineStyle();
+	appearance.WaveDrawMode=settings.getWaveDrawMode();
+	appearance.EraseWidth=settings.getWaveEraseWidth();   //0.1mm
+	appearance.Velocity=settings.getWaveVelocity();
+	appearance.LineColor=settings.getWaveLineColor().GetValue();
+	appearance.LineWidth=settings.getWaveLineWidth();
+	appearance.LineStyle=settings.getWaveLineStyle();
+	return appearance;
+}
+
 BOOL CTestSamplerDlg::OnInitDialog()
 {
 	CXTResizeDialog::OnInitDialog();
@@ -164,7 +205,10 @@ BOOL CTestSamplerDlg::OnInitDialog()
 	                                PART_HEART_ECG);
 	_waveCtrl.SetBuffers(_pAdmittance, _pDifferential, _pEcg);
 	_waveCtrl.SetCurrentPart(PART_CALIBRATION);
-
+	GridBackgroundAppearance backgroundAppearance=createGridAppearance();
+	WaveDrawerAppearance waveDrawerAppearance=createWaveAppearance();
+	_waveCtrl.SetGridAppearance(backgroundAppearance);
+	_waveCtrl.SetWaveAppearance(waveDrawerAppearance);
 	_sampler.attachBuffer(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
 	_sampler.attachBuffer(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
 	_sampler.attachBuffer(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());

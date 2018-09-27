@@ -45,32 +45,51 @@
 #define DEFAULT_GRID_BORDER_COLOR 0xFF00FF00
 #define ITEM_GRID_BORDER_WIDTH _T("网格.边框.线宽")
 #define DEFAULT_GRID_BORDER_WIDTH 2
-#define ITEM_GRID_THIN_SPACE _T("网格.细.间距")
-#define DEFAULT_GRID_THIN_SPACE 20
-#define ITEM_GRID_THIN_COLOR _T("网格.细.颜色")
-#define DEFAULT_GRID_THIN_COLOR 0xFF00C000
-#define ITEM_GRID_THIN_WIDTH _T("网格.细.线宽")
-#define DEFAULT_GRID_THIN_WIDTH 1
-#define ITEM_GRID_THICK_INTERVAL _T("网格.粗.间隔")
-#define DEFAULT_GRID_THICK_INTERVAL 5
-#define ITEM_GRID_THICK_COLOR _T("网格.粗.颜色")
-#define DEFAULT_GRID_THICK_COLOR 0xFF00FF00
-#define ITEM_GRID_THICK_WIDTH _T("网格.粗.线宽")
-#define DEFAULT_GRID_THICK_WIDTH 2
+#define ITEM_GRID_BORDER_SHOW _T("网格.边框")
+#define DEFAULT_GRID_BORDER_SHOW true
+
+#define ITEM_GRID_THIN_LINE_SPACING _T("网格.细.间距")
+#define DEFAULT_GRID_THIN_LINE_SPACING 20
+#define ITEM_GRID_THIN_LINE_COLOR _T("网格.细.颜色")
+#define DEFAULT_GRID_THIN_LINE_COLOR 0xFF00C000
+#define ITEM_GRID_THIN_LINE_WIDTH _T("网格.细.线宽")
+#define DEFAULT_GRID_THIN_LINE_WIDTH 1
+#define ITEM_GRID_THIN_LINE_SHOW _T("网格.细.显示")
+#define DEFAULT_GRID_THIN_LINE_SHOW true
+#define ITEM_GRID_THIN_LINE_STYLE _T("网格.粗.样式")
+#define DEFAULT_GRID_THIN_LINE_STYLE 0
+
+#define ITEM_GRID_THICK_LINE_SPACING _T("网格.粗.间隔")
+#define DEFAULT_GRID_THICK_LINE_SPACING 250
+#define ITEM_GRID_THICK_LINE_COLOR _T("网格.粗.颜色")
+#define DEFAULT_GRID_THICK_LINE_COLOR 0xFF00FF00
+#define ITEM_GRID_THICK_LINE_WIDTH _T("网格.粗.线宽")
+#define DEFAULT_GRID_THICK_LINE_WIDTH 2
+#define ITEM_GRID_THICK_LINE_SHOW _T("网格.粗.显示")
+#define DEFAULT_GRID_THICK_LINE_SHOW true
+#define ITEM_GRID_THICK_LINE_STYLE _T("网格.粗.样式")
+#define DEFAULT_GRID_THICK_LINE_STYLE 0
+
 #define ITEM_WAVE_COLOR _T("波形.颜色")
 #define DEFAULT_WAVE_COLOR 0xFFADD8E6
 #define ITEM_WAVE_WIDTH _T("波形.线宽")
 #define DEFAULT_WAVE_WIDTH 3
-#define ITEM_WAVE_SHOW_TYPE _T("波形.显示.方式")
-#define DEFAULT_WAVE_SHOW_TYPE _T("移动")
+#define ITEM_WAVE_LINE_STYLE _T("波形.样式")
+#define DEFAULT_WAVE_LINE_STYLE 0
+#define ITEM_WAVE_DRAW_MODE _T("波形.显示.方式")
+#define DEFAULT_WAVE_DRAW_MODE _T("移动")
+#define ITEM_WAVE_ERASE_WIDTH _T("波形.显示.擦除宽度")
+#define DEFAULT_WAVE_ERASE_WIDTH 50
 #define ITEM_WAVE_VELOCITY _T("波形.显示.速度")
 #define DEFAULT_WAVE_VELOCITY 25
 #define ITEM_WAVE_BASELINE_SHOW _T("波形.基线.显示")
-#define DEFAULT_WAVE_BASELINE_SHOW _T('否')
+#define DEFAULT_WAVE_BASELINE_SHOW false
 #define ITEM_WAVE_BASELINE_COLOR _T("波形.基线.颜色")
 #define DEFAULT_WAVE_BASELINE_COLOR 0xFF00FFFF
 #define ITEM_WAVE_BASELINE_WIDTH _T("波形.基线.线宽")
 #define DEFAULT_WAVE_BASELINE_WIDTH 3
+#define ITEM_WAVE_BASELINE_STYLE _T("波形.基线.样式")
+#define DEFAULT_WAVE_BASELINE_STYLE 0
 
 Settings::Settings(const CString& configFile)
 	:_iniFile(configFile)
@@ -92,264 +111,6 @@ int Settings::save()
 		return 0;
 	}
 	return -1;
-}
-bool parseScopeInt(const TCHAR* buffer, size_t buf_len, ValueScopeInt& scope)
-{
-	if(buffer[0]!=_T('(') || buffer[buf_len-1]!=_T(')')) return false;
-	const TCHAR* p=buffer;
-	size_t index = 1;
-	const size_t lowStart=index;
-	size_t lowEnd=0;
-	size_t highStart=0;
-	size_t highEnd=0;
-	if(p[index]==_T('-') || p[index]==_T('+'))
-	{
-		index++; //skip sign
-	}
-	//scan buffer
-	int stage= 0;  //0 低值，1 低值结束，2 高值起始，3 高值结束
-	while(index < buf_len)
-	{
-		switch (stage)
-		{
-		case 0:
-			if(p[index] >= _T('0') && p[index] <= _T('9'))
-			{
-				index++;
-				continue;
-			}
-			if(p[index]==_T(' ')) //标记低值结束, 转到state 1 跳过空格并期望第一部分结束符','
-			{
-				lowEnd = index;
-				stage =1;
-				index ++;
-				continue;
-			}
-			if(p[index]==_T(',')) //结束第一部分，直接转入扫描第二部分 stage 2
-			{
-				lowEnd=index;
-				stage = 2;
-				index ++;
-				continue;
-			}
-			return false;
-		case 1:  
-			if(p[index]==_T(' ')) //跳过第一部分后部空格
-			{
-				index++;
-				continue;
-			}
-			if(p[index]==_T(',')) //转入第二部分扫描判断
-			{
-				stage = 2;
-				index ++;
-				continue;
-			}
-			return false;
-		case 2:
-			if(p[index]==_T(' ')) //跳过第二部分前导空格
-			{
-				index ++;
-				continue;
-			}
-			if(p[index]==_T('+') || p[index]==_T('-')) //标记第二部分起始位置，进入stage 3 并期望数字
-			{
-				highStart = index;
-				stage = 3;
-				index ++;
-				continue;
-			}
-			if(p[index] >= _T('0') && p[index] <= _T('9')) //无符号，直接进入stage 3
-			{
-				highStart=index;
-				stage=3;
-				index ++;
-				continue;
-			}
-			return false;
-		case 3:
-			if(p[index] >= _T('0') && p[index] <= _T('9'))
-			{
-				index++;
-				continue;
-			} 
-			highEnd = index; //标记第二部分结束
-			break;
-		}
-		if(highEnd!=0) break; //两部分扫描结束，跳出循环
-	}
-	//判断两部分起止位置逻辑关系，确定是否成功
-	if(lowEnd < lowStart || highEnd < highStart) return false;
-	
-	//转换
-	scope.LowValue = _ttol(p + lowStart);
-	scope.HighValue= _ttol(p + highStart);
-	return true;
-}
-ValueScopeInt Settings::GetConfigValueScopeInt(const TCHAR* section, const TCHAR* item, const ValueScopeInt& defaultV)
-{
-	ValueScopeInt scope;
-	ConfigItemImpl * pConfig=findItem(section, item);
-	
-	if(pConfig)
-	{
-		const size_t len=_tcslen(pConfig->Value);
-		if(len>4 && parseScopeInt(pConfig->Value, len, scope))
-		{
-			return scope;
-		}
-	}
-	return defaultV;
-}
-bool parseScopeDouble(const TCHAR* buffer, size_t buf_len, ValueScopeDouble& scope)
-{
-	if(buffer[0]!=_T('(') || buffer[buf_len-1]!=_T(')')) return false;
-	const TCHAR* p=buffer;
-	size_t index = 1;
-	const size_t lowStart=index;
-	size_t lowEnd=0;
-	size_t highStart=0;
-	size_t highEnd=0;
-	if(p[index]==_T('-') || p[index]==_T('+'))
-	{
-		index++; //skip sign
-	}
-	//scan buffer
-	int stage= 0;  //0 低值整数部分，1 低值小数 2 低值结束， 3 高值起始， 4 高值整数 5高值小数 6 高值结束
-	while(index < buf_len)
-	{
-		switch (stage)
-		{
-		case 0://扫描低值整数部分
-			if(p[index] >= _T('0') && p[index] <= _T('9'))
-			{
-				index++;
-				continue;
-			}
-			if(p[index]==_T('.'))
-			{
-				index ++;
-				stage = 1;   //扫描小数部分
-				continue;
-			}
-			if(p[index]==_T(' ')) //标记低值扫描结束, 转到扫描低值束符','
-			{
-				if(lowEnd==0) lowEnd = index;
-				stage =2;
-				index ++;
-				continue;
-			}
-			if(p[index]==_T(',')) //标记低值扫描结束，直接转入高值扫描
-			{
-				if(lowEnd==0) lowEnd=index;
-				stage = 2;
-				index ++;
-				continue;
-			}
-			return false;
-		case 1: //扫描低值小数部分
-			if(p[index] >= _T('0') && p[index] <= _T('9'))
-			{
-				index++;
-				continue;
-			}
-			if(p[index]==_T(' ')) //无小数部分，标记低值扫描结束
-			{
-				lowEnd=index;
-				stage = 2;
-				index++;
-				continue;
-			}
-			if(p[index]==_T(',')) //转入高值扫描判断
-			{
-				lowEnd = index;
-				stage = 3;
-				index ++;
-				continue;
-			}
-			return false;
-		case 2: //扫描低值结束符','
-			if(p[index] == _T(' ')) //跳过低值后部空格
-			{
-				index ++;
-				continue;
-			}
-			if(p[index]==_T(',')) //低值结束，扫描高值
-			{
-				index++;
-				stage = 3;
-				continue;
-			}
-			return false;
-		case 3: //扫描高值整数起始位置
-			if(p[index]==_T(' ')) //跳过高值前导空格
-			{
-				index ++;
-				continue;
-			}
-			if(p[index]==_T('+') || p[index]==_T('-')) //标记高值扫描起始，进入高值整数部分扫描stage 4
-			{
-				highStart = index;
-				stage = 4;
-				index ++;
-				continue;
-			}
-			if(p[index] >= _T('0') && p[index] <= _T('9')) //无符号，标记高值扫描起始，直接进入高值整数部分扫描stage 4
-			{
-				highStart=index;
-				stage=4;
-				index ++;
-				continue;
-			}
-			return false;
-		case 4: //扫描高值整数
-			if(p[index] >= _T('0') && p[index] <= _T('9'))
-			{
-				index++;
-				continue;
-			}
-			if(p[index] == _T('.')) //扫描高值小数部分
-			{
-				index++;
-				stage = 5;
-				continue;
-			}
-			highEnd = index; //标记高值扫描结束
-			break;
-		case 5:
-			if(p[index] >= _T('0') && p[index] <= _T('9'))
-			{
-				index++;
-				continue;
-			}
-			highEnd = index; //标记高值扫描结束
-			break;
-		}
-		if(highEnd!=0) break; //两部分扫描结束，跳出循环
-	}
-	//判断两部分起止位置逻辑关系，确定是否成功
-	if(lowEnd < lowStart || highEnd < highStart) return false;
-	
-	//转换
-	scope.LowValue = _ttof(p + lowStart);
-	scope.HighValue= _ttof(p + highStart);
-	return true;
-}
-ValueScopeDouble Settings::GetConfigValueScopeDouble(const TCHAR* section, const TCHAR* item,
-	const ValueScopeDouble& defaultV)
-{
-	ValueScopeDouble scope;
-	ConfigItemImpl * pConfig=findItem(section, item);
-	
-	if(pConfig)
-	{
-		const size_t len=_tcslen(pConfig->Value);
-		if(len>4 && parseScopeDouble(pConfig->Value, len, scope))
-		{
-			return scope;
-		}
-	}
-	return defaultV;
 }
 
 SIZE_T Settings::getBufferSize()
@@ -440,22 +201,22 @@ int Settings::getGridBorderWidth()
 
 Gdiplus::Color Settings::getGridThinLineColor()
 {
-	return GetConfigColor(SECTION_UI, ITEM_GRID_THIN_COLOR, DEFAULT_GRID_THIN_COLOR);
+	return GetConfigColor(SECTION_UI, ITEM_GRID_THIN_LINE_COLOR, DEFAULT_GRID_THIN_LINE_COLOR);
 }
 
 int Settings::getGridThinLineWidth()
 {
-	return GetConfigColor(SECTION_UI, ITEM_GRID_THIN_WIDTH, DEFAULT_GRID_THIN_WIDTH);
+	return GetConfigInt(SECTION_UI, ITEM_GRID_THIN_LINE_WIDTH, DEFAULT_GRID_THIN_LINE_WIDTH);
 }
 
 Gdiplus::Color Settings::getGridThickLineColor()
 {
-	return GetConfigColor(SECTION_UI, ITEM_GRID_THICK_COLOR, DEFAULT_GRID_THICK_COLOR);
+	return GetConfigColor(SECTION_UI, ITEM_GRID_THICK_LINE_COLOR, DEFAULT_GRID_THICK_LINE_COLOR);
 }
 
 int Settings::getGridThickLineWidth()
 {
-	return GetConfigColor(SECTION_UI, ITEM_GRID_THICK_WIDTH, DEFAULT_GRID_THICK_WIDTH);
+	return GetConfigInt(SECTION_UI, ITEM_GRID_THICK_LINE_WIDTH, DEFAULT_GRID_THICK_LINE_WIDTH);
 }
 
 Gdiplus::Color Settings::getWaveBaseLineColor()
@@ -465,7 +226,7 @@ Gdiplus::Color Settings::getWaveBaseLineColor()
 
 int Settings::getWaveBaseLineWidth()
 {
-	return GetConfigColor(SECTION_UI, ITEM_WAVE_BASELINE_WIDTH, DEFAULT_WAVE_BASELINE_WIDTH);
+	return GetConfigInt(SECTION_UI, ITEM_WAVE_BASELINE_WIDTH, DEFAULT_WAVE_BASELINE_WIDTH);
 }
 
 Gdiplus::Color Settings::getWaveLineColor()
@@ -475,18 +236,17 @@ Gdiplus::Color Settings::getWaveLineColor()
 
 int Settings::getWaveLineWidth()
 {
-	return GetConfigColor(SECTION_UI, ITEM_WAVE_WIDTH, DEFAULT_WAVE_WIDTH);
+	return GetConfigInt(SECTION_UI, ITEM_WAVE_WIDTH, DEFAULT_WAVE_WIDTH);
 }
 
-bool Settings::isShowBaseLine()
+bool Settings::getShowWaveBaseLine()
 {
-	const TCHAR c=GetConfigChar(SECTION_UI, ITEM_WAVE_BASELINE_SHOW, DEFAULT_WAVE_BASELINE_SHOW);
-	return c==_T('是')||c==_T('y')||c==_T('Y')||c==_T('T') || c==_T('t')|| c==_T('1');
+	return GetConfigBool(SECTION_UI, ITEM_WAVE_BASELINE_SHOW, DEFAULT_WAVE_BASELINE_SHOW);
 }
 
-int Settings::getWaveShowType()
+int Settings::getWaveDrawMode()
 {
-	return _tcscmp(_T("擦除"),GetConfigString(SECTION_UI, ITEM_WAVE_SHOW_TYPE, DEFAULT_WAVE_SHOW_TYPE)) == 0 ?
+	return _tcscmp(_T("擦除"),GetConfigString(SECTION_UI, ITEM_WAVE_DRAW_MODE, DEFAULT_WAVE_DRAW_MODE)) == 0 ?
 		2 : 1;
 }
 
@@ -494,5 +254,56 @@ double Settings::getWaveVelocity()
 {
 	return GetConfigDouble(SECTION_UI, ITEM_WAVE_VELOCITY, DEFAULT_WAVE_VELOCITY);
 }
+
+int Settings::getGridThickLineSpacing()
+{
+	return GetConfigInt(SECTION_UI, ITEM_GRID_THICK_LINE_SPACING, DEFAULT_GRID_THICK_LINE_SPACING);
+}
+
+int Settings::getGridThinLineSpacing()
+{
+	return GetConfigInt(SECTION_UI, ITEM_GRID_THIN_LINE_SPACING, DEFAULT_GRID_THIN_LINE_SPACING);
+}
+
+bool Settings::getShowGridThickLine()
+{
+	return GetConfigBool(SECTION_UI, ITEM_GRID_THICK_LINE_SHOW, DEFAULT_GRID_THICK_LINE_SHOW);
+}
+
+bool Settings::getShowGridThinLine()
+{
+	return GetConfigBool(SECTION_UI, ITEM_GRID_THIN_LINE_SHOW, DEFAULT_GRID_THIN_LINE_SHOW);
+}
+
+bool Settings::getShowGridBorder()
+{
+	return GetConfigBool(SECTION_UI, ITEM_GRID_BORDER_SHOW, DEFAULT_GRID_BORDER_SHOW);
+}
+
+int Settings::getGridThickLineStyle()
+{
+	return GetConfigInt(SECTION_UI, ITEM_GRID_THICK_LINE_STYLE, DEFAULT_GRID_THICK_LINE_STYLE);
+}
+
+int Settings::getGridThinLineStyle()
+{
+	return GetConfigInt(SECTION_UI, ITEM_GRID_THIN_LINE_STYLE, DEFAULT_GRID_THIN_LINE_STYLE);
+}
+
+int Settings::getWaveBaseLineStyle()
+{
+	return GetConfigInt(SECTION_UI, ITEM_WAVE_BASELINE_STYLE, DEFAULT_WAVE_BASELINE_STYLE);
+}
+
+int Settings::getWaveEraseWidth()
+{
+	return GetConfigInt(SECTION_UI, ITEM_WAVE_ERASE_WIDTH, DEFAULT_WAVE_ERASE_WIDTH);
+}
+
+int Settings::getWaveLineStyle()
+{
+	return GetConfigInt(SECTION_UI, ITEM_WAVE_LINE_STYLE, DEFAULT_WAVE_LINE_STYLE);
+}
+
 
 

@@ -68,7 +68,7 @@ private:
 	float _scale;
 	double _layoutPercent;
 	SignalChannel * _pSignalChannel;
-	int _totalSampleCount;
+	SIZE_T _totalSampleCount;
 	float _sampleDotSpacing;
 	WaveDrawerAppearance& getThisAppearance();
 

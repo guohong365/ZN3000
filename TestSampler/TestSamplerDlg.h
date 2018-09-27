@@ -31,6 +31,8 @@ public:
 protected:
 	HICON m_hIcon;
 
+	GridBackgroundAppearance createGridAppearance();
+	static WaveDrawerAppearance createWaveAppearance();
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);

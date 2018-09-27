@@ -4,15 +4,15 @@
 
 struct GridBackgroundAppearance : Appearance
 {
-	bool IsDrawThickGrid;
-	bool IsDrawThinGrid;
+	bool ShowThickGridLine;
+	bool ShowThinGridLine;
 	float ThickGridLineWidth;  //0.1mm
 	float ThinGridLineWidth;   //0.1mm
 	int ThickGridLineStyle;
 	int ThinGridLineStyle;
-	int ThickGridSpacing;   //mm
-	int ThinGridSpacing;    //mm
-	unsigned long ThickGridColor;
+	int ThickGridLineSpacing;   //mm
+	int ThinGridLineSpacing;    //mm
+	unsigned long ThickGridLineColor;
 	unsigned long ThinGridLineColor;
 
 	GridBackgroundAppearance(const GridBackgroundAppearance & appearance);

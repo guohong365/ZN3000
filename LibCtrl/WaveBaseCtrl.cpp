@@ -14,6 +14,8 @@
 #define SAMPLE_SHOW_ELAPSE   100
 // CWaveBaseCtrl ¶Ô»°¿ò
 
+static unsigned long counter=0;
+static unsigned long drawCounter=0;
 IMPLEMENT_DYNAMIC(CWaveBaseCtrl, CDialog)
 
 CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
@@ -83,6 +85,18 @@ void CWaveBaseCtrl::SetDrawMode(DrawMode drawMode)
 	Invalidate();
 }
 
+void CWaveBaseCtrl::SetGridAppearance(GridBackgroundAppearance& backgroundAppearance)
+{
+	ASSERT(_pCanvas);
+	_pCanvas->SetGridAppearance(backgroundAppearance);
+}
+
+void CWaveBaseCtrl::SetWaveAppearance(WaveDrawerAppearance& waveDrawerAppearance)
+{
+	ASSERT(_pCanvas);
+	_pCanvas->SetWaveAppearance(waveDrawerAppearance);
+}
+
 void CWaveBaseCtrl::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -108,7 +122,7 @@ void CWaveBaseCtrl::OnOK()
 void CWaveBaseCtrl::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	drawCounter ++;
 	CDC memDC;
 	memDC.CreateCompatibleDC(&dc);
 	CRect rect;
@@ -118,10 +132,7 @@ void CWaveBaseCtrl::OnPaint()
 		_memBitmap.GetBitmapDimension().cy != rect.Height())
 	{
 		_memBitmap.DeleteObject();
-		_background.DeleteObject();
 		_memBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());	
-		_background.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
-
 	}
 	CBitmap * pOldBitmap=static_cast<CBitmap*>(memDC.SelectObject(&_memBitmap));
 	
@@ -163,13 +174,17 @@ BOOL CWaveBaseCtrl::OnInitDialog()
 void CWaveBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 {	
 	if(nIDEvent!=SAMPLE_SHOW_TIMER_ID) return;
-	if(_last.QuadPart > 0)
+	/*
+	counter ++;
+	CString info;
+	SignalBuffer<float> & buffer=_pCanvas->GetWave(0)->getChannelBuffer()->getSignalBuffer();
+	info.Format(_T("%lu, %lu, %lu"), counter, buffer.getLength(), drawCounter);
+	CWnd *pWnd=GetDlgItem(IDC_STATIC_COUNTER);
+	if(pWnd)
 	{
-		LARGE_INTEGER current;
-		QueryPerformanceCounter(&current);
-		double duration= double(current.QuadPart-_last.QuadPart)/_frequency.QuadPart; //in second
-	} 
-	QueryPerformanceCounter(&_last);
+		pWnd->SetWindowText(info);
+	}
+	*/
 	Invalidate();
 }
 

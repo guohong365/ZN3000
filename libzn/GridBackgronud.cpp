@@ -39,8 +39,7 @@ GridBackground::~GridBackground()
 }
 
 void GridBackground::OnDraw(Gdiplus::Graphics & graph)
-{
-	
+{	
 	Gdiplus::Pen thickGridPen(GetThickGridLineColor(),GetThickGridLineWidth());
 	thickGridPen.SetDashStyle(Gdiplus::DashStyle(GetThickGridLineStyle()));
 	Gdiplus::Pen thinGridPen(GetThinGridLineColor(), GetThinGridLineWidth());
@@ -60,22 +59,22 @@ void GridBackground::OnDrawFillObject(Gdiplus::Graphics& graph)
 
 void GridBackground::SetShowThickGrid(bool isShow)
 {
-	_getThisAppearance().IsDrawThickGrid = isShow;
+	_getThisAppearance().ShowThickGridLine = isShow;
 }
 
 bool GridBackground::GetShowThickGrid()
 {
-	return _getThisAppearance().IsDrawThinGrid;
+	return _getThisAppearance().ShowThickGridLine;
 }
 
 void GridBackground::SetShowThinGrid(bool isShow)
 {
-	_getThisAppearance().IsDrawThinGrid=isShow;
+	_getThisAppearance().ShowThinGridLine=isShow;
 }
 
 bool GridBackground::GetShowThinGrid()
 {
-	return _getThisAppearance().IsDrawThinGrid;
+	return _getThisAppearance().ShowThinGridLine;
 }
 
 void GridBackground::SetThickGridLineWidth(float width)
@@ -90,12 +89,12 @@ float GridBackground::GetThickGridLineWidth()
 
 void GridBackground::SetThickGridLineColor(Gdiplus::Color color)
 {
-	_getThisAppearance().ThickGridColor=color.GetValue();
+	_getThisAppearance().ThickGridLineColor=color.GetValue();
 }
 
 Gdiplus::Color GridBackground::GetThickGridLineColor()
 {
-	return _getThisAppearance().ThickGridColor;
+	return _getThisAppearance().ThickGridLineColor;
 }
 
 void GridBackground::SetThickGridLineStyle(int style)
@@ -110,12 +109,12 @@ int GridBackground::GetThickGridLineStyle()
 
 void GridBackground::SetThickGridSpacing(int spacing)
 {
-	_getThisAppearance().ThickGridSpacing = spacing;
+	_getThisAppearance().ThickGridLineSpacing = spacing;
 }
 
 int GridBackground::GetThickGridSpacing()
 {
-	return _getThisAppearance().ThickGridSpacing;
+	return _getThisAppearance().ThickGridLineSpacing;
 }
 
 void GridBackground::SetThinGridLineWidth(float width)
@@ -150,12 +149,12 @@ int GridBackground::GetThinGridLineStyle()
 
 void GridBackground::SetThinGridSpacing(int spacing)
 {
-	_getThisAppearance().ThinGridSpacing = spacing;
+	_getThisAppearance().ThinGridLineSpacing = spacing;
 }
 
 int GridBackground::GetThinGridSpacing()
 {
-	return _getThisAppearance().ThinGridSpacing;
+	return _getThisAppearance().ThinGridLineSpacing;
 }
 
 void GridBackground::_drawGrid(Gdiplus::Graphics & graph, Gdiplus::Pen * pPen, 

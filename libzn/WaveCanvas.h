@@ -25,6 +25,8 @@ public:
 	void SetDrawMode(DrawMode drawMode);
 
 	DrawMode GetDrawMode() const;
+	void SetGridAppearance(GridBackgroundAppearance& backgroundAppearance);
+	void SetWaveAppearance(WaveDrawerAppearance& waveDrawerAppearance);
 protected:
 	WaveCanvas();
 	void _calcLayout();
@@ -44,4 +46,5 @@ private:
 	GridBackground * _pWaveBackground;
 	std::vector<WaveDrawer *> _waveDrawers;
 	int _labelInterval;
+	WaveDrawerAppearance _waveAppearance;
 };

@@ -1,6 +1,8 @@
 #pragma once
 #include "../libDrawObject/Appearance.h"
-	enum BaselineAlignment
+#include "Settings.h"
+
+enum BaselineAlignment
 	{
 		MINIMUM_VALUE =0,
 		ZERO_VALUE =1,
@@ -8,8 +10,9 @@
 	};
 	enum DrawMode
 	{
-		DRAW_ROLLING,
-		DRAW_ERASURE
+		DRAW_STATIC  =0,
+		DRAW_ROLLING = 1,
+		DRAW_ERASURE = 2
 	};
 struct WaveDrawerAppearance : Appearance
 {
@@ -21,6 +24,7 @@ struct WaveDrawerAppearance : Appearance
 	int BaselineStyle;
 	int WaveDrawMode;
 	int EraseWidth;   //0.1mm
+	double Velocity;
 	WaveDrawerAppearance();
 	virtual ~WaveDrawerAppearance();
 	virtual Appearance& operator=(const Appearance& another);
