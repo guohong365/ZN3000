@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WaveDrawer.h"
 #include "WaveDrawerAppearance.h"
+#include "../libDrawObject/RectObject.h"
 
 #define DEFAULT_WAVE_SCALE 0.8f
 
@@ -176,30 +177,89 @@ WaveDrawerAppearance& WaveDrawer::getThisAppearance()
 	return static_cast<WaveDrawerAppearance&>(GetAppearance());
 }
 
+void WaveDrawer::_drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex)
+{
+	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
+	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
+	const float step=float(endIndex - startIndex)/(endX - startX);
+	float lastIndex=startIndex;
+	const float height=GetSize().Height * _scale/32767;
+	int x=startX;
+	int y=offsetY - pBuffer[startIndex%bufferSize]* height;
+	for(int i=startX + 1; i < endX; ++i)
+	{
+		const float currentIndex= lastIndex + step;
+		const int x1= x+1;
+		const int y1=offsetY - pBuffer[int(currentIndex)%bufferSize] * height;
+		graphics.DrawLine(&pen, x, y, x1, y1);
+		x=x1;
+		y=y1;
+		lastIndex =currentIndex;
+	}
+}
+
+void WaveDrawer::_drawWaveBySamples(Gdiplus::Graphics& graphics, float* pBuffer, SIZE_T bufferSize, int offsetY, int startX, int endX,
+	SIZE_T startIndex, SIZE_T endIndex)
+{
+	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
+	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
+	const float step=float(endX - startX)/(endIndex - startIndex);
+	const float height=GetSize().Height * _scale/32767;
+	float x=startX;
+	int y=offsetY -  pBuffer[startIndex%bufferSize]* height;
+	for(int i=startIndex + 1; i < endIndex; ++i)
+	{
+		const float x1= x+step;
+		if(int(x1)==int(x))
+		{
+			x=x1;
+			continue;
+		}
+		const int y1=offsetY - pBuffer[i%bufferSize] * height;
+		graphics.DrawLine(&pen, int(x), y, int(x1), y1);
+		x=x1;
+		y=y1;
+	}
+}
+
+
 void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 {
 	if(IsShowBaseline())
 	{
 		_drawBaseline(graph);
 	}
+
 	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
-	const int sampleCount = min(_totalSampleCount, buffer.getLength());
-	const int startSample=buffer.getLength() <= buffer.getSize() ? 0 : buffer.getLength() - buffer.getSize(); 
+	const SIZE_T current = buffer.getLength();
+	const SIZE_T bufferSize=buffer.getSize();
+	const int width=GetSize().Width;
+	const int height=GetSize().Height;
+	const int sampleCount = min(_totalSampleCount, current);
+	const int startSample=current <= bufferSize ? 0 : current - bufferSize; 
 	const int offset= _baseline;
-	float startX = GetSize().Width - sampleCount * _sampleDotSpacing;
-	float startY =offset - GetSize().Height * _scale * buffer.getBuffer()[startSample%buffer.getSize()] /32767;
-	//float startY =offset - buffer.getBuffer()[startSample%buffer.getSize()];
+	float startX = width - sampleCount * _sampleDotSpacing;
+	float startY =offset - height * _scale * buffer.getBuffer()[startSample%bufferSize] /32767;
+	if(width > sampleCount)
+	{
+		_drawWaveBySamples(graph, buffer.getBuffer() + startSample, sampleCount, offset, startX, startX + width, startSample, startSample + sampleCount);
+	}
+	else
+	{
+		_drawWaveByPixels(graph, buffer.getBuffer() + startSample, sampleCount, offset, startX, startX + width, startSample, startSample + sampleCount);
+	}
+	/*
 	for(int i= 0; i< sampleCount - 2; i +=5)
 	{
 		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;
-		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % buffer.getSize()] * GetSize().Height * _scale / 32767;
-		//const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % buffer.getSize()];
+		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % bufferSize] * height * _scale / 32767;
 		graph.DrawLine(&pen, int(startX), int(startY), int(endX), int(endY));
 		startY = endY;
 		startX = endX;
 	}
+	*/
 }
 
 void WaveDrawer::OnSizeChanged()
@@ -223,6 +283,10 @@ void WaveDrawer::OnSizeChanged()
 	_waveHeight=GetSize().Height*_scale;
 	_totalSampleCount = int(GetSize().Width / ScreenInfo::GetScreenInfo().GetDpmmX() / _velocity *	_pSignalChannel->getSampleFrequency());
 	_sampleDotSpacing= float(GetSize().Width) / _totalSampleCount;
+	SetClipRect(Gdiplus::Rect(Gdiplus::Point(0,0), GetSize()));
+	if(!GetClipRect().IsEmptyArea()){
+		SetUsingClip(true);
+	}
 }
 
 void WaveDrawer::_drawBaseline(Gdiplus::Graphics& graph)

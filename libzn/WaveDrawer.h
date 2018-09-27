@@ -54,6 +54,8 @@ protected:
 	virtual void OnSizeChanged();
 	void _drawBaseline(Gdiplus::Graphics& graph);
 	virtual void OnDraw(Gdiplus::Graphics & graph);
+	virtual void _drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
+	virtual void _drawWaveBySamples(Gdiplus::Graphics& graphics,float *pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
 private:
 	Gdiplus::Pen * _pBaselinePen;
 	Gdiplus::Pen * _pWaveLinePen;
@@ -69,5 +71,6 @@ private:
 	int _totalSampleCount;
 	float _sampleDotSpacing;
 	WaveDrawerAppearance& getThisAppearance();
+
 	void _initialize();
 };

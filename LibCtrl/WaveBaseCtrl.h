@@ -50,6 +50,7 @@ private:
 	SignalChannel* _pAdmittance;
 	SignalChannel* _pDifferential;
 	SignalChannel* _pEcg;
-	ULONG _current;
 	DrawMode _drawMode;
+	LARGE_INTEGER _last;
+	LARGE_INTEGER _frequency;
 };

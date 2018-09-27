@@ -22,9 +22,10 @@ CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
 	  , _pAdmittance(nullptr)
 	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)
-	  , _current(0)
 	  , _drawMode(DRAW_ROLLING)
 {
+	_last.QuadPart = 0;
+	QueryPerformanceFrequency(&_frequency);
 	_pCanvas = new WaveCanvas(Gdiplus::Point(0, 0), Gdiplus::Size(0, 0));
 }
 
@@ -161,10 +162,15 @@ BOOL CWaveBaseCtrl::OnInitDialog()
 }
 void CWaveBaseCtrl::OnTimer(UINT_PTR nIDEvent)
 {	
-	if(nIDEvent==SAMPLE_SHOW_TIMER_ID)
+	if(nIDEvent!=SAMPLE_SHOW_TIMER_ID) return;
+	if(_last.QuadPart > 0)
 	{
-		Invalidate(TRUE);
-	}
+		LARGE_INTEGER current;
+		QueryPerformanceCounter(&current);
+		double duration= double(current.QuadPart-_last.QuadPart)/_frequency.QuadPart; //in second
+	} 
+	QueryPerformanceCounter(&_last);
+	Invalidate();
 }
 
 BOOL CWaveBaseCtrl::OnEraseBkgnd( CDC* /*pDC*/ )

@@ -105,10 +105,10 @@ void CTestViewDoc::Serialize(CArchive& ar)
 			{
 				pData=reinterpret_cast<DataBuffer*>(p + index);
 				revert(&pData->Paket);
-				pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback*200.0f/32767);
-				pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance*200.0f/32767);
-				pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential*200.0f/32767);
-				pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG*200.0f/32767);
+				pBuffer[0]->getSignalBuffer().append(pData->Paket.Feedback);
+				pBuffer[1]->getSignalBuffer().append(pData->Paket.Admittance);
+				pBuffer[2]->getSignalBuffer().append(pData->Paket.Differential);
+				pBuffer[3]->getSignalBuffer().append(pData->Paket.ECG);
 				index +=sizeof(Packet);
 			}while(index< (LEN_BUFFER -1) * sizeof(Packet));
 			break;
