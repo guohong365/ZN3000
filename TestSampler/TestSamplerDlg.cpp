@@ -90,6 +90,7 @@ BEGIN_MESSAGE_MAP(CTestSamplerDlg, CXTResizeDialog)
 	ON_BN_CLICKED(IDC_RADIO_ERASURE, &CTestSamplerDlg::OnBnClickedRadioErasure)
 	ON_WM_KEYDOWN()
 	ON_WM_DESTROY()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -142,7 +143,9 @@ BOOL CTestSamplerDlg::OnInitDialog()
 
 	CRect rect;
 	_waveFrame.GetWindowRect(&rect);
+	ScreenToClient(&rect);
 	_waveCtrl.Create(CWaveBaseCtrl::IDD, this);
+
 	_waveCtrl.MoveWindow(&rect);
 	_waveFrame.ShowWindow(SW_HIDE);
 	_waveCtrl.ShowWindow(SW_SHOW);
@@ -305,4 +308,18 @@ void CTestSamplerDlg::OnDestroy()
 	_waveCtrl.stop();
 	_sampler.quit();
 	CXTResizeDialog::OnDestroy();
+}
+
+
+void CTestSamplerDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CXTResizeDialog::OnSize(nType, cx, cy);
+	if(_waveCtrl.GetSafeHwnd())
+	{
+		CRect rect;
+		_waveFrame.GetWindowRect(&rect);
+		ScreenToClient(&rect);
+		_waveCtrl.MoveWindow(&rect);
+		_waveCtrl.Invalidate();
+	}
 }

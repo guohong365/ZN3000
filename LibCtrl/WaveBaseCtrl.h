@@ -24,7 +24,7 @@ public:
 	
 
 	// 对话框数据
-	enum { IDD = IDD_MAIN_BASE_CTRL };
+	enum { IDD = IDD_WAVE_BASE_CTRL };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
