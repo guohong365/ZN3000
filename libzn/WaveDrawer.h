@@ -52,14 +52,13 @@ public:
 	void SetEraseWidth(int width);
 protected:	
 	virtual void OnSizeChanged();
-	void _drawBaseline(Gdiplus::Graphics& graph);
+	void _drawBaseline(Gdiplus::Graphics& graph, int startX, int width);
+	void _drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer);
 	virtual void OnDraw(Gdiplus::Graphics & graph);
 	virtual void _drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
 	virtual void _drawWaveBySamples(Gdiplus::Graphics& graphics,float *pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
+	virtual void _drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & buffer);
 private:
-	Gdiplus::Pen * _pBaselinePen;
-	Gdiplus::Pen * _pWaveLinePen;
-
 	//basic properties
 	float _velocity; // 0.1mm
 	//draw componets
@@ -71,6 +70,8 @@ private:
 	SIZE_T _totalSampleCount;
 	float _sampleDotSpacing;
 	WaveDrawerAppearance& getThisAppearance();
-
+	Gdiplus::Bitmap * _pCacheBitmap;
+	SIZE_T _lastEndSample;
+	int _lastEndX;
 	void _initialize();
 };

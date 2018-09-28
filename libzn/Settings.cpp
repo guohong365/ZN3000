@@ -78,6 +78,10 @@
 #define DEFAULT_WAVE_LINE_STYLE 0
 #define ITEM_WAVE_DRAW_MODE _T("波形.显示.方式")
 #define DEFAULT_WAVE_DRAW_MODE _T("移动")
+#define WAVE_DRAW_MODE_STATIC _T("静止")
+#define WAVE_DRAW_MODE_ROLLING _T("移动")
+#define WAVE_DRAW_MODE_ERASURE _T("擦除")
+
 #define ITEM_WAVE_ERASE_WIDTH _T("波形.显示.擦除宽度")
 #define DEFAULT_WAVE_ERASE_WIDTH 50
 #define ITEM_WAVE_VELOCITY _T("波形.显示.速度")
@@ -246,8 +250,11 @@ bool Settings::getShowWaveBaseLine()
 
 int Settings::getWaveDrawMode()
 {
-	return _tcscmp(_T("擦除"),GetConfigString(SECTION_UI, ITEM_WAVE_DRAW_MODE, DEFAULT_WAVE_DRAW_MODE)) == 0 ?
-		2 : 1;
+	const TCHAR* p=GetConfigString(SECTION_UI, ITEM_WAVE_DRAW_MODE, DEFAULT_WAVE_DRAW_MODE);
+	if(_tcscmp(WAVE_DRAW_MODE_STATIC,p) == 0) return DRAW_STATIC;
+	if(_tcscmp(WAVE_DRAW_MODE_ROLLING, p)==0) return DRAW_ROLLING;
+	if(_tcscmp(WAVE_DRAW_MODE_ERASURE, p)==0) return DRAW_ERASURE;
+	return DRAW_ROLLING;
 }
 
 double Settings::getWaveVelocity()

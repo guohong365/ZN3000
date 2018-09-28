@@ -12,25 +12,23 @@ void WaveDrawer::_initialize()
 	_velocity = 250;
 	_scale=DEFAULT_WAVE_SCALE;
 	_waveHeight=GetSize().Height*_scale;
-	_pBaselinePen=new Gdiplus::Pen(GetBaselineColor(), GetBaselineWidth());
-	_pBaselinePen->SetDashStyle(Gdiplus::DashStyle(GetBaselineStyle()));
-	_pWaveLinePen=new Gdiplus::Pen(GetLineColor(), GetLineWidth());
-	_pWaveLinePen->SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
+	_pSignalChannel=nullptr;
+	_pCacheBitmap=nullptr;
+	_layoutPercent=100;
+	_lastEndSample=0;
+	_lastEndX=0;
 }
 
 WaveDrawer::WaveDrawer()
-	: _layoutPercent(100)
-	,_pSignalChannel(nullptr)
 {
 	_initialize();
 }
 
 WaveDrawer::WaveDrawer(SignalChannel* pChannel, const double layoutPercent)
 	:DrawObject(pChannel->getLabel(), Gdiplus::Point(0,0), Gdiplus::Size(0,0))
-	, _layoutPercent(layoutPercent)
-	, _pSignalChannel(pChannel)
 {
 	_initialize();
+	_pSignalChannel=pChannel;
 }
 
 WaveDrawer::~WaveDrawer()
@@ -223,51 +221,126 @@ void WaveDrawer::_drawWaveBySamples(Gdiplus::Graphics& graphics, float* pBuffer,
 }
 
 
-void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
+void _drawScopeByPixel(
+	Gdiplus::Graphics & graphics,Gdiplus::Pen* pen, 
+	SignalBuffer<float> & buffer, SIZE_T start, SIZE_T end,
+	int startX,
+	int endX,
+	float scale, float zero)
 {
-	if(IsShowBaseline())
+	SIZE_T bufferSize=buffer.getSize();
+	float step=float(end-start)/(endX - startX);
+	float current=start;
+	int x0 = startX;
+	int y0 =zero - int(buffer.getBuffer()[start%bufferSize] * scale);
+	for(int i=startX + 1; i<=endX; ++i)
 	{
-		_drawBaseline(graph);
+		current +=step;
+		int x1=i;
+		int y1=zero - buffer.getBuffer()[int(current)%bufferSize] * scale;
+		graphics.DrawLine(pen, x0, y0, x1, y1);
+		x0=x1;
+		y0=y1;
 	}
-	
-	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
+}
+void _drawScopeBySample(
+	Gdiplus::Graphics & graphics,Gdiplus::Pen* pen, 
+	SignalBuffer<float> & buffer, SIZE_T start, SIZE_T end,
+	int startX,
+	int endX,
+	float scale, float zero)
+{
+	SIZE_T bufferSize=buffer.getSize();
+	float step=float(endX-startX)/(end - start);
+	float current=startX;
+	int x0 = startX;
+	int y0 =zero - int(buffer.getBuffer()[start%bufferSize] * scale);
+	for(int i=start + 1; i<=end; ++i)
+	{
+		current +=step;
+		int x1=current;
+		int y1=zero - buffer.getBuffer()[i%bufferSize] * scale;
+		graphics.DrawLine(pen, x0, y0, x1, y1);
+		x0=x1;
+		y0=y1;
+	}
+}
+void _drawScope(
+	Gdiplus::Graphics & graphics,Gdiplus::Pen* pen, 
+	SignalBuffer<float> & buffer, SIZE_T start, SIZE_T end,
+	int startX,
+	int endX,
+	float scale, float zero)
+{
+	if(end-start < endX - startX)
+	{
+		_drawScopeBySample(graphics, pen, buffer, start, end, startX, endX, scale, zero);
+		return;
+	}
+	_drawScopeByPixel(graphics, pen, buffer, start, end, startX, endX, scale, zero);
+}
+void WaveDrawer::_drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & buffer)
+{
+	Gdiplus::CompositingMode compositingMode=graphics.GetCompositingMode();
+	graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
+	graphics.Clear(Gdiplus::Color::Transparent);
+
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
-	const SIZE_T current = buffer.getLength();
-	const SIZE_T bufferSize=buffer.getSize();
-	const float width=GetSize().Width;
+	SIZE_T current= buffer.getLength();
+	const int width=GetSize().Width;
 	const float height=GetSize().Height * _scale / 32767;
 	const SIZE_T sampleCount = min(_totalSampleCount, current);
-	const long startSample=  current <= sampleCount ? 0 : current - sampleCount;
-
+	const SIZE_T startSample=  current <= sampleCount ? 0 : current - sampleCount;
+	_lastEndSample = buffer.getLength();
 	const int offset= _baseline;
-	float startX = width - sampleCount * _sampleDotSpacing;
-	float startY =offset - height * _scale * buffer.getBuffer()[startSample%bufferSize] /32767;
-	/*
-	if(width > sampleCount)
+	const int startX = int(width - sampleCount * _sampleDotSpacing);
+	_lastEndX = width;
+	if(IsShowBaseline())
 	{
-		_drawWaveBySamples(graph, buffer.getBuffer() + startSample, sampleCount, offset, startX, startX + width, startSample, startSample + sampleCount);
+		_drawBaseline(graphics, 0, width);
 	}
-	else
+	_drawScope(graphics, &pen, buffer, startSample, _lastEndSample, startX, _lastEndX, height, offset);
+	graphics.SetCompositingMode(compositingMode);
+}
+void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
+{
+	Gdiplus::Size size=GetSize();
+	UICoordinateHelper::GetHelper().LPtoDP(&size, 1);
+	if(_pCacheBitmap==nullptr ||
+		_pCacheBitmap->GetWidth() != size.Width ||
+		_pCacheBitmap->GetHeight() !=size.Height)
 	{
-		_drawWaveByPixels(graph, buffer.getBuffer() + startSample, sampleCount, offset, startX, startX + width, startSample, startSample + sampleCount);
+		delete _pCacheBitmap;
+		_pCacheBitmap=BitmapCreate(size.Width, size.Height, PixelFormat32bppARGB);
 	}
-	*/	
-	for(int i= 0; i< sampleCount - 2; i +=3)
+	Gdiplus::Graphics memGraphics(_pCacheBitmap);
+	memGraphics.ScaleTransform(1.0f/UICoordinateHelper::GetHelper().HorizontalLmPerDeviceUnit, 1.0f/UICoordinateHelper::GetHelper().VerticalLmPerDeviceUnit);	
+	memGraphics.SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
+	memGraphics.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+	memGraphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	memGraphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
+	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
+	const SIZE_T current=buffer.getLength();
+	if(GetWaveDrawMode()==DRAW_ROLLING)
 	{
-		const float endX = startX + _sampleDotSpacing + _sampleDotSpacing + _sampleDotSpacing;// + _sampleDotSpacing + _sampleDotSpacing;
-		const float endY = offset - buffer.getBuffer()[(startSample + i + 1) % bufferSize] * height;
-		graph.DrawLine(&pen, int(startX), int(startY), int(endX), int(endY));
-		startY = endY;
-		startX = endX;
+		_drawFull(memGraphics, buffer);		
 	}
+	else 
+	{
+		_drawErase(memGraphics, buffer);		
+	}
+	graph.SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+	graph.DrawImage(_pCacheBitmap, Gdiplus::Rect(Gdiplus::Point(0, 0), GetSize()), 0, 0, _pCacheBitmap->GetWidth(),
+	                _pCacheBitmap->GetHeight(), Gdiplus::UnitPixel);
 	CString info;
 	Gdiplus::Font font(_T("宋体"), 50, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel, nullptr);
 	Gdiplus::StringFormat format;
 	format.SetAlignment(Gdiplus::StringAlignmentNear);
 	format.SetLineAlignment(Gdiplus::StringAlignmentNear);
 	Gdiplus::SolidBrush brush(Gdiplus::Color::White); 
-	info.Format(_T("total:%.2fs, start: %ld, length: %d. "),current/getChannelBuffer()->getSampleFrequency(), startSample, _totalSampleCount);
+	info.Format(_T("total:%.2fs, start: %ld, length: %d. "), current / getChannelBuffer()->getSampleFrequency(),
+	            _lastEndSample, _totalSampleCount);
 	graph.DrawString(info, -1, &font,Gdiplus::PointF(0,0), &format, &brush );
 	
 }
@@ -299,9 +372,38 @@ void WaveDrawer::OnSizeChanged()
 	}
 }
 
-void WaveDrawer::_drawBaseline(Gdiplus::Graphics& graph)
+void WaveDrawer::_drawBaseline(Gdiplus::Graphics& graph, int startX, int width)
 {
 	Gdiplus::Pen pen(GetBaselineColor(), GetBaselineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetBaselineStyle()));
-	graph.DrawLine(&pen, 0, _baseline, GetSize().Width, _baseline);
+	graph.DrawLine(&pen, startX, _baseline, startX + width, _baseline);
+}
+
+void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer)
+{
+	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
+	Gdiplus::SolidBrush spot(Gdiplus::Color::Red);
+	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
+	const int height=GetSize().Height;
+	const SIZE_T current=buffer.getLength();
+	//需要重绘的宽度  logic unit
+	const int drawWidth=(current - _lastEndSample) * _sampleDotSpacing;
+	int spotSize=20;
+	//计算需要擦除的宽度
+	const int eraseWidth= drawWidth + GetEraseWidth() +  spotSize;
+	Gdiplus::SolidBrush brush(Gdiplus::Color::Transparent);
+	const Gdiplus::CompositingMode compositingMode= graphics.GetCompositingMode();
+	graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);	
+	graphics.FillRectangle(&brush, _lastEndX + 1, 0, eraseWidth, height);
+	if(IsShowBaseline())
+	{
+		_drawBaseline(graphics, _lastEndX, eraseWidth );
+	}
+	_drawScope(graphics, &pen, buffer, _lastEndSample, current, _lastEndX, _lastEndX + drawWidth, height *_scale /32767.0f, _baseline);
+	graphics.FillEllipse(&spot, _lastEndX + drawWidth, _baseline - int(buffer.getBuffer()[current % buffer.getSize()] * _scale * height / 32767), spotSize, spotSize);
+	_lastEndSample=current;
+	_lastEndX +=drawWidth;
+	if(_lastEndX > GetSize().Width) _lastEndX =0;
+	graphics.SetCompositingMode(compositingMode);
+
 }

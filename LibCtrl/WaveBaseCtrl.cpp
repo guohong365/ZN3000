@@ -79,8 +79,7 @@ PartId CWaveBaseCtrl::GetCurrentPart() const
 }
 
 void CWaveBaseCtrl::SetDrawMode(DrawMode drawMode)
-{
-	if(drawMode == _drawMode) return;
+{	
 	_pCanvas->SetDrawMode(drawMode);
 	Invalidate();
 }

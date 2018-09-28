@@ -8,7 +8,7 @@
 #define DEFAULT_BASELINE_STYLE 0
 #define DEFAULT_WAVE_LINE_WIDTH 5
 #define DEFAULT_WAVE_LINE_COLOR 0xFF90EE90
-#define DEFAULT_WAVE_DRAW_MODE 0
+#define DEFAULT_WAVE_DRAW_MODE 1
 #define DEFAULT_WAVE_ERASE_WIDTH 40
 WaveDrawerAppearance::WaveDrawerAppearance()
 	: Appearance()
@@ -43,6 +43,8 @@ void WaveDrawerAppearance::CopyFrom(const Appearance& another)
 	BaselineColor = pDrawerAppearance->BaselineColor;
 	BaselineWidth=pDrawerAppearance->BaselineWidth;
 	ShowBaseline = pDrawerAppearance->ShowBaseline;
+	WaveDrawMode = pDrawerAppearance->WaveDrawMode;
+	EraseWidth = pDrawerAppearance->EraseWidth;
 }
 
 Appearance* WaveDrawerAppearance::Clone()

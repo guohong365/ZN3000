@@ -45,6 +45,7 @@ void WaveCanvas::AddWave(SignalChannel* pChannel, const double percent)
 {
 	WaveDrawer* pDrawer = new WaveDrawer(pChannel, percent);
 	pDrawer->SetAppearance(_waveAppearance);
+	pDrawer->SetWaveDrawMode(GetDrawMode());
 	pDrawer->SetParent(this);
 	_waveDrawers.push_back(pDrawer);
 	_calcLayout();
@@ -80,7 +81,12 @@ void WaveCanvas::Clear()
 
 void WaveCanvas::SetDrawMode(DrawMode drawMode)
 {
+	if(_drawMode == drawMode) return;
 	_drawMode = drawMode;
+	for(std::vector<WaveDrawer*>::iterator it=_waveDrawers.begin(); it!= _waveDrawers.end(); ++it)
+	{
+		(*it)->SetWaveDrawMode(drawMode);
+	}
 }
 
 DrawMode WaveCanvas::GetDrawMode() const
