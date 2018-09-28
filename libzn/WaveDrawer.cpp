@@ -394,7 +394,7 @@ void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& bu
 	Gdiplus::SolidBrush brush(Gdiplus::Color::Transparent);
 	const Gdiplus::CompositingMode compositingMode= graphics.GetCompositingMode();
 	graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);	
-	graphics.FillRectangle(&brush, _lastEndX + 1, 0, eraseWidth, height);
+	graphics.FillRectangle(&brush, _lastEndX, 0, eraseWidth, height);
 	if(IsShowBaseline())
 	{
 		_drawBaseline(graphics, _lastEndX, eraseWidth );
