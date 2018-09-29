@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Sampler.h"
 #include "SerialPort.h"
-#include "SignalBuffer.h"
+#include "AbstractSampler.h"
 
 #define FEEDBACK_INDEX 0
 #define ADMITTANCE_INDEX 1
@@ -15,7 +14,7 @@
 #define WORK_MODE_CALIBRATION 0x01
 #define WORK_MODE_EXAMINE 0x00
 
-class SerialPortSampler : public Sampler
+class SerialPortSampler : public AbstractSampler
 {
 public:
 	explicit SerialPortSampler(
@@ -24,16 +23,8 @@ public:
 		BYTE dataBits = 8,
 		BYTE parity = NOPARITY,
 		BYTE stopBits = ONESTOPBIT);
-	~SerialPortSampler();
-	virtual bool begin(SamplerProgressCallback *progressCallback=nullptr, SamplerStateChangedCallback *stateChangedCallback=nullptr);
-	virtual void pause();
-	virtual void resume();
-	virtual void quit();
-	virtual SamplerState getState();
+	~SerialPortSampler();	
 	bool setMode(BYTE mode);
-	void resetBuffer();
-	SignalBuffer<float>* getBuffer(int index);
-	void attachBuffer(int index, SignalBuffer<float> * pBuffer);
 private:
 	/**扫描缓冲区，标记出现合法Packe结构的位置。
 	 *
@@ -47,22 +38,12 @@ private:
 	 *@return 0 - 成功， < 0 读串口错误。
 	 */
 	int synchronizePacket() const;
-	/**采样线程
-	 *
-	 *@param lpParam 传入参数为this指针
-	 *@return 0 - 正常停止 >1000 错误
-	 */
-	static DWORD __stdcall samplerFunc(LPVOID lpParam);
-public:
-	virtual unsigned long join(int timeout =-1);
+
+protected:
+	virtual void doSampler();
+	virtual bool onBeforeStart();
+	virtual void onBeforeLoop();
+	virtual void onResume();
 private:
-	SerialPort _serialPort;
-	HANDLE _hThread;
-	HANDLE _hResume;
-	DWORD _dwThreadId;
-	SignalBuffer<float> *_buffers[4];
-	bool _quit;
-	bool _paused;
-	SamplerProgressCallback* _progressCallback;
-	SamplerStateChangedCallback * _stateChangedCallback;
+	SerialPort _serialPort;	
 };

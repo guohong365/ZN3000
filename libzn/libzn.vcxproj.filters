@@ -105,6 +105,9 @@
     <ClInclude Include="ActiveWaveDrawer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractSampler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -165,6 +168,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ActiveWaveDrawer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

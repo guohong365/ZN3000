@@ -75,6 +75,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractSampler.h" />
     <ClInclude Include="ActiveWaveDrawer.h" />
     <ClInclude Include="AnnotationImpl.h" />
     <ClInclude Include="DataLoader.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="ZnRecord.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractSampler.cpp" />
     <ClCompile Include="ActiveWaveDrawer.cpp" />
     <ClCompile Include="AnnotationImpl.cpp" />
     <ClCompile Include="EdfReader.cpp" />

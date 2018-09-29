@@ -17,41 +17,6 @@ CWinApp theApp;
 
 using namespace std;
 
-class ProgressCallback : public SamplerProgressCallback
-{
-public:
-	virtual void onProgress(Sampler* sender, unsigned long current, void* pPacketBuffer, size_t size);
-};
-
-void ProgressCallback::onProgress(Sampler* sender, unsigned long current, void* pPacketBuffer, size_t size)
-{
-	if (!pPacketBuffer)
-	{
-		_tprintf(_T("EMPTY\n"));
-		return;
-	}
-	Packet* pPacket = reinterpret_cast<Packet*>(pPacketBuffer);
-	_tprintf(_T("packet: %x %x %x %x %x %x %x %x %x"),
-	         pPacket->Header,
-	         pPacket->FrameCount,
-	         pPacket->Mode,
-	         pPacket->Feedback,
-	         pPacket->Admittance,
-	         pPacket->Differential,
-	         pPacket->ECG,
-	         pPacket->CheckSum,
-	         pPacket->Tail);
-}
-
-class StateChangedCallback : public SamplerStateChangedCallback
-{
-public:
-	virtual void onStateChanged(Sampler* sender, Sampler::SamplerState state)
-	{
-		_tprintf(_T("state changed to [%d]\n"), state);
-	}
-};
-
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
 	int nRetCode = 0;
@@ -69,7 +34,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		}
 		else
 		{
-			sampler.begin(new ProgressCallback, new StateChangedCallback);
+			sampler.begin();
 			sampler.join(-1);
 		}
 	}

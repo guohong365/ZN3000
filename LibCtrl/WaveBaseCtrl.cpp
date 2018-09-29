@@ -20,7 +20,7 @@ IMPLEMENT_DYNAMIC(CWaveBaseCtrl, CDialog)
 
 CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD, pParent)
-	  , _currentPart(PART_NONE)
+	  , _currentPart(PART_CALIBRATION)
 	  , _pAdmittance(nullptr)
 	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)

@@ -130,10 +130,10 @@ BOOL CZN2000Dlg::OnInitDialog()
 	                                         _T("Differential"), PART_HEART);
 	_pEcg = new ZnSignalChannelImpl(frequency, scope.LowValue, scope.HighValue, _T("ECG"), bufferSize, _T("ECG"),
 	                                PART_HEART_ECG);
-	_sampler.attachBuffer(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
-	_sampler.attachBuffer(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
-	_sampler.attachBuffer(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
-	_sampler.attachBuffer(ECG_INDEX, &_pEcg->getSignalBuffer());
+	_sampler.attach(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
+	_sampler.attach(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
+	_sampler.attach(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
+	_sampler.attach(ECG_INDEX, &_pEcg->getSignalBuffer());
 	_sampler.begin();
 	_mainBaseCtrl.SetBuffers(_pAdmittance, _pDifferential, _pEcg);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE

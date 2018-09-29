@@ -9,7 +9,6 @@ static WaveDrawerAppearance DefaultDrawerAppearance;
 void WaveDrawer::_initialize()
 {	
 	SetAppearance(DefaultDrawerAppearance);	
-	_velocity = 250;
 	_scale=DEFAULT_WAVE_SCALE;
 	_waveHeight=GetSize().Height*_scale;
 	_pSignalChannel=nullptr;
@@ -27,6 +26,7 @@ WaveDrawer::WaveDrawer()
 WaveDrawer::WaveDrawer(SignalChannel* pChannel, const double layoutPercent)
 	:DrawObject(pChannel->getLabel(), Gdiplus::Point(0,0), Gdiplus::Size(0,0))
 {
+
 	_initialize();
 	_pSignalChannel=pChannel;
 }
@@ -47,12 +47,12 @@ void WaveDrawer::setChannelBuffer(SignalChannel* pBuffer)
 
 void WaveDrawer::SetVelocity(float velocity)
 {
-	_velocity = velocity;
+	getThisAppearance().Velocity = velocity;
 }
 
 float WaveDrawer::GetVelocity()
 {
-	return _velocity;
+	return getThisAppearance().Velocity;
 }
 
 void WaveDrawer::SetBaseline(int pos)
@@ -73,16 +73,6 @@ void WaveDrawer::SetWaveHeight(int height)
 int WaveDrawer::GetWaveHeight()
 {
 	return _waveHeight;
-}
-
-int WaveDrawer::GetTotalSampleCount()
-{
-	return _totalSampleCount;
-}
-
-float WaveDrawer::GetSampleDotSpacing()
-{
-	return _sampleDotSpacing;
 }
 
 DrawObject* WaveDrawer::CreateInstance()
@@ -279,7 +269,7 @@ void _drawScope(
 	}
 	_drawScopeByPixel(graphics, pen, buffer, start, end, startX, endX, scale, zero);
 }
-void WaveDrawer::_drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & buffer)
+void WaveDrawer::_drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & buffer, SIZE_T totalSampleCount, float sampleDotSpacing)
 {
 	Gdiplus::CompositingMode compositingMode=graphics.GetCompositingMode();
 	graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
@@ -290,11 +280,12 @@ void WaveDrawer::_drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & bu
 	SIZE_T current= buffer.getLength();
 	const int width=GetSize().Width;
 	const float height=GetSize().Height * _scale / 32767;
-	const SIZE_T sampleCount = min(_totalSampleCount, current);
+
+	const SIZE_T sampleCount = min(totalSampleCount, current);
 	const SIZE_T startSample=  current <= sampleCount ? 0 : current - sampleCount;
 	_lastEndSample = buffer.getLength();
 	const int offset= _baseline;
-	const int startX = int(width - sampleCount * _sampleDotSpacing);
+	const int startX = int(width - sampleCount * sampleDotSpacing);
 	_lastEndX = width;
 	if(IsShowBaseline())
 	{
@@ -322,13 +313,17 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	memGraphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
 	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
 	const SIZE_T current=buffer.getLength();
+	SIZE_T totalSampleCount=int(
+		GetSize().Width / ScreenInfo::GetScreenInfo().GetDpmmX() / GetVelocity() * _pSignalChannel->
+		getSampleFrequency());
+	float sampleDotSpacing= float(GetSize().Width) / totalSampleCount;
 	if(GetWaveDrawMode()==DRAW_ROLLING)
 	{
-		_drawFull(memGraphics, buffer);		
+		_drawFull(memGraphics, buffer, totalSampleCount, sampleDotSpacing);		
 	}
 	else 
 	{
-		_drawErase(memGraphics, buffer);		
+		_drawErase(memGraphics, buffer, totalSampleCount, sampleDotSpacing);		
 	}
 	graph.SetCompositingMode(Gdiplus::CompositingModeSourceOver);
 	graph.DrawImage(_pCacheBitmap, Gdiplus::Rect(Gdiplus::Point(0, 0), GetSize()), 0, 0, _pCacheBitmap->GetWidth(),
@@ -340,7 +335,7 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	format.SetLineAlignment(Gdiplus::StringAlignmentNear);
 	Gdiplus::SolidBrush brush(Gdiplus::Color::White); 
 	info.Format(_T("total:%.2fs, start: %ld, length: %d. "), current / getChannelBuffer()->getSampleFrequency(),
-	            _lastEndSample, _totalSampleCount);
+	            _lastEndSample, totalSampleCount);
 	graph.DrawString(info, -1, &font,Gdiplus::PointF(0,0), &format, &brush );
 	
 }
@@ -348,6 +343,7 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 void WaveDrawer::OnSizeChanged()
 {
 	__super::OnSizeChanged();
+	if(!_pSignalChannel) return;
 	if(GetBaselineAlignment()==ZERO_VALUE)
 	{
 		_baseline=GetSize().Height/2;
@@ -364,8 +360,6 @@ void WaveDrawer::OnSizeChanged()
 		}
 	}
 	_waveHeight=GetSize().Height*_scale;
-	_totalSampleCount = int(GetSize().Width / ScreenInfo::GetScreenInfo().GetDpmmX() / _velocity *	_pSignalChannel->getSampleFrequency());
-	_sampleDotSpacing= float(GetSize().Width) / _totalSampleCount;
 	SetClipRect(Gdiplus::Rect(Gdiplus::Point(0,0), GetSize()));
 	if(!GetClipRect().IsEmptyArea()){
 		SetUsingClip(true);
@@ -379,7 +373,7 @@ void WaveDrawer::_drawBaseline(Gdiplus::Graphics& graph, int startX, int width)
 	graph.DrawLine(&pen, startX, _baseline, startX + width, _baseline);
 }
 
-void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer)
+void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer, SIZE_T totalSampleCount, float sampleDotSpacing)
 {
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	Gdiplus::SolidBrush spot(Gdiplus::Color::Red);
@@ -387,7 +381,7 @@ void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& bu
 	const int height=GetSize().Height;
 	const SIZE_T current=buffer.getLength();
 	//需要重绘的宽度  logic unit
-	const int drawWidth=(current - _lastEndSample) * _sampleDotSpacing;
+	const int drawWidth=(current - _lastEndSample) * sampleDotSpacing;
 	int spotSize=20;
 	//计算需要擦除的宽度
 	const int eraseWidth= drawWidth + GetEraseWidth() +  spotSize;

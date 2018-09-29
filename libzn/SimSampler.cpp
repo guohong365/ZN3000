@@ -3,24 +3,21 @@
 #include "ZnRecord.h"
 #include <cmath>
 
-SimSampler::SimSampler( SimSampleGenerator * pCallBack, size_t count)
-:_pCallBack(pCallBack)
+SimSampler::SimSampler( SimSampleGenerator * pCallBack)
+	:AbstractSampler(4)
+	, _pCallBack(pCallBack)
 {
-	ASSERT(_pCallBack);
-	_pHeartBuffer=ZnHelper::createSignalChannel(PART_HEART, 1000, 100000);	
-	_pCallBack->generator(_pHeartBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
-	_pAdmittanceBuffer=ZnHelper::createSignalChannel(PART_HEART_ECG, 1000, 100000);
-	_pAdmittanceBuffer->setLabel(_T("Î¢·Ö"));
-	_pCallBack->generator(_pAdmittanceBuffer->getSignalBuffer().getBuffer(), count, 2, 1);
 }
-
-
 
 SimSampler::~SimSampler()
 {
-	delete _pHeartBuffer;
-	delete _pAdmittanceBuffer;
 }
+
+void SimSampler::doSampler()
+{
+
+}
+
 void SineSampleGenerator::generator( void* pBuffer, size_t count, size_t sample_size, int N )
 {
 	BYTE bVal;

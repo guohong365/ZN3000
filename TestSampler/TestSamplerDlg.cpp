@@ -209,10 +209,10 @@ BOOL CTestSamplerDlg::OnInitDialog()
 	WaveDrawerAppearance waveDrawerAppearance=createWaveAppearance();
 	_waveCtrl.SetGridAppearance(backgroundAppearance);
 	_waveCtrl.SetWaveAppearance(waveDrawerAppearance);
-	_sampler.attachBuffer(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
-	_sampler.attachBuffer(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
-	_sampler.attachBuffer(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
-	_sampler.attachBuffer(ECG_INDEX, &_pEcg->getSignalBuffer());
+	_sampler.attach(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
+	_sampler.attach(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
+	_sampler.attach(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
+	_sampler.attach(ECG_INDEX, &_pEcg->getSignalBuffer());
 	_sampler.begin();
 	_sampler.setMode(WORK_MODE_CALIBRATION);
 	

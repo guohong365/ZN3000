@@ -18,8 +18,6 @@ public:
 	virtual int GetBaseline();
 	virtual void SetWaveHeight(int height);
 	virtual int GetWaveHeight();
-	virtual int GetTotalSampleCount();
-	virtual float GetSampleDotSpacing();
 	virtual DrawObject* CreateInstance();
 	double GetLayoutPercent() const;
 	void SetLayoutPercent(double layoutPercent);
@@ -53,22 +51,21 @@ public:
 protected:	
 	virtual void OnSizeChanged();
 	void _drawBaseline(Gdiplus::Graphics& graph, int startX, int width);
-	void _drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer);
+	void _drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer, SIZE_T totalSampleCount, float sampleDotSpacing);
 	virtual void OnDraw(Gdiplus::Graphics & graph);
 	virtual void _drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
 	virtual void _drawWaveBySamples(Gdiplus::Graphics& graphics,float *pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
-	virtual void _drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & buffer);
+	virtual void _drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer, SIZE_T totalSampleCount, float sampleDotSpacing);
 private:
 	//basic properties
-	float _velocity; // 0.1mm
 	//draw componets
 	int  _baseline;
 	int _waveHeight;
 	float _scale;
 	double _layoutPercent;
 	SignalChannel * _pSignalChannel;
-	SIZE_T _totalSampleCount;
-	float _sampleDotSpacing;
+	//SIZE_T _totalSampleCount;
+	//float _sampleDotSpacing;
 	WaveDrawerAppearance& getThisAppearance();
 	Gdiplus::Bitmap * _pCacheBitmap;
 	SIZE_T _lastEndSample;

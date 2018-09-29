@@ -11,14 +11,14 @@
 #define DEFAULT_WAVE_DRAW_MODE 1
 #define DEFAULT_WAVE_ERASE_WIDTH 40
 WaveDrawerAppearance::WaveDrawerAppearance()
-	: Appearance()
-	, ShowBaseline(DEFAULT_BASELINE_SHOW)
-	, BaselineAlignment(DEFAULT_BASELINE_ALIGNMENT)
-	, BaselineColor(DEFAULT_BASELINE_COLOR)
-	, BaselineWidth(DEFAULT_BASELINE_WIDTH)
-	, BaselineStyle(DEFAULT_BASELINE_STYLE)
-	, WaveDrawMode(DEFAULT_WAVE_DRAW_MODE)
-	, EraseWidth(DEFAULT_WAVE_ERASE_WIDTH)
+	: ShowBaseline(DEFAULT_BASELINE_SHOW)
+	  , BaselineAlignment(DEFAULT_BASELINE_ALIGNMENT)
+	  , BaselineColor(DEFAULT_BASELINE_COLOR)
+	  , BaselineWidth(DEFAULT_BASELINE_WIDTH)
+	  , BaselineStyle(DEFAULT_BASELINE_STYLE)
+	  , WaveDrawMode(DEFAULT_WAVE_DRAW_MODE)
+	  , EraseWidth(DEFAULT_WAVE_ERASE_WIDTH)
+	  , Velocity(250)
 {
 	LineWidth = DEFAULT_WAVE_LINE_WIDTH;
 	LineColor = DEFAULT_WAVE_LINE_COLOR;
@@ -45,6 +45,7 @@ void WaveDrawerAppearance::CopyFrom(const Appearance& another)
 	ShowBaseline = pDrawerAppearance->ShowBaseline;
 	WaveDrawMode = pDrawerAppearance->WaveDrawMode;
 	EraseWidth = pDrawerAppearance->EraseWidth;
+	Velocity=pDrawerAppearance->Velocity;
 }
 
 Appearance* WaveDrawerAppearance::Clone()
