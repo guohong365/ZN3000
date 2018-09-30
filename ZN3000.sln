@@ -61,6 +61,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibCtrl", "LibCtrl\LibCtrl.
 		{F03C90E2-4C6D-461E-8DC9-588F0B6E2D06} = {F03C90E2-4C6D-461E-8DC9-588F0B6E2D06}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestFastLine", "TestFastLine\TestFastLine.vcxproj", "{97AA31A1-E38F-4E58-BCF7-4570F9225C48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -199,6 +201,15 @@ Global
 		{88A09BC1-A1A4-4921-95CA-B5285EB3A7AF}.Template|Win32.ActiveCfg = Release|Win32
 		{88A09BC1-A1A4-4921-95CA-B5285EB3A7AF}.Template|Win32.Build.0 = Release|Win32
 		{88A09BC1-A1A4-4921-95CA-B5285EB3A7AF}.Template|x64.ActiveCfg = Release|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Debug|Win32.ActiveCfg = Debug|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Debug|Win32.Build.0 = Debug|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Debug|x64.ActiveCfg = Debug|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Release|Win32.ActiveCfg = Release|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Release|Win32.Build.0 = Release|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Release|x64.ActiveCfg = Release|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Template|Win32.ActiveCfg = Release|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Template|Win32.Build.0 = Release|Win32
+		{97AA31A1-E38F-4E58-BCF7-4570F9225C48}.Template|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

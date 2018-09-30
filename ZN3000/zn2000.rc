@@ -52,8 +52,8 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
     "LANGUAGE 4, 2\r\n"
     "#pragma code_page(936)\r\n"
-    "#include ""res\\zn2000.rc2""  // ??è? Microsoft Visual C++ ?¨¤?§?è?-|¨???¨￠?§o???\r\n"
-    "#include ""l.CHS\\afxres.rc""      // ?¨¤?§o?¨￠??¨￠?§|?t\r\n"
+    "#include ""res\\zn2000.rc2""  // ??¨¨? Microsoft Visual C++ ??§?è??ì?¨¨?-|?§????§?é??ìo???\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ??§?è??ìo??§?é???§?é??ì|?t\r\n"
     "#endif\r\n"
     "\0"
 END
@@ -87,8 +87,8 @@ BEGIN
     DEFPUSHBUTTON   "开始检查",IDC_BEGIN,21,298,50,14
     PUSHBUTTON      "暂停采样",IDC_PAUSE,83,298,50,14
     PUSHBUTTON      "测量计算",IDC_CALC,145,298,50,14
-    PUSHBUTTON      "输入参数",IDC_INPUT,207,298,50,14
-    PUSHBUTTON      "查询结果",IDC_SEARCH,269,298,50,14
+    PUSHBUTTON      "设置",IDC_INPUT,269,298,50,14
+    PUSHBUTTON      "查询结果",IDC_SEARCH,207,298,50,14
     PUSHBUTTON      "退出程序",IDCANCEL,331,298,50,14
 END
 
@@ -170,6 +170,15 @@ IDD_WAVE_CTRL DIALOGEX 0, 0, 316, 183
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_BORDER
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+END
+
+IDD_DIALOG1 DIALOGEX 0, 0, 316, 182
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,205,161,50,14
+    PUSHBUTTON      "取消",IDCANCEL,259,161,50,14
 END
 
 
@@ -275,6 +284,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 176
     END
+
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 175
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -320,8 +337,8 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE 4, 2
 #pragma code_page(936)
-#include "res\zn2000.rc2"  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???
-#include "l.CHS\afxres.rc"      // ?à¨o?á??á¨|?t
+#include "res\zn2000.rc2"  // ??è? Microsoft Visual C++ ?¨¤?§?è?-|¨???¨￠?§o???
+#include "l.CHS\afxres.rc"      // ?¨¤?§o?¨￠??¨￠?§|?t
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
