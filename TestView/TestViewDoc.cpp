@@ -113,6 +113,17 @@ void CTestViewDoc::Serialize(CArchive& ar)
 			}while(index< (LEN_BUFFER -1) * sizeof(Packet));
 			break;
 		}
+        for(int i=0; i< 4; ++i)
+        {
+            CString file;
+            file.Format(_T("data.%d.dat"), i+1);
+            FILE *fp;
+            _tfopen_s(&fp, file, _T("wb"));
+            void *pSource = pBuffer[i]->getSignalBuffer().getBuffer();
+            const SIZE_T size=pBuffer[i]->getSignalBuffer().getLength();
+            fwrite(pSource, sizeof(float), size, fp);
+            fclose(fp);
+        }
 		_pCanvas=new WaveCanvas(Gdiplus::Point(0,0), Gdiplus::Size(0,0));
 		_pCanvas->AddWave(pBuffer[0], 25);
 		_pCanvas->AddWave(pBuffer[1], 25);

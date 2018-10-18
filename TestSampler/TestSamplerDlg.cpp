@@ -7,12 +7,13 @@
 #include "TestSamplerDlg.h"
 #include "afxdialogex.h"
 #include "../libzn/SerialPortSampler.h"
+#include "../libzn/SimSampler.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
+#define SIM_DEVICE_VERSION _T("0000")
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -57,14 +58,19 @@ CTestSamplerDlg::CTestSamplerDlg(CWnd* pParent /*=NULL*/)
 	  , _pAdmittance(nullptr)
 	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)
-	  , _sampler(
-		  CTestSamplerApp::GetSettings().getSerialPort(),
-		  CTestSamplerApp::GetSettings().getBaudRate(),
-		  CTestSamplerApp::GetSettings().getDataBits(),
-		  CTestSamplerApp::GetSettings().getStopBits())
+	  , _pSampler(nullptr)
 	  , _dwState(OS_IDLE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+CTestSamplerDlg::~CTestSamplerDlg()
+{
+    delete _pFeedback;
+    delete _pAdmittance;
+    delete _pDifferential;
+    delete _pEcg;
+    delete _pSampler;
 }
 
 void CTestSamplerDlg::DoDataExchange(CDataExchange* pDX)
@@ -209,12 +215,26 @@ BOOL CTestSamplerDlg::OnInitDialog()
 	WaveDrawerAppearance waveDrawerAppearance=createWaveAppearance();
 	_waveCtrl.SetGridAppearance(backgroundAppearance);
 	_waveCtrl.SetWaveAppearance(waveDrawerAppearance);
-	_sampler.attach(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
-	_sampler.attach(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
-	_sampler.attach(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
-	_sampler.attach(ECG_INDEX, &_pEcg->getSignalBuffer());
-	_sampler.begin();
-	_sampler.setMode(WORK_MODE_CALIBRATION);
+    if(settings.getDeviceVersion()==SIM_DEVICE_VERSION)
+    {
+        _pSampler=new SimSampler(new SineSampleGenerator<float>(20));
+    } 
+    else
+    {
+        _pSampler=new SerialPortSampler(
+            settings.getSerialPort(),
+            settings.getBaudRate(),
+            settings.getDataBits(),
+            settings.getParity(),
+            settings.getStopBits()
+            );
+    }
+	_pSampler->attach(FEEDBACK_INDEX, &_pFeedback->getSignalBuffer());
+	_pSampler->attach(ADMITTANCE_INDEX, &_pAdmittance->getSignalBuffer());
+	_pSampler->attach(DIFFERENTIAL_INDEX, &_pDifferential->getSignalBuffer());
+	_pSampler->attach(ECG_INDEX, &_pEcg->getSignalBuffer());
+	_pSampler->begin();
+	_pSampler->setMode(WORK_MODE_CALIBRATION);
 	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -302,9 +322,9 @@ void CTestSamplerDlg::OnUpdateBtnStop(CCmdUI* pCmdUI)
 void CTestSamplerDlg::OnBnClickedRadioCalibration()
 {
 	if(_waveCtrl.GetCurrentPart()==PART_CALIBRATION) return;
-	_sampler.pause();
+	_pSampler->pause();
 	_waveCtrl.SetCurrentPart(PART_CALIBRATION);
-	_sampler.setMode(WORK_MODE_CALIBRATION);
+	_pSampler->setMode(WORK_MODE_CALIBRATION);
 	Invalidate();
 }
 
@@ -312,9 +332,9 @@ void CTestSamplerDlg::OnBnClickedRadioCalibration()
 void CTestSamplerDlg::OnBnClickedRadioExamine()
 {
 	if(_waveCtrl.GetCurrentPart()==PART_HEART) return;
-	_sampler.pause();
+	_pSampler->pause();
 	_waveCtrl.SetCurrentPart(PART_HEART);
-	_sampler.setMode(WORK_MODE_EXAMINE);
+	_pSampler->setMode(WORK_MODE_EXAMINE);
 	Invalidate();
 }
 
@@ -350,7 +370,7 @@ void CTestSamplerDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CTestSamplerDlg::OnDestroy()
 {
 	_waveCtrl.stop();
-	_sampler.quit();
+	_pSampler->quit();
 	CXTResizeDialog::OnDestroy();
 }
 

@@ -1,5 +1,8 @@
 #pragma once
 #include "SignalBuffer.h"
+#include <vector>
+#include <map>
+
 /**采样线程类
  *
  *负责读取数据放入预先准备好的缓冲区
@@ -70,7 +73,11 @@ public:
 	 *@return 通道总个数。该值通常由实现类构造函数指定。运行中不支持修改
 	 */
 	virtual SIZE_T getCount() const=0;
+    /**设置工作模式
+     *
+     *@param mode 工作模式
+     */
+    virtual void setMode(int mode)=0;
 };
-
 
 

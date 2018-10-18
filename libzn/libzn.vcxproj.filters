@@ -108,6 +108,15 @@
     <ClInclude Include="AbstractSampler.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ZnRowFileSimSampler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="standard.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -171,6 +180,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AbstractSampler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ZnRowFileSimSampler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="standard.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="constants.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleReport.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

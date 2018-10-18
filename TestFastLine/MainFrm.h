@@ -5,7 +5,7 @@
 #pragma once
 #include "ChildView.h"
 
-class CMainFrame : public CFrameWndEx
+class CMainFrame : public CXTPFrameWnd
 {
 	
 public:
@@ -23,7 +23,6 @@ public:
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
-	virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
 
 // 实现
 public:
@@ -34,20 +33,14 @@ public:
 #endif
 
 protected:  // 控件条嵌入成员
-	CMFCMenuBar       m_wndMenuBar;
-	CMFCToolBar       m_wndToolBar;
-	CMFCStatusBar     m_wndStatusBar;
-	CMFCToolBarImages m_UserImages;
+	//CXTPDockingPaneManager _paneManager;	
+	CXTPStatusBar     _wndStatusBar;
 	CChildView    m_wndView;
-
 // 生成的消息映射函数
-protected:
+	
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
-	afx_msg void OnViewCustomize();
-	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
-	afx_msg void OnApplicationLook(UINT id);
-	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
+	
 	DECLARE_MESSAGE_MAP()
 
 };

@@ -13,13 +13,8 @@ class CTestSamplerDlg : public CXTResizeDialog
 // 构造
 public:
 	CTestSamplerDlg(CWnd* pParent = nullptr);	// 标准构造函数
-	~CTestSamplerDlg()
-	{
-		delete _pFeedback;
-		delete _pAdmittance;
-		delete _pDifferential;
-		delete _pEcg;
-	}
+    ~CTestSamplerDlg();
+
 // 对话框数据
 	enum { IDD = IDD_TESTSAMPLER_DIALOG };
 
@@ -31,7 +26,7 @@ public:
 protected:
 	HICON m_hIcon;
 
-	GridBackgroundAppearance createGridAppearance();
+    static GridBackgroundAppearance createGridAppearance();
 	static WaveDrawerAppearance createWaveAppearance();
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
@@ -49,7 +44,7 @@ private:
 	SignalChannel *	_pAdmittance;
 	SignalChannel *	_pDifferential;
 	SignalChannel * _pEcg;
-	SerialPortSampler _sampler;
+	Sampler* _pSampler;
 	DWORD _dwState;
 public:
 	afx_msg void OnBnClickedBegin();

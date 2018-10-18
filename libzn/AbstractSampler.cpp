@@ -11,6 +11,10 @@ AbstractSampler::AbstractSampler(SIZE_T channelCount)
 	, _paused(false)
 {
 	_pBuffers=new SignalBuffer<float>*[channelCount];
+    for(SIZE_T i=0; i< channelCount; i++ )
+    {
+        _pBuffers[i]=nullptr;
+    }
 }
 
 
@@ -103,13 +107,17 @@ void AbstractSampler::attach(int channel, SignalBuffer<float>* pBuffer)
 SignalBuffer<float>* AbstractSampler::get(int channel) 
 {
 	ASSERT(_pBuffers);
-	if(channel< _channelCount || channel > _channelCount) return nullptr;
+	if(channel < 0 || channel > _channelCount) return nullptr;
 	return _pBuffers[channel];
 }
 
 SIZE_T AbstractSampler::getCount() const
 {
 	return _channelCount;
+}
+
+void AbstractSampler::setMode(int mode)
+{
 }
 
 DWORD AbstractSampler::samplerFunc(LPVOID lpParam)

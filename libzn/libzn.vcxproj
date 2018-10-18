@@ -78,11 +78,13 @@
     <ClInclude Include="AbstractSampler.h" />
     <ClInclude Include="ActiveWaveDrawer.h" />
     <ClInclude Include="AnnotationImpl.h" />
+    <ClInclude Include="constants.h" />
     <ClInclude Include="DataLoader.h" />
     <ClInclude Include="Record.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SignalChannelImpl.h" />
     <ClInclude Include="GridBackgroundAppearance.h" />
+    <ClInclude Include="standard.h" />
     <ClInclude Include="WaveDrawerAppearance.h" />
     <ClInclude Include="ZnEdfFile.h" />
     <ClInclude Include="EdfReader.h" />
@@ -105,11 +107,13 @@
     <ClInclude Include="WaveDrawer.h" />
     <ClInclude Include="ZNDData.h" />
     <ClInclude Include="ZnRecord.h" />
+    <ClInclude Include="ZnRowFileSimSampler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AbstractSampler.cpp" />
     <ClCompile Include="ActiveWaveDrawer.cpp" />
     <ClCompile Include="AnnotationImpl.cpp" />
+    <ClCompile Include="ConsoleReport.cpp" />
     <ClCompile Include="EdfReader.cpp" />
     <ClCompile Include="EdfWriter.cpp" />
     <ClCompile Include="RecordReader.cpp" />
@@ -121,16 +125,19 @@
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SignalChannelImpl.cpp" />
     <ClCompile Include="SimSampler.cpp" />
+    <ClCompile Include="standard.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GridBackgronud.cpp" />
     <ClCompile Include="GridBackgroundAppearance.cpp" />
+    <ClCompile Include="constants.cpp" />
     <ClCompile Include="WaveCanvas.cpp" />
     <ClCompile Include="WaveDrawer.cpp" />
     <ClCompile Include="WaveDrawerAppearance.cpp" />
     <ClCompile Include="ZnRecord.cpp" />
+    <ClCompile Include="ZnRowFileSimSampler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

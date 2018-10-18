@@ -67,7 +67,7 @@ public:
 	bool isNormalized() const;
 	void scale(DOUBLE scale);
 	void clear();
-	~SignalBuffer();
+    virtual ~SignalBuffer();
 
 	template <typename ValueType2>
 	SignalBuffer<ValueType>& operator =(const SignalBuffer<ValueType2>& buffer);

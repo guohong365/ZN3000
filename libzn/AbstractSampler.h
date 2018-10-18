@@ -16,6 +16,7 @@ public:
 	virtual void attach(int channel, SignalBuffer<float>* pBuffer);
 	virtual SignalBuffer<float>* get(int channel) ;
 	virtual SIZE_T getCount() const;
+    virtual void setMode(int mode);
 protected:
 	virtual bool onBeforeStart(){ return true; }
 	virtual void onBeforeLoop(){}

@@ -3,45 +3,44 @@
 #include "ZnRecord.h"
 #include <cmath>
 
-SimSampler::SimSampler( SimSampleGenerator * pCallBack)
+SimSampler::SimSampler( SimSampleGenerator * pCallBack, int step, int sleep)
 	:AbstractSampler(4)
 	, _pCallBack(pCallBack)
+    , _step(step)
+    , _sleep(sleep)
 {
 }
 
 SimSampler::~SimSampler()
 {
+    delete _pCallBack;
 }
 
 void SimSampler::doSampler()
 {
-
+    SIZE_T current=0;
+    for(SIZE_T i=0; i< getCount(); i++)
+    {
+        SignalBuffer<float>* pBuffer=get(i);
+        if(pBuffer)
+        {
+            current=pBuffer->getLength() + _step;
+            pBuffer->setLength(current);
+        }
+    }
+    _tprintf(_T("do sampler[%u]\n"), current);
+    Sleep(_sleep);
 }
 
-void SineSampleGenerator::generator( void* pBuffer, size_t count, size_t sample_size, int N )
+void SimSampler::onBeforeLoop()
 {
-	BYTE bVal;
-	unsigned short sVal;
-	unsigned long lVal;
-	const double step=N * 2 * 3.14159265 / count; 
-	for(size_t i=0; i< count; i++)
-	{
-		switch(sample_size)
-		{
-		case 1:
-			bVal = static_cast<BYTE>(0x7F * (sin(step * i) + 1));
-			*(static_cast<BYTE *>(pBuffer) + i)=bVal;
-			break;
-		case 2:
-			sVal = static_cast<unsigned short>(0x7FFF * (sin(step * i) + 1));
-			*(static_cast<unsigned short*>(pBuffer) + i)= sVal;
-			break;
-		case 4:
-			lVal = static_cast<unsigned long>(0x7FFFFFFF * (sin(step * i) + 1));
-			*(static_cast<unsigned long*>(pBuffer) + i)= lVal;
-			break;
-		default: 
-			break;
-		}
-	}
+    for(SIZE_T i=0; i< getCount(); i++)
+    {
+        SignalBuffer<float>* pBuffer=get(i);
+        if(pBuffer)
+        {
+            _pCallBack->generator(pBuffer->getBuffer(), pBuffer->getSize());
+        }
+    }
 }
+

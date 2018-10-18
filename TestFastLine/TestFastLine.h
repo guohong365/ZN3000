@@ -14,7 +14,7 @@
 // 有关此类的实现，请参阅 TestFastLine.cpp
 //
 
-class CTestFastLineApp : public CWinAppEx
+class CTestFastLineApp : public CWinApp
 {
 public:
 	CTestFastLineApp();
@@ -28,13 +28,6 @@ public:
 // 实现
 
 public:
-	UINT  m_nAppLook;
-	BOOL  m_bHiColorIcons;
-
-	virtual void PreLoadState();
-	virtual void LoadCustomState();
-	virtual void SaveCustomState();
-
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 };
