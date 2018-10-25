@@ -60,19 +60,19 @@ public:
 	 *@remark 当通道索引取值超出合法范围时，该方法直接返回，不做任何其他处理。
 	 *未附加缓冲区的通道，其采样数据将被抛弃
 	 */
-	virtual void attach(int channel, SignalBuffer<float> * pBuffer)=0;
+	virtual void attach(int channel, SignalBuffer<double> * pBuffer)=0;
 	/**获取指定通道缓冲区对象
 	 *
 	 *@param channel 通道索引，大于等于0，小于通道数（getChannelCount方法获取）。
 	 *@return 当前channel指定的通道缓冲区对象指针。通道未附加缓冲区或通道索引
 	 *channel取值超出合法范围时返回nullptr
 	 */
-	virtual SignalBuffer<float> * get(int channel) =0;
+	virtual SignalBuffer<double> * get(int channel) =0;
 	/**获取通道个数
 	 *
 	 *@return 通道总个数。该值通常由实现类构造函数指定。运行中不支持修改
 	 */
-	virtual SIZE_T getCount() const=0;
+	virtual size_t getCount() const=0;
     /**设置工作模式
      *
      *@param mode 工作模式

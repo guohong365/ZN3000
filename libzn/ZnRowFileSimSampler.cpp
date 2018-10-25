@@ -79,10 +79,10 @@ void ZnRowFileSimSampler::doSampler()
 {
     for(SIZE_T i=0; i< getCount(); ++i)
     {
-        SignalBuffer<float> *pBuffer=get(i);
+        SignalBuffer<double> *pBuffer=get(i);
         if(pBuffer && _pData[i])
         {                
-            float val=(*_pData[i])[_current];
+            double val=(*_pData[i])[_current];
             pBuffer->append(val);
         }
     }
@@ -94,7 +94,7 @@ void ZnRowFileSimSampler::resetAll()
 {
     for(SIZE_T i=0; i< getCount(); ++i)
     {
-        SignalBuffer<float> *pBuffer=get(i);
+        SignalBuffer<double> *pBuffer=get(i);
         if(pBuffer)
         {                
             pBuffer->setLength(0);

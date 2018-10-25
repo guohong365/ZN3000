@@ -45,11 +45,11 @@ public:
 	virtual void setNotchFilter(double notch)=0;
 	virtual double getSampleFrequency() const=0;
 	virtual void setSampleFrequency(double sampleFrequency)=0;
-	virtual unsigned long getSampleCount() const=0;
+	virtual size_t getSampleCount() const=0;
 	virtual const Annotations & getAnnotations() const=0;
 	virtual Annotations & getAnnotations()=0;
-	virtual const SignalBuffer<float> &getSignalBuffer() const=0;
-	virtual SignalBuffer<float>& getSignalBuffer()=0;
+	virtual const SignalBuffer<double> &getSignalBuffer() const=0;
+	virtual SignalBuffer<double>& getSignalBuffer()=0;
 };
 
 typedef std::vector<SignalChannel *> SignalChannels;

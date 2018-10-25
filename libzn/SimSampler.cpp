@@ -21,7 +21,7 @@ void SimSampler::doSampler()
     SIZE_T current=0;
     for(SIZE_T i=0; i< getCount(); i++)
     {
-        SignalBuffer<float>* pBuffer=get(i);
+        SignalBuffer<double>* pBuffer=get(i);
         if(pBuffer)
         {
             current=pBuffer->getLength() + _step;
@@ -36,7 +36,7 @@ void SimSampler::onBeforeLoop()
 {
     for(SIZE_T i=0; i< getCount(); i++)
     {
-        SignalBuffer<float>* pBuffer=get(i);
+        SignalBuffer<double>* pBuffer=get(i);
         if(pBuffer)
         {
             _pCallBack->generator(pBuffer->getBuffer(), pBuffer->getSize());

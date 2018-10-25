@@ -45,12 +45,12 @@ void WaveDrawer::setChannelBuffer(SignalChannel* pBuffer)
 	_pSignalChannel = pBuffer;
 }
 
-void WaveDrawer::SetVelocity(float velocity)
+void WaveDrawer::SetVelocity(double velocity)
 {
 	getThisAppearance().Velocity = velocity;
 }
 
-float WaveDrawer::GetVelocity()
+double WaveDrawer::GetVelocity()
 {
 	return getThisAppearance().Velocity;
 }
@@ -165,7 +165,7 @@ WaveDrawerAppearance& WaveDrawer::getThisAppearance()
 	return static_cast<WaveDrawerAppearance&>(GetAppearance());
 }
 
-void WaveDrawer::_drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex)
+void WaveDrawer::_drawWaveByPixels(Gdiplus::Graphics& graphics,double* pBuffer, size_t bufferSize,int offsetY, int startX, int endX, size_t startIndex, size_t endIndex)
 {
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
@@ -186,18 +186,18 @@ void WaveDrawer::_drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, S
 	}
 }
 
-void WaveDrawer::_drawWaveBySamples(Gdiplus::Graphics& graphics, float* pBuffer, SIZE_T bufferSize, int offsetY, int startX, int endX,
-	SIZE_T startIndex, SIZE_T endIndex)
+void WaveDrawer::_drawWaveBySamples(Gdiplus::Graphics& graphics, double* pBuffer, size_t bufferSize, int offsetY, int startX, int endX,
+	size_t startIndex, size_t endIndex)
 {
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
-	const float step=float(endX - startX)/(endIndex - startIndex);
-	const float height=GetSize().Height * _scale/32767;
-	float x=startX;
+	const double step=double(endX - startX)/(endIndex - startIndex);
+	const double height=GetSize().Height * _scale/32767;
+	double x=startX;
 	int y=offsetY -  pBuffer[startIndex%bufferSize]* height;
 	for(int i=startIndex + 1; i < endIndex; ++i)
 	{
-		const float x1= x+step;
+		const double x1= x+step;
 		if(int(x1)==int(x))
 		{
 			x=x1;
@@ -213,21 +213,21 @@ void WaveDrawer::_drawWaveBySamples(Gdiplus::Graphics& graphics, float* pBuffer,
 
 void _drawScopeByPixel(
 	Gdiplus::Graphics & graphics,Gdiplus::Pen* pen, 
-	SignalBuffer<float> & buffer, SIZE_T start, SIZE_T end,
+	SignalBuffer<double> & buffer, size_t start, size_t end,
 	int startX,
 	int endX,
 	float scale, float zero)
 {
-	SIZE_T bufferSize=buffer.getSize();
-	float step=float(end-start)/(endX - startX);
+    const size_t bufferSize=buffer.getSize();
+    const float step=float(end-start)/(endX - startX);
 	float current=start;
 	int x0 = startX;
 	int y0 =zero - int(buffer.getBuffer()[start%bufferSize] * scale);
 	for(int i=startX + 1; i<=endX; ++i)
 	{
 		current +=step;
-		int x1=i;
-		int y1=zero - buffer.getBuffer()[int(current)%bufferSize] * scale;
+	    const int x1=i;
+	    const int y1=zero - buffer.getBuffer()[int(current)%bufferSize] * scale;
 		graphics.DrawLine(pen, x0, y0, x1, y1);
 		x0=x1;
 		y0=y1;
@@ -235,21 +235,21 @@ void _drawScopeByPixel(
 }
 void _drawScopeBySample(
 	Gdiplus::Graphics & graphics,Gdiplus::Pen* pen, 
-	SignalBuffer<float> & buffer, SIZE_T start, SIZE_T end,
+	SignalBuffer<double> & buffer, size_t start, size_t end,
 	int startX,
 	int endX,
 	float scale, float zero)
 {
-	SIZE_T bufferSize=buffer.getSize();
-	float step=float(endX-startX)/(end - start);
+    const size_t bufferSize=buffer.getSize();
+    const float step=float(endX-startX)/(end - start);
 	float current=startX;
 	int x0 = startX;
 	int y0 =zero - int(buffer.getBuffer()[start%bufferSize] * scale);
 	for(int i=start + 1; i<=end; ++i)
 	{
 		current +=step;
-		int x1=current;
-		int y1=zero - buffer.getBuffer()[i%bufferSize] * scale;
+	    const int x1=current;
+	    const int y1=zero - buffer.getBuffer()[i%bufferSize] * scale;
 		graphics.DrawLine(pen, x0, y0, x1, y1);
 		x0=x1;
 		y0=y1;
@@ -257,7 +257,7 @@ void _drawScopeBySample(
 }
 void _drawScope(
 	Gdiplus::Graphics & graphics,Gdiplus::Pen* pen, 
-	SignalBuffer<float> & buffer, SIZE_T start, SIZE_T end,
+	SignalBuffer<double> & buffer, size_t start, size_t end,
 	int startX,
 	int endX,
 	float scale, float zero)
@@ -269,20 +269,20 @@ void _drawScope(
 	}
 	_drawScopeByPixel(graphics, pen, buffer, start, end, startX, endX, scale, zero);
 }
-void WaveDrawer::_drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float> & buffer, SIZE_T totalSampleCount, float sampleDotSpacing)
+void WaveDrawer::_drawFull(Gdiplus::Graphics& graphics, SignalBuffer<double> & buffer, size_t totalSampleCount, double sampleDotSpacing)
 {
-	Gdiplus::CompositingMode compositingMode=graphics.GetCompositingMode();
+    const Gdiplus::CompositingMode compositingMode=graphics.GetCompositingMode();
 	graphics.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
 	graphics.Clear(Gdiplus::Color::Transparent);
 
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
-	SIZE_T current= buffer.getLength();
+	size_t current= buffer.getLength();
 	const int width=GetSize().Width;
 	const float height=GetSize().Height * _scale / 32767;
 
-	const SIZE_T sampleCount = min(totalSampleCount, current);
-	const SIZE_T startSample=  current <= sampleCount ? 0 : current - sampleCount;
+	const size_t sampleCount = min(totalSampleCount, current);
+	const size_t startSample=  current <= sampleCount ? 0 : current - sampleCount;
 	_lastEndSample = buffer.getLength();
 	const int offset= _baseline;
 	const int startX = int(width - sampleCount * sampleDotSpacing);
@@ -311,12 +311,12 @@ void WaveDrawer::OnDraw( Gdiplus::Graphics & graph )
 	memGraphics.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
 	memGraphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
 	memGraphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
-	SignalBuffer<float> & buffer=_pSignalChannel->getSignalBuffer();
-	const SIZE_T current=buffer.getLength();
-	SIZE_T totalSampleCount=int(
+	SignalBuffer<double> & buffer=_pSignalChannel->getSignalBuffer();
+	const size_t current=buffer.getLength();
+    const size_t totalSampleCount=int(
 		GetSize().Width / ScreenInfo::GetScreenInfo().GetDpmmX() / GetVelocity() * _pSignalChannel->
 		getSampleFrequency());
-	float sampleDotSpacing= float(GetSize().Width) / totalSampleCount;
+    const double sampleDotSpacing= double(GetSize().Width) / totalSampleCount;
 	if(GetWaveDrawMode()==DRAW_ROLLING)
 	{
 		_drawFull(memGraphics, buffer, totalSampleCount, sampleDotSpacing);		
@@ -373,16 +373,16 @@ void WaveDrawer::_drawBaseline(Gdiplus::Graphics& graph, int startX, int width)
 	graph.DrawLine(&pen, startX, _baseline, startX + width, _baseline);
 }
 
-void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer, SIZE_T totalSampleCount, float sampleDotSpacing)
+void WaveDrawer::_drawErase(Gdiplus::Graphics& graphics, SignalBuffer<double>& buffer, size_t totalSampleCount, double sampleDotSpacing)
 {
 	Gdiplus::Pen pen(GetLineColor(), GetLineWidth());
 	Gdiplus::SolidBrush spot(Gdiplus::Color::Red);
 	pen.SetDashStyle(Gdiplus::DashStyle(GetLineStyle()));
 	const int height=GetSize().Height;
-	const SIZE_T current=buffer.getLength();
+	const size_t current=buffer.getLength();
 	//需要重绘的宽度  logic unit
 	const int drawWidth=(current - _lastEndSample) * sampleDotSpacing;
-	int spotSize=20;
+    const int spotSize=20;
 	//计算需要擦除的宽度
 	const int eraseWidth= drawWidth + GetEraseWidth() +  spotSize;
 	Gdiplus::SolidBrush brush(Gdiplus::Color::Transparent);

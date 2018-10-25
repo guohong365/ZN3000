@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "WaveCanvas.h"
 #include "GridBackgronud.h"
-#define DEFAULT_PADDING_LEFT 400
-#define DEFAULT_PADDING_RIGHT 400
-#define DEFAULT_PADDING_TOP 200
-#define DEFAULT_PADDING_BOTTOM 200
+#define DEFAULT_PADDING_LEFT 50
+#define DEFAULT_PADDING_RIGHT 50
+#define DEFAULT_PADDING_TOP 30
+#define DEFAULT_PADDING_BOTTOM 30
 #define DEFAULT_CANVAS_BACKGROUND_COLOR 0xFF000000
 void WaveCanvas::initialize()
 {

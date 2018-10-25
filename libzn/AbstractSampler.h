@@ -4,7 +4,7 @@
 class AbstractSampler : public Sampler
 {
 public:
-	explicit AbstractSampler(SIZE_T channelCount);
+	explicit AbstractSampler(size_t channelCount);
 	~AbstractSampler();
 	virtual bool begin();
 	virtual void pause();
@@ -13,9 +13,9 @@ public:
 	virtual unsigned long join(int timeout);
 	virtual SamplerState getState();
 	virtual void resetAll();
-	virtual void attach(int channel, SignalBuffer<float>* pBuffer);
-	virtual SignalBuffer<float>* get(int channel) ;
-	virtual SIZE_T getCount() const;
+	virtual void attach(int channel, SignalBuffer<double>* pBuffer);
+	virtual SignalBuffer<double>* get(int channel) ;
+	virtual size_t getCount() const;
     virtual void setMode(int mode);
 protected:
 	virtual bool onBeforeStart(){ return true; }
@@ -32,7 +32,7 @@ private:
 	HANDLE _hThread;
 	HANDLE _hResume;
 	DWORD _dwThreadId;
-	SignalBuffer<float> **_pBuffers;
+	SignalBuffer<double> **_pBuffers;
 	SIZE_T _channelCount;
 	bool _quit;
 	bool _paused;

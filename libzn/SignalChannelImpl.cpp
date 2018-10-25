@@ -2,7 +2,7 @@
 #include "SignalChannelImpl.h"
 
 
-SignalChannelImpl::SignalChannelImpl(const CString& label, double frequency, double physicalMinimum, double physicalMaximum, const CString& dimension, SIZE_T bufferSize, const CString & sensor)
+SignalChannelImpl::SignalChannelImpl(const CString& label, double frequency, double physicalMinimum, double physicalMaximum, const CString& dimension, size_t bufferSize, const CString & sensor)
 	: _label(label)
 	, _sensor(sensor)
 	, _physicalDimension(dimension)
@@ -51,17 +51,17 @@ void SignalChannelImpl::setPhysicalDimension(const CString& dimension)
 	_physicalDimension=dimension;
 }
 
-DOUBLE SignalChannelImpl::getPhysicalMinimum() const
+double SignalChannelImpl::getPhysicalMinimum() const
 {
 	return _physicalMinimum;
 }
 
-void SignalChannelImpl::setPhysicalMinimum(DOUBLE physicalMinimum)
+void SignalChannelImpl::setPhysicalMinimum(double physicalMinimum)
 {
 	_physicalMinimum=physicalMinimum;
 }
 
-DOUBLE SignalChannelImpl::getPhysicalMaximum() const
+double SignalChannelImpl::getPhysicalMaximum() const
 {
 	return _physicalMaximum;
 }
@@ -86,42 +86,42 @@ void SignalChannelImpl::setDigitalMaximum(long digitalMaximum)
 	_digitalMaximum=digitalMaximum;
 }
 
-DOUBLE SignalChannelImpl::getHighPassFilter() const
+double SignalChannelImpl::getHighPassFilter() const
 {
 	return _highPassFilter;
 }
 
-void SignalChannelImpl::setHighPassFilter(DOUBLE highPass)
+void SignalChannelImpl::setHighPassFilter(double highPass)
 {
 	_highPassFilter=highPass;
 }
 
-DOUBLE SignalChannelImpl::getLowPassFilter() const
+double SignalChannelImpl::getLowPassFilter() const
 {
 	return _lowPassFilter;
 }
 
-void SignalChannelImpl::setLowPassFilter(DOUBLE lowPass)
+void SignalChannelImpl::setLowPassFilter(double lowPass)
 {
 	_lowPassFilter=lowPass;
 }
 
-DOUBLE SignalChannelImpl::getNotchFilter() const
+double SignalChannelImpl::getNotchFilter() const
 {
 	return _notchFilter;
 }
 
-void SignalChannelImpl::setNotchFilter(DOUBLE notch)
+void SignalChannelImpl::setNotchFilter(double notch)
 {
 	_notchFilter=notch;
 }
 
-DOUBLE SignalChannelImpl::getSampleFrequency() const
+double SignalChannelImpl::getSampleFrequency() const
 {
 	return _sampleFrequency;
 }
 
-void SignalChannelImpl::setSampleFrequency(DOUBLE sampleFrequency)
+void SignalChannelImpl::setSampleFrequency(double sampleFrequency)
 {
 	_sampleFrequency=sampleFrequency;
 }
@@ -136,17 +136,17 @@ Annotations& SignalChannelImpl::getAnnotations()
 	return _annotations;
 }
 
-const SignalBuffer<float>& SignalChannelImpl::getSignalBuffer() const
+const SignalBuffer<double>& SignalChannelImpl::getSignalBuffer() const
 {
 	return _signalBuffer;
 }
 
-SignalBuffer<float>& SignalChannelImpl::getSignalBuffer()
+SignalBuffer<double>& SignalChannelImpl::getSignalBuffer()
 {
 	return _signalBuffer;
 }
 
-SIZE_T SignalChannelImpl::getSampleCount() const
+size_t SignalChannelImpl::getSampleCount() const
 {
 	return _signalBuffer.getLength();
 }

@@ -2,7 +2,7 @@
 #include "AbstractSampler.h"
 
 
-AbstractSampler::AbstractSampler(SIZE_T channelCount)
+AbstractSampler::AbstractSampler(size_t channelCount)
 	: _hThread(nullptr)
 	, _hResume(nullptr)
 	, _dwThreadId(0)
@@ -10,7 +10,7 @@ AbstractSampler::AbstractSampler(SIZE_T channelCount)
 	, _quit(false)
 	, _paused(false)
 {
-	_pBuffers=new SignalBuffer<float>*[channelCount];
+	_pBuffers=new SignalBuffer<double>*[channelCount];
     for(SIZE_T i=0; i< channelCount; i++ )
     {
         _pBuffers[i]=nullptr;
@@ -95,7 +95,7 @@ void AbstractSampler::resetAll()
 	resume();
 }
 
-void AbstractSampler::attach(int channel, SignalBuffer<float>* pBuffer)
+void AbstractSampler::attach(int channel, SignalBuffer<double>* pBuffer)
 {
 	ASSERT(_pBuffers);
 	if(channel>=0 && channel< _channelCount)
@@ -104,14 +104,14 @@ void AbstractSampler::attach(int channel, SignalBuffer<float>* pBuffer)
 	}
 }
 
-SignalBuffer<float>* AbstractSampler::get(int channel) 
+SignalBuffer<double>* AbstractSampler::get(int channel) 
 {
 	ASSERT(_pBuffers);
 	if(channel < 0 || channel > _channelCount) return nullptr;
 	return _pBuffers[channel];
 }
 
-SIZE_T AbstractSampler::getCount() const
+size_t AbstractSampler::getCount() const
 {
 	return _channelCount;
 }

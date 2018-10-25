@@ -1,6 +1,6 @@
 #pragma once
 #include "../libDrawObject/Appearance.h"
-#include "Settings.h"
+
 
 enum BaselineAlignment
 	{

@@ -1,0 +1,19 @@
+
+ecg.exe s0010_re.dat
+ecg.exe s0010_re.dat 1
+
+annotate first lead from s0010_re.dat (ptbdb database)
+
+
+
+ecg.exe s0010_re.dat 2
+
+annotate second lead from s0010_re.dat (ptbdb database)
+
+
+etc...
+
+
+do not forget to place "filters" dir in the directory with ecg.exe file
+physionet .dat files should also be used with their .hea files
+

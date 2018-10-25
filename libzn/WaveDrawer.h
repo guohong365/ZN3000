@@ -12,8 +12,8 @@ public:
 	virtual ~WaveDrawer();
 	SignalChannel* getChannelBuffer() const;
 	void setChannelBuffer(SignalChannel* pBuffer);
-	virtual void SetVelocity(float velocity);
-	virtual float GetVelocity();
+	virtual void SetVelocity(double velocity);
+	virtual double GetVelocity();
 	virtual void SetBaseline(int pos);
 	virtual int GetBaseline();
 	virtual void SetWaveHeight(int height);
@@ -51,11 +51,11 @@ public:
 protected:	
 	virtual void OnSizeChanged();
 	void _drawBaseline(Gdiplus::Graphics& graph, int startX, int width);
-	void _drawErase(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer, SIZE_T totalSampleCount, float sampleDotSpacing);
+	void _drawErase(Gdiplus::Graphics& graphics, SignalBuffer<double>& buffer, size_t totalSampleCount, double sampleDotSpacing);
 	virtual void OnDraw(Gdiplus::Graphics & graph);
-	virtual void _drawWaveByPixels(Gdiplus::Graphics& graphics,float* pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
-	virtual void _drawWaveBySamples(Gdiplus::Graphics& graphics,float *pBuffer, SIZE_T bufferSize,int offsetY, int startX, int endX, SIZE_T startIndex, SIZE_T endIndex);
-	virtual void _drawFull(Gdiplus::Graphics& graphics, SignalBuffer<float>& buffer, SIZE_T totalSampleCount, float sampleDotSpacing);
+	virtual void _drawWaveByPixels(Gdiplus::Graphics& graphics,double* pBuffer, size_t bufferSize,int offsetY, int startX, int endX, size_t startIndex, size_t endIndex);
+	virtual void _drawWaveBySamples(Gdiplus::Graphics& graphics,double *pBuffer, size_t bufferSize,int offsetY, int startX, int endX, size_t startIndex, size_t endIndex);
+	virtual void _drawFull(Gdiplus::Graphics& graphics, SignalBuffer<double>& buffer, size_t totalSampleCount, double sampleDotSpacing);
 private:
 	//basic properties
 	//draw componets
@@ -68,7 +68,7 @@ private:
 	//float _sampleDotSpacing;
 	WaveDrawerAppearance& getThisAppearance();
 	Gdiplus::Bitmap * _pCacheBitmap;
-	SIZE_T _lastEndSample;
+	size_t _lastEndSample;
 	int _lastEndX;
 	void _initialize();
 };

@@ -51,13 +51,14 @@ class SignalBuffer
 public:
 	template<typename ValueType2>
 	explicit SignalBuffer(const SignalBuffer<ValueType2>& buffer);
-	explicit SignalBuffer(SIZE_T size);
+	explicit SignalBuffer(size_t size);
 
-	SIZE_T getLength() const;
-	void setLength(SIZE_T length);
-	SIZE_T getSize() const;
+	size_t getLength() const;
+	void setLength(size_t length);
+	size_t getSize() const;
 	ValueType* getBuffer();
 	const ValueType* getBuffer() const;
+    ValueType getGain() const;
 	ValueType operator[](int index) const;
 	ValueType& operator[](int index);
 	template<typename T> void append(T val);
@@ -65,7 +66,7 @@ public:
 	ValueType minValue();
 	void normalize();
 	bool isNormalized() const;
-	void scale(DOUBLE scale);
+	void scale(double scale);
 	void clear();
     virtual ~SignalBuffer();
 
@@ -75,10 +76,11 @@ private:
 	SignalBuffer();
 	template <typename ValueType1>
 	static void _copy(const SignalBuffer<ValueType1>& source, SignalBuffer<ValueType>& dest);	
-	SIZE_T _size;
-	SIZE_T _length;
+	size_t _size;
+	size_t _length;
 	ValueType * _pBuffer;
 	bool _normalized;
+    ValueType _gain;
 };
 
 template <typename ValueType>
@@ -90,27 +92,27 @@ SignalBuffer<ValueType>::SignalBuffer(const SignalBuffer<ValueType2>& buffer)
 }
 
 template <typename ValueType>
-SignalBuffer<ValueType>::SignalBuffer(const SIZE_T size)
-	: _size(size), _length(0), _normalized(false)
+SignalBuffer<ValueType>::SignalBuffer(const size_t size)
+	: _size(size), _length(0), _normalized(false), _gain(1)
 {
 	ASSERT(_size > 0);
 	_pBuffer = new ValueType[_size];
 }
 
 template <typename ValueType>
-SIZE_T SignalBuffer<ValueType>::getLength() const
+size_t SignalBuffer<ValueType>::getLength() const
 {
 	return _length;
 }
 
 template <typename ValueType>
-void SignalBuffer<ValueType>::setLength(SIZE_T length)
+void SignalBuffer<ValueType>::setLength(size_t length)
 {
 	_length = length;
 }
 
 template <typename ValueType>
-SIZE_T SignalBuffer<ValueType>::getSize() const
+size_t SignalBuffer<ValueType>::getSize() const
 {
 	return _size;
 }
@@ -125,6 +127,12 @@ template <typename ValueType>
 const ValueType* SignalBuffer<ValueType>::getBuffer() const
 {
 	return _pBuffer;
+}
+
+template <typename ValueType>
+ValueType SignalBuffer<ValueType>::getGain() const
+{
+    return _gain;
 }
 
 
@@ -200,7 +208,7 @@ bool SignalBuffer<ValueType>::isNormalized() const
 }
 
 template <typename ValueType>
-void SignalBuffer<ValueType>::scale(DOUBLE scale)
+void SignalBuffer<ValueType>::scale(double scale)
 {
 	const auto begin = _length >= _size ? _length % _size : 0;
 	for (auto i = begin; i < _length; i++)
@@ -252,5 +260,6 @@ void SignalBuffer<ValueType>::_copy(const SignalBuffer<ValueType1>& source, Sign
 	}
 	dest._normalized = source.isNormalized();
 	dest._length = source.getLength();
+    dest._gain = source.getGain();
 	copyBuffer(dest._pBuffer, source.getBuffer(), source.getLength());
 }
