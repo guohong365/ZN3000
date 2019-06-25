@@ -1,13 +1,13 @@
 #pragma once
-#include "../libzn/GridBackgronud.h"
-#include "../libzn/WaveDrawer.h"
-#include "../libzn/WaveCanvas.h"
-#include "../libzn/ZnRecord.h"
+#include <uc/dsp/visualization/GridBackgronud.h>
+#include <uc/dsp/visualization/WaveDrawer.h>
+#include <uc/dsp/visualization/WaveCanvas.h>
+#include <uc/dsp/SampleController.h>
 #include "resource.h"
-#include "../libzn/SampleController.h"
-
+#include "../libzn/ZNDData.h"
 
 // CWaveBaseCtrl 对话框
+
 
 class AFX_EXT_CLASS  CWaveBaseCtrl : public CDialog, public SampleController
 {
@@ -16,13 +16,13 @@ class AFX_EXT_CLASS  CWaveBaseCtrl : public CDialog, public SampleController
 public:
 	CWaveBaseCtrl(CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CWaveBaseCtrl();
-	void SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
-	                SignalChannel* pEcg);
+	void SetBuffers(Signal* pAdmittance, Signal* pDifferential,
+	                Signal* pEcg);
 	void SetCurrentPart(PartId part);
 	PartId GetCurrentPart() const;
-	void SetDrawMode(DrawMode drawMode);
-	void SetGridAppearance(GridBackgroundAppearance& backgroundAppearance);
-	void SetWaveAppearance(WaveDrawerAppearance& waveDrawerAppearance);
+	void SetDrawMode(uc::dsp::visualization::DrawMode drawMode);
+	void SetGridAppearance(uc::dsp::visualization::GridBackgroundAppearance& backgroundAppearance);
+	void SetWaveAppearance(uc::dsp::visualization::WaveDrawerAppearance& waveDrawerAppearance);
 
 
 	// 对话框数据
@@ -45,13 +45,13 @@ public:
 	virtual void start();
 	virtual void stop();
 private:
-	WaveCanvas *_pCanvas;
+    uc::dsp::visualization::WaveCanvas *_pCanvas;
 	CBitmap  _memBitmap;
 	PartId _currentPart;
-	SignalChannel* _pAdmittance;
-	SignalChannel* _pDifferential;
-	SignalChannel* _pEcg;
-	DrawMode _drawMode;
+	Signal* _pAdmittance;
+	Signal* _pDifferential;
+	Signal* _pEcg;
+    uc::dsp::visualization::DrawMode _drawMode;
 	LARGE_INTEGER _last;
 	LARGE_INTEGER _frequency;
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include "AbstractSampler.h"
+#include <uc/signal/AbstractSampler.h>
 
 class ZnRowFileSimSampler : public AbstractSampler
 {

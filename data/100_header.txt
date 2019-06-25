@@ -1,0 +1,2 @@
+Version,Subject,Recording,Startdate,Startime,Bytes,Reserved,NumRec,Duration,NumSig
+0       ,X X X X                                                                         ,Startdate 25-OCT-2018 X X X                                                     ,25.10.18,22.18.03,1024    ,EDF+C                                       ,18055,0.1     ,2

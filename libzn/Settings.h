@@ -1,5 +1,5 @@
 #pragma once
-#include <IniFile.h>
+#include <uc/utils/IniFile.h>
 #include "GridBackgroundAppearance.h"
 #include "WaveDrawerAppearance.h"
 #define SETTING_FILE_NAME _T("ZN3000.ini")
@@ -11,8 +11,7 @@ public:
 	explicit Settings(const CString& configFile=SETTING_FILE_NAME);
 	int load();
 	int save();
-
-
+    
 	SIZE_T getBufferSize();
 	double getFrequency();
 

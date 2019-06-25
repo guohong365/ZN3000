@@ -5,6 +5,7 @@
 #pragma once
 
 #include "resource.h"
+#include "../LibCtrl/WaveBaseCtrl.h"
 
 
 class CAutoAnnotationView : public CFormView
@@ -18,7 +19,7 @@ public:
 
 // 特性
 public:
-	CMitbihTextDoc* GetDocument() const;
+	CMitbihDoc* GetDocument() const;
 
 // 操作
 public:
@@ -42,10 +43,13 @@ protected:
 
 // 生成的消息映射函数
 protected:
-	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
+private:
+    CWaveBaseCtrl _waveCtrl;
+public:
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // AutoAnnotationView.cpp 中的调试版本

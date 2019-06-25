@@ -30,7 +30,7 @@
     <ProjectGuid>{F03C90E2-4C6D-461E-8DC9-588F0B6E2D06}</ProjectGuid>
     <RootNamespace>libDrawObject</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>libDraw</ProjectName>
+    <ProjectName>libDraw1</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

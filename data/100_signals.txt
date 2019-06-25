@@ -1,0 +1,3 @@
+Signal,Label,Transducer,Units,Min,Max,Dmin,Dmax,PreFilter,Smp/Rec,Reserved
+1,MLII            ,                                                                                ,uV      ,-168960.000000,158715.000000,-32768,32767,                                                                                ,36,                                
+2,V5              ,                                                                                ,uV      ,-168960.000000,158715.000000,-32768,32767,                                                                                ,36,                                

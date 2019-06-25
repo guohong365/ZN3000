@@ -37,5 +37,5 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <GdiPlus.h>
-#include <libUI.h>
+#include <uc/libdrawing.h>
 

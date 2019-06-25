@@ -46,7 +46,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Source;../include;$(LIB_UC_ROOT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Develop\Libs\Xtreme ToolkitPro v15.3.1\Source;../include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,52 +75,30 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractSampler.h" />
-    <ClInclude Include="ActiveWaveDrawer.h" />
-    <ClInclude Include="AnnotationImpl.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="DataLoader.h" />
-    <ClInclude Include="Record.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SignalChannelImpl.h" />
-    <ClInclude Include="GridBackgroundAppearance.h" />
     <ClInclude Include="standard.h" />
-    <ClInclude Include="WaveDrawerAppearance.h" />
     <ClInclude Include="ZnEdfFile.h" />
     <ClInclude Include="EdfReader.h" />
     <ClInclude Include="EdfWriter.h" />
     <ClInclude Include="Packet.h" />
-    <ClInclude Include="RecordReader.h" />
-    <ClInclude Include="RecordWriter.h" />
-    <ClInclude Include="RheographyRecordImpl.h" />
-    <ClInclude Include="SampleController.h" />
-    <ClInclude Include="Sampler.h" />
     <ClInclude Include="ScpLoader.h" />
-    <ClInclude Include="SerialPort.h" />
-    <ClInclude Include="SerialPortSampler.h" />
-    <ClInclude Include="SignalBuffer.h" />
     <ClInclude Include="SimSampler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="GridBackgronud.h" />
-    <ClInclude Include="WaveCanvas.h" />
-    <ClInclude Include="WaveDrawer.h" />
     <ClInclude Include="ZNDData.h" />
     <ClInclude Include="ZnRecord.h" />
     <ClInclude Include="ZnRowFileSimSampler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractSampler.cpp" />
     <ClCompile Include="ActiveWaveDrawer.cpp" />
-    <ClCompile Include="AnnotationImpl.cpp" />
     <ClCompile Include="ConsoleReport.cpp" />
     <ClCompile Include="EdfReader.cpp" />
     <ClCompile Include="EdfWriter.cpp" />
-    <ClCompile Include="RecordReader.cpp" />
-    <ClCompile Include="RecordWriter.cpp" />
     <ClCompile Include="RheographyRecordImpl.cpp" />
     <ClCompile Include="ScpLoader.cpp" />
-    <ClCompile Include="SerialPort.cpp" />
     <ClCompile Include="SerialPortSampler.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SignalChannelImpl.cpp" />
@@ -130,14 +108,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GridBackgronud.cpp" />
-    <ClCompile Include="GridBackgroundAppearance.cpp" />
     <ClCompile Include="constants.cpp" />
-    <ClCompile Include="WaveCanvas.cpp" />
-    <ClCompile Include="WaveDrawer.cpp" />
-    <ClCompile Include="WaveDrawerAppearance.cpp" />
     <ClCompile Include="ZnRecord.cpp" />
-    <ClCompile Include="ZnRowFileSimSampler.cpp" />
+    <ClCompile Include="ZnRawFileSimSampler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

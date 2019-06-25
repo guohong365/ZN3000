@@ -33,28 +33,7 @@
     <ClInclude Include="EdfReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Sampler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SampleController.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SignalBuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveDrawer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveCanvas.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ZNDData.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialPort.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialPortSampler.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SimSampler.h">
@@ -63,25 +42,10 @@
     <ClInclude Include="Packet.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RecordReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RecordWriter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="EdfWriter.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ZnEdfFile.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Record.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="AnnotationImpl.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RheographyRecordImpl.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SignalChannelImpl.h">
@@ -90,22 +54,7 @@
     <ClInclude Include="ZnRecord.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GridBackgronud.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GridBackgroundAppearance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveDrawerAppearance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ActiveWaveDrawer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="AbstractSampler.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ZnRowFileSimSampler.h">
@@ -122,19 +71,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WaveCanvas.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveDrawer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ScpLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EdfReader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialPort.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SerialPortSampler.cpp">
@@ -143,16 +83,7 @@
     <ClCompile Include="SimSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="RecordReader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RecordWriter.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="EdfWriter.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="AnnotationImpl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RheographyRecordImpl.cpp">
@@ -164,25 +95,10 @@
     <ClCompile Include="ZnRecord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GridBackgronud.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GridBackgroundAppearance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WaveDrawerAppearance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ActiveWaveDrawer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="AbstractSampler.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ZnRowFileSimSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="standard.cpp">
@@ -192,6 +108,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleReport.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ZnRawFileSimSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

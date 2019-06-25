@@ -12,6 +12,7 @@
 #include "MitbihTextDoc.h"
 #include "AutoAnnotationView.h"
 #include "MitbihBinaryDoc.h"
+#include <GdiplusEnviroment.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -54,7 +55,7 @@ CAutoAnnotationApp::CAutoAnnotationApp()
 // 唯一的一个 CAutoAnnotationApp 对象
 
 CAutoAnnotationApp theApp;
-
+GdiplusEnvironment theEnvironment;
 
 // CAutoAnnotationApp 初始化
 

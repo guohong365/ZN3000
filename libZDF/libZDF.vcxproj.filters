@@ -24,7 +24,7 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="EDF.h">
+    <ClInclude Include="libZDF.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

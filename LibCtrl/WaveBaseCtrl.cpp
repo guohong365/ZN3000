@@ -10,6 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
+using uc::dsp::visualization::WaveCanvas;
+using uc::dsp::visualization::GridBackgroundAppearance;
+using uc::dsp::visualization::DrawMode;
+using uc::dsp::visualization::WaveDrawerAppearance;
+using uc::drawing::UICoordinateHelper;
 #define SAMPLE_SHOW_TIMER_ID 1
 #define SAMPLE_SHOW_ELAPSE   100
 // CWaveBaseCtrl ¶Ô»°¿ò
@@ -24,7 +29,7 @@ CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
 	  , _pAdmittance(nullptr)
 	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)
-	  , _drawMode(DRAW_ROLLING)
+	  , _drawMode(uc::dsp::visualization::DRAW_ROLLING)
 {
 	_last.QuadPart = 0;
 	QueryPerformanceFrequency(&_frequency);
@@ -37,8 +42,8 @@ CWaveBaseCtrl::~CWaveBaseCtrl()
 	_memBitmap.DeleteObject();
 }
 
-void CWaveBaseCtrl::SetBuffers(SignalChannel* pAdmittance, SignalChannel* pDifferential,
-                               SignalChannel* pEcg)
+void CWaveBaseCtrl::SetBuffers(Signal* pAdmittance, Signal* pDifferential,
+                               Signal* pEcg)
 {
 	_pAdmittance = pAdmittance;
 	_pDifferential = pDifferential;
