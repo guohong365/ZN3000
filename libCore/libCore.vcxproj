@@ -48,7 +48,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -84,6 +84,7 @@
     <ClInclude Include="..\include\uc\utils\IniFile.h" />
     <ClInclude Include="..\include\uc\utils\SerialPort.h" />
     <ClInclude Include="..\include\uc\utils\utility.h" />
+    <ClInclude Include="IniFileImpl.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -98,6 +99,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="IniFile.cpp" />
+    <ClCompile Include="IniFileImpl.cpp" />
     <ClCompile Include="libCore.cpp" />
     <ClCompile Include="Record.cpp" />
     <ClCompile Include="SerialPort.cpp" />

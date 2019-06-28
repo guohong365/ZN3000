@@ -13,7 +13,7 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="dsp">
+    <Filter Include="头文件\dsp">
       <UniqueIdentifier>{96f9f859-01b2-4350-81c5-fba1a51edc25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -51,6 +51,9 @@
     <ClInclude Include="..\include\uc\dsp\SignalBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="IniFileImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -62,9 +65,6 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="IniFile.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -72,10 +72,16 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AbstractSampler.cpp">
-      <Filter>dsp</Filter>
+      <Filter>头文件\dsp</Filter>
     </ClCompile>
     <ClCompile Include="Record.cpp">
-      <Filter>dsp</Filter>
+      <Filter>头文件\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="IniFileImpl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IniFile.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
