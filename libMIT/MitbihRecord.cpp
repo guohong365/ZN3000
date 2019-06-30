@@ -6,7 +6,7 @@
 #include <stdlib.h>
 namespace uc
 {
-    namespace signal
+    namespace signals
     {
         void wfdbSetup(const char* database_path)
         {
@@ -19,7 +19,7 @@ namespace uc
         {    
             std::string name;
 #ifdef _UNICODE
-            name= wstombs(recordName);
+            name= utils::wstombs(recordName);
 #else
             name = recordName
 #endif

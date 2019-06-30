@@ -1,7 +1,7 @@
 #pragma once
 namespace uc
 {
-    namespace dsp
+    namespace signals
     {
         template <typename Type1, typename Type2>
         Type1 *copyBufferNormalized(Type1 *pTarget,const Type2 * pSource, size_t count, double gain, Type2 baseValue)
@@ -22,7 +22,7 @@ namespace uc
             return pTarget;
         }
         template <typename ValueType>
-        ValueType minBuffer(ValueType * pBuffer, size_t count)
+        ValueType minValue(ValueType * pBuffer, size_t count)
         {
             ValueType m = pBuffer[0];
             for(size_t i=1; i< count; i++)
@@ -35,7 +35,7 @@ namespace uc
             return m;
         }
         template <typename ValueType>
-        ValueType maxBuffer(ValueType * pBuffer, size_t count)
+        ValueType maxValue(ValueType * pBuffer, size_t count)
         {
             ValueType m = pBuffer[0];
             for(size_t i=1; i< count; i++)
@@ -353,9 +353,9 @@ namespace uc
             copyBuffer(dest._pBuffer, source.getBuffer(), source.getLength());
         }
 
-        template class LIB_UC_API SignalBuffer<double>;
-        template class LIB_UC_API SignalBuffer<float>;
-        template class LIB_UC_API SignalBuffer<long>;
-        template class LIB_UC_API SignalBuffer<short>;
+        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<double>;
+        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<float>;
+        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<long>;
+        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<short>;
     }
 }

@@ -15,11 +15,18 @@
 #else
 	#define _UC_PLATFORM ""
 #endif
-
+#include <memory>
+#include <string>
+#include <vector>
+#include <tchar.h>
 #ifdef _UNICODE
 #define TSTRING std::wstring 
 #else
 #define TSTRING std::string 
 #endif
+LIB_UC_EXTERN template class LIB_UC_API std::allocator<wchar_t>;
+LIB_UC_EXTERN template class LIB_UC_API std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
+LIB_UC_EXTERN template class LIB_UC_API std::allocator<char>;
+LIB_UC_EXTERN template class LIB_UC_API std::basic_string<char, std::char_traits<char>, std::allocator<char>>;
 
 #endif

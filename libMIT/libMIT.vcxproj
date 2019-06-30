@@ -14,7 +14,7 @@
     <ProjectGuid>{A5F26C80-A374-4836-AB65-F3C3000115C3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libMIT</RootNamespace>
-    <ProjectName>libMIT-BIH</ProjectName>
+    <ProjectName>libmitdb</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

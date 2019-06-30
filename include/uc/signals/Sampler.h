@@ -1,12 +1,12 @@
 #pragma once
 #include <uc/libuc.h>
-#include <uc/dsp/SignalBuffer.h>
+#include <uc/signals/SignalBuffer.h>
 #include <vector>
 #include <map>
 
 namespace uc
 {
-    namespace dsp
+    namespace signals
     {
 
 

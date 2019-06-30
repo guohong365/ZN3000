@@ -1,10 +1,10 @@
 #pragma once
 #include <uc/libuc.h>
-#include <uc/dsp/Sampler.h>
+#include <uc/signals/Sampler.h>
 
 namespace uc
 {
-    namespace dsp
+    namespace signals
     {
         class LIB_UC_API AbstractSampler : public Sampler
         {

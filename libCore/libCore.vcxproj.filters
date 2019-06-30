@@ -13,8 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\dsp">
+    <Filter Include="源文件\signals">
       <UniqueIdentifier>{96f9f859-01b2-4350-81c5-fba1a51edc25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\utils">
+      <UniqueIdentifier>{f69341b5-eae7-46db-86ff-8533f1d453bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,22 +39,52 @@
     <ClInclude Include="..\include\uc\libcore.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\utils\SerialPort.h">
+    <ClInclude Include="..\include\uc\signals\AbstractSampler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\AbstractSampler.h">
+    <ClInclude Include="..\include\uc\signals\Record.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\Record.h">
+    <ClInclude Include="..\include\uc\signals\Sampler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\Sampler.h">
+    <ClInclude Include="..\include\uc\signals\SignalBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\SignalBuffer.h">
+    <ClInclude Include="..\include\uc\signals\RecordReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\RecordReaderFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\RecordWriter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\RecordWriterFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AnnotationImpl.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="IniFileImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RecordImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SignalSeriesImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\utils\SerialPort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\Annotation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\SignalSeries.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FactoryRepository.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,23 +98,32 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="utility.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialPort.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="AnnotationImpl.cpp">
+      <Filter>源文件\signals</Filter>
     </ClCompile>
     <ClCompile Include="AbstractSampler.cpp">
-      <Filter>头文件\dsp</Filter>
+      <Filter>源文件\signals</Filter>
     </ClCompile>
-    <ClCompile Include="Record.cpp">
-      <Filter>头文件\dsp</Filter>
+    <ClCompile Include="RecordImpl.cpp">
+      <Filter>源文件\signals</Filter>
+    </ClCompile>
+    <ClCompile Include="SignalSeriesImpl.cpp">
+      <Filter>源文件\signals</Filter>
     </ClCompile>
     <ClCompile Include="IniFileImpl.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\utils</Filter>
     </ClCompile>
     <ClCompile Include="IniFile.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialPort.cpp">
+      <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="FactoryRepository.cpp">
+      <Filter>源文件\signals</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

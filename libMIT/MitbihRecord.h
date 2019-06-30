@@ -1,9 +1,9 @@
 #pragma once
 #include <uc/libuc.h>
-#include <uc/signal/Record.h>
+#include <uc/signals/Record.h>
 namespace uc
 {
-    namespace signal
+    namespace signals
     {
 
         typedef struct DataHdr {
