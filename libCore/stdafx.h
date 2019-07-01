@@ -14,7 +14,8 @@
 #ifdef LIBCORE_EXPORTS
 #define LIB_UC_EXPORTS
 #endif
+#include <vector>
 #include <uc/libuc.h>
+#include <uc/signals/SignalBuffer.h>
+#include <uc/signals/SignalSeries.h>
 
-
-// TODO: 在此处引用程序需要的其他头文件

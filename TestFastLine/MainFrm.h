@@ -43,6 +43,9 @@ protected:  // 控件条嵌入成员
 	
 	DECLARE_MESSAGE_MAP()
 
+public:
+    afx_msg void OnSize(UINT nType, int cx, int cy);
+    virtual void RecalcLayout(BOOL bNotify = TRUE);
 };
 
 

@@ -1,12 +1,10 @@
 #include "stdafx.h"
-#include <uc/dsp/AbstractSampler.h>
+#include <uc/signals/AbstractSampler.h>
 
 namespace uc
 {
-    namespace dsp
+    namespace signals
     {
-
-
         AbstractSampler::AbstractSampler(size_t channelCount)
             : _hThread(nullptr)
             , _hResume(nullptr)
@@ -101,10 +99,8 @@ namespace uc
 
         void AbstractSampler::attach(int channel, SignalBuffer<double>* pBuffer)
         {
-            if(channel>=0 && channel< _channelCount)
-            {
-                _pBuffers[channel]=pBuffer;
-            }
+            if(channel < 0 || channel >= _channelCount)return;
+            _pBuffers[channel]=pBuffer;
         }
 
         SignalBuffer<double>* AbstractSampler::get(int channel) 

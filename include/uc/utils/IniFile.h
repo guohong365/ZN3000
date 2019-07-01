@@ -31,14 +31,7 @@ namespace uc
 		class LIB_UC_API IniFile
 		{
 		protected:
-			IniFile()
-			{
-			};
 			virtual ~IniFile();
-
-			IniFile(const IniFile& iniFile)
-			{
-			};
 		public:
 			/**
 			* 取得给定SECTION的注释
