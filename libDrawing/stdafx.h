@@ -40,3 +40,4 @@
 
 #include <GdiPlus.h>
 #include <uc/libuc.h>
+#include <uc/libdrawing.h>

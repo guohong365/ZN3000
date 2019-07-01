@@ -1,26 +1,27 @@
 #pragma once
+#include <uc/libdrawing.h>
 #include <uc/drawing/DrawObject.h>
-#include <uc/dsp/Record.h>
-#include <uc/dsp/visualization/WaveDrawerAppearance.h>
-
-using uc::dsp::Signal;
-using uc::dsp::SignalBuffer;
+#include <uc/signals/Record.h>
+#include <uc/signals/visualization/WaveDrawerAppearance.h>
+#include <uc/signals/SignalSeries.h>
+using uc::signals::SignalSeries;
+using uc::signals::SignalBuffer;
 using uc::drawing::DrawObject;
 namespace uc
 {    
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {
 
-            class LIB_UC_API WaveDrawer:public DrawObject
+            class DRAWING_CLASS WaveDrawer:public DrawObject
             {
             public:
                 WaveDrawer();
-                WaveDrawer(Signal* pChannel, double layoutPercent);
+                WaveDrawer(SignalSeries* pChannel, double layoutPercent);
                 virtual ~WaveDrawer();
-                Signal* getChannelBuffer() const;
-                void setChannelBuffer(Signal* pBuffer);
+                SignalSeries* getChannelBuffer() const;
+                void setChannelBuffer(SignalSeries* pBuffer);
                 virtual void SetVelocity(double velocity);
                 virtual double GetVelocity();
                 virtual void SetBaseline(int pos);
@@ -72,7 +73,7 @@ namespace uc
                 int _waveHeight;
                 float _scale;
                 double _layoutPercent;
-                Signal * _pSignal;
+                SignalSeries * _pSignal;
                 //SIZE_T _totalSampleCount;
                 //float _sampleDotSpacing;
                 WaveDrawerAppearance& getThisAppearance();

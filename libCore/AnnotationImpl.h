@@ -4,7 +4,7 @@ namespace uc
 {
     namespace signals{
 
-        class LIB_UC_API AnnotationImpl : public Annotation
+        class LIB_CORE_API AnnotationImpl : public Annotation
         {
         public:            
             virtual ~AnnotationImpl(){}

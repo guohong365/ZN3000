@@ -27,9 +27,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MitbihRecord.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="libwfdb\ecgcodes.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -42,7 +39,16 @@
     <ClInclude Include="libwfdb\wfdblib.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="libMIT.h">
+    <ClInclude Include="MitdbBinaryReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MitdbTextReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mitdb.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\libmitdb.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,13 +56,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="libMIT.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MitbihRecord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="libwfdb\annot.c">
@@ -73,6 +73,15 @@
     </ClCompile>
     <ClCompile Include="libwfdb\wfdbio.c">
       <Filter>源文件\wfdb</Filter>
+    </ClCompile>
+    <ClCompile Include="MitdbBinaryReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MitdbTextReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mitdb.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

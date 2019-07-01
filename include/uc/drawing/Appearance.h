@@ -1,11 +1,11 @@
 #pragma once
-#include <uc/libuc.h>
+#include <uc/libdrawing.h>
 
 namespace uc
 {
     namespace drawing{
 
-        struct LIB_UC_API Appearance
+        struct DRAWING_CLASS Appearance
         {
             int LineStyle;///ÏßÐÍ
             float LineWidth;///Ïß¿í

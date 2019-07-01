@@ -128,28 +128,40 @@
     <ClInclude Include="..\include\uc\drawing\Visualized.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\visualization\ActiveWaveDrawer.h">
+    <ClInclude Include="..\include\uc\drawing\Header2.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\visualization\GridBackgronud.h">
+    <ClInclude Include="..\include\uc\drawing\PropertyProvider.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\visualization\GridBackgroundAppearance.h">
+    <ClInclude Include="..\include\uc\libdrawing.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\visualization\WaveCanvas.h">
+    <ClInclude Include="..\include\uc\signals\visualization\ActiveWaveDrawer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\visualization\WaveDrawer.h">
+    <ClInclude Include="..\include\uc\signals\visualization\GridBackgronud.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\dsp\visualization\WaveDrawerAppearance.h">
+    <ClInclude Include="..\include\uc\signals\visualization\GridBackgroundAppearance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\visualization\WaveCanvas.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\visualization\WaveDrawer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\uc\signals\visualization\WaveDrawerAppearance.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="libDrawing.rc">
       <Filter>资源文件</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\include\uc\drawing\DrawObject.rc">
+      <Filter>头文件</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "Record.h"
+#include "../signals/Record.h"
+#include "RheographyRecord.h"
 #define LEN_NAME 20
 #define LEN_CODE 10
 #define SEX_FEMALE 'F'

@@ -2,7 +2,9 @@
 //
 
 #include "stdafx.h"
+#include <uc/drawing/UIHelper.h>
 #include "WaveBaseCtrl.h"
+#include "../libMIT/MitdbBinaryReader.h"
 
 #define GRID_LARGE_INTERVAL 10.0f
 #define GRID_SMALL_INTERVAL 1.0f
@@ -10,10 +12,10 @@
 #define new DEBUG_NEW
 #endif
 
-using uc::dsp::visualization::WaveCanvas;
-using uc::dsp::visualization::GridBackgroundAppearance;
-using uc::dsp::visualization::DrawMode;
-using uc::dsp::visualization::WaveDrawerAppearance;
+using uc::signals::visualization::WaveCanvas;
+using uc::signals::visualization::GridBackgroundAppearance;
+using uc::signals::visualization::DrawMode;
+using uc::signals::visualization::WaveDrawerAppearance;
 using uc::drawing::UICoordinateHelper;
 #define SAMPLE_SHOW_TIMER_ID 1
 #define SAMPLE_SHOW_ELAPSE   100
@@ -29,7 +31,7 @@ CWaveBaseCtrl::CWaveBaseCtrl(CWnd* pParent /*=NULL*/)
 	  , _pAdmittance(nullptr)
 	  , _pDifferential(nullptr)
 	  , _pEcg(nullptr)
-	  , _drawMode(uc::dsp::visualization::DRAW_ROLLING)
+	  , _drawMode(uc::signals::visualization::DRAW_ROLLING)
 {
 	_last.QuadPart = 0;
 	QueryPerformanceFrequency(&_frequency);
@@ -42,8 +44,8 @@ CWaveBaseCtrl::~CWaveBaseCtrl()
 	_memBitmap.DeleteObject();
 }
 
-void CWaveBaseCtrl::SetBuffers(Signal* pAdmittance, Signal* pDifferential,
-                               Signal* pEcg)
+void CWaveBaseCtrl::SetBuffers(SignalSeries* pAdmittance, SignalSeries* pDifferential,
+                               SignalSeries* pEcg)
 {
 	_pAdmittance = pAdmittance;
 	_pDifferential = pDifferential;

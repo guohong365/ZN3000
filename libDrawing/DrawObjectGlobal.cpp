@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include <uc/drawing/DrawObjectGlobal.h>
-
-
 const uc::drawing::FONT_SIZE FontSizeArray[]={
 	{_T("³õºÅ"),	42},
 	{_T("Ð¡³õ"),	36},

@@ -1,8 +1,9 @@
 #pragma once
-
+#include <uc/libdrawing.h>
 #include <vector>
-#include <uc/dsp/visualization/WaveDrawer.h>
-#include <uc/dsp/visualization/GridBackgronud.h>
+#include <uc/signals/visualization/WaveDrawer.h>
+#include <uc/signals//visualization/GridBackgronud.h>
+
 
 #define DEFAULT_WAVE_BACKGROUND_COLOR (RGB(0, 64, 0)|0xFF000000)
 #define DEFAULT_WAVE_COLOR            (RGB(0, 255, 0)|0xFF000000)
@@ -10,20 +11,26 @@
 #define DEFAULT_THIN_GRID_LINE_COLOR  (RGB(192,192,192)|0xFF000000)
 #define DEFAULT_WAVE_BASELINE_COLOR        (RGB(0, 255, 255)|0xFF000000)
 
+namespace uc {
+	namespace signals {
+		class SignalSeries;
+	}
+}
+
 namespace uc
 {    
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {
 
-class LIB_UC_API WaveCanvas : public DrawObject
+class DRAWING_CLASS WaveCanvas : public DrawObject
 {
 	void initialize();
 public:
 	WaveCanvas(const Gdiplus::Point &pt, const Gdiplus::Size & size);
 	~WaveCanvas();
-	void AddWave(Signal* pChannel, double percent);
+	void AddWave(signals::SignalSeries* pChannel, double percent);
 	virtual void OnSizeChanged();
 	void OnDraw(Gdiplus::Graphics & graph);
 	int GetWaveCount() const;

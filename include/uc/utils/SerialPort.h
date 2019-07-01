@@ -17,7 +17,7 @@ namespace uc
     namespace utils
     {
 
-        class LIB_UC_API SerialPort
+        class LIB_CORE_API SerialPort
         {
         public:
             explicit SerialPort(

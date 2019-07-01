@@ -16,6 +16,7 @@
 #endif
 #include <vector>
 #include <uc/libuc.h>
+#include <uc/libcore.h>
 #include <uc/signals/SignalBuffer.h>
 #include <uc/signals/SignalSeries.h>
 

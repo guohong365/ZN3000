@@ -3,10 +3,9 @@
 */
 #ifndef __INI_FILE__
 #define __INI_FILE__
-#include <uc/libuc.h>
 #include <stdio.h>
 #include <tchar.h>
-
+#include <uc/libcore.h>
 namespace uc
 {
 	namespace utils
@@ -28,7 +27,7 @@ namespace uc
 		 *@note 使用注意:在工程设置中要选择：\n
 		 *       Project --setting --c/c++ --c++ language --Enable Run_Time information(RTTI)      
 		 */
-		class LIB_UC_API IniFile
+		class LIB_CORE_API IniFile
 		{
 		protected:
 			virtual ~IniFile();

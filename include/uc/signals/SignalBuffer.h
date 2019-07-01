@@ -1,4 +1,5 @@
 #pragma once
+#include <uc/libcore.h>
 namespace uc
 {
     namespace signals
@@ -353,9 +354,9 @@ namespace uc
             copyBuffer(dest._pBuffer, source.getBuffer(), source.getLength());
         }
 
-        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<double>;
-        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<float>;
-        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<long>;
-        LIB_UC_EXTERN template class LIB_UC_API SignalBuffer<short>;
+        LIB_CORE_EXTERN template class LIB_CORE_API SignalBuffer<double>;
+        LIB_CORE_EXTERN template class LIB_CORE_API SignalBuffer<float>;
+        LIB_CORE_EXTERN template class LIB_CORE_API SignalBuffer<long>;
+        LIB_CORE_EXTERN template class LIB_CORE_API SignalBuffer<short>;
     }
 }

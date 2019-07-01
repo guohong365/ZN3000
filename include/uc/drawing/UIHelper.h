@@ -1,12 +1,12 @@
 #pragma once
-#include <uc/libuc.h>
+#include <uc/libdrawing.h>
 #include <GdiPlus.h>
 
 namespace uc
 {
     namespace drawing{
 
-        class LIB_UC_API UICoordinateHelper
+        class DRAWING_CLASS UICoordinateHelper
         {
             bool _canRelease;
         public:

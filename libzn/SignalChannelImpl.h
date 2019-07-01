@@ -1,5 +1,5 @@
 #pragma once
-#include "Record.h"
+#include <uc/signals/Record.h>
 
 class SignalChannelImpl : public SignalChannel
 {

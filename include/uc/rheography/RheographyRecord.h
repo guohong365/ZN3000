@@ -1,58 +1,6 @@
 #pragma once
-#include "SignalBuffer.h"
+#include <uc/libzn.h>
 #include <vector>
-
-class SignalChannel;
-
-class Annotation
-{
-public:
-	virtual ~Annotation(){}
-	virtual unsigned long getOffset() const=0;
-	virtual void setOffset(unsigned long offset)=0;
-	virtual const CString& getLabel() const=0;
-	virtual void setLabel(const CString & label)=0;
-	virtual const SignalChannel* getOwner() const=0;
-	virtual SignalChannel * getOwner()=0;
-	virtual void setOwner(SignalChannel * pChannel)=0;
-};
-
-typedef std::vector<Annotation *> Annotations;
-
-class SignalChannel
-{	
-public:
-	virtual ~SignalChannel(){}
-	virtual const CString& getLabel() const=0;
-	virtual void setLabel(const CString& label)=0;
-	virtual const CString& getSensor() const=0;
-	virtual void setSensor(const CString& sensor)=0;
-	virtual const CString& getPhysicalDimension()=0;
-	virtual void setPhysicalDimension(const CString & dimension)=0;
-	virtual double getPhysicalMinimum() const=0;
-	virtual void setPhysicalMinimum(double physicalMinimum)=0;
-	virtual double getPhysicalMaximum() const=0;
-	virtual void setPhysicalMaximum(double physicalMaximum)=0;
-	virtual long getDigitalMinimum() const=0;
-	virtual void setDigitalMinimum(long digitalMinimum)=0;
-	virtual long getDigitalMaximum() const=0;
-	virtual void setDigitalMaximum(long digitalMaximum)=0;
-	virtual double getHighPassFilter() const=0;
-	virtual void setHighPassFilter(double highPass)=0;
-	virtual double getLowPassFilter() const=0;
-	virtual void setLowPassFilter(double lowPass)=0;
-	virtual double getNotchFilter() const=0;
-	virtual void setNotchFilter(double notch)=0;
-	virtual double getSampleFrequency() const=0;
-	virtual void setSampleFrequency(double sampleFrequency)=0;
-	virtual size_t getSampleCount() const=0;
-	virtual const Annotations & getAnnotations() const=0;
-	virtual Annotations & getAnnotations()=0;
-	virtual const SignalBuffer<double> &getSignalBuffer() const=0;
-	virtual SignalBuffer<double>& getSignalBuffer()=0;
-};
-
-typedef std::vector<SignalChannel *> SignalChannels;
 
 class RheographyRecord
 {

@@ -1,15 +1,16 @@
 #pragma once
+#include <uc/libdrawing.h>
 #include <uc/drawing/DrawObject.h>
-#include <uc/dsp/visualization/GridBackgroundAppearance.h>
+#include <uc/signals/visualization/GridBackgroundAppearance.h>
 
 namespace uc
 {    
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {
 
-            class LIB_UC_API GridBackground:public drawing::DrawObject
+            class DRAWING_CLASS GridBackground:public drawing::DrawObject
             {
             public:
                 GridBackground();

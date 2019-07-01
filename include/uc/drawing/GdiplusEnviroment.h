@@ -1,5 +1,5 @@
 #pragma once
-#include <uc/libuc.h>
+#include <uc/libdrawing.h>
 #include <GdiPlus.h>
 
 namespace uc
@@ -7,7 +7,7 @@ namespace uc
     namespace drawing{
 
 
-        class LIB_UC_API GdiplusEnvironment 
+        class DRAWING_CLASS GdiplusEnvironment 
         {
             ULONG_PTR _gdiPlusToken;
             Gdiplus::GdiplusStartupInput _gdiPlusStartupInput;

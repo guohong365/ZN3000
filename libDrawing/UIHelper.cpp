@@ -6,7 +6,7 @@ namespace uc
     namespace drawing
     {
 
-        class LIB_UC_API CoordsHelperHolder
+        class DRAWING_CLASS CoordsHelperHolder
         {
             UICoordinateHelper *helper;
             friend class UICoordinateHelper;

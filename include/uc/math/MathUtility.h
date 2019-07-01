@@ -1,6 +1,6 @@
 
 #pragma once
-#include <uc/libuc.h>
+#include <uc/libdrawing.h>
 #include <math.h>
 #include <GdiPlus.h>
 #ifdef ROTATE_PI
@@ -9,7 +9,7 @@
 
 #define ROTATE_PI  double (3.1415926535897932384626433832795)
 
-class LIB_UC_API MathUtility
+class DRAWING_CLASS MathUtility
 {
   public:
 

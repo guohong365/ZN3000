@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "ZNDData.h"
-#include "RheographyRecordImpl.h"
+#include <uc/rheography/RheographyRecordImpl.h>
 #include "SignalChannelImpl.h"
 
 

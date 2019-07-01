@@ -1,6 +1,5 @@
 #pragma once
-
-#include <uc/libuc.h>
+#include <uc/libdrawing.h>
 
 #define DEFAULT_TEXT_COLOR        RGB(0,0,0)
 #define DEFAULT_LINE_COLOR        RGB(0,0,0)
@@ -33,9 +32,9 @@ namespace uc
 
         //extern const FONT_SIZE FontSizeArray[];
 
-        int LIB_UC_API AfxGetFontSizeBySizePoint(float point);
+        int DRAWING_API AfxGetFontSizeBySizePoint(float point);
 
-        int LIB_UC_API AfxGetFontSizeBySizeName(const CString & sizeName);
+        int DRAWING_API AfxGetFontSizeBySizeName(const CString & sizeName);
 
     }
 }

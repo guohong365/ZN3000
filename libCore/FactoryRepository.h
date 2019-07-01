@@ -10,7 +10,7 @@ namespace uc
         class RecordReader;
         class RecordWriter;
 
-        class LIB_UC_API FactoryRepository
+        class LIB_CORE_API FactoryRepository
         {
         public:
             virtual ~FactoryRepository(void){};

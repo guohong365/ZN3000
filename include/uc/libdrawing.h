@@ -1,19 +1,22 @@
-#ifndef __LIB_UI_H__
-#define __LIB_UI_H__
+#pragma once
 
-#include <uc/libUC.h>
-#include <tchar.h>
-#include <uc/drawing/GdiplusEnviroment.h>
-#include <uc/drawing/ScreenInfo.h>
-#include <uc/image/ImageUtility.h>
-#include <uc/math/MathUtility.h>
-#include <uc/drawing/UIHelper.h>
+#include <uc/libuc.h>
 
-#ifndef LIB_UC_EXPORTS
+#define LIB_DRAWING_EXPORT __declspec(dllexport)
+#define LIB_DRAWING_IMPORT __declspec(dllimport)
 
-#pragma comment(lib, "libui" _UC_PLATFORM ".lib")
-#pragma message("Automatically linking with libui" _UC_PLATFORM ".lib")
-
+#ifdef _AFXEXT
+#define	DRAWING_API LIB_DRAWING_EXPORT
+#define DRAWING_CLASS LIB_DRAWING_EXPORT
+#else
+#define	DRAWING_API LIB_DRAWING_IMPORT
+#define DRAWING_CLASS LIB_DRAWING_IMPORT
 #endif
 
+#include <tchar.h>
+#include <GdiPlus.h>
+
+#ifndef _AFXEXT
+#pragma comment(lib, "libdrawing" _UC_PLATFORM ".lib")
+#pragma message("Automatically linking with libdrawing" _UC_PLATFORM ".lib")
 #endif

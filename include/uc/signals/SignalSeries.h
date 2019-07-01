@@ -1,4 +1,5 @@
 #pragma once
+#include <uc/libcore.h>
 #include <uc/signals/SignalBuffer.h>
 #include <uc/signals/Annotation.h>
 
@@ -6,7 +7,7 @@ namespace uc
 {
     namespace signals
     {
-        class SignalSeries
+        class LIB_CORE_API SignalSeries
         {
         public:
             virtual ~SignalSeries(){}

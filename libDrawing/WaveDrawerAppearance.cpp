@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <uc/dsp/visualization/WaveDrawerAppearance.h>
+#include <uc/signals/visualization/WaveDrawerAppearance.h>
 
 #define DEFAULT_BASELINE_COLOR 0xFF00FFFF
 #define DEFAULT_BASELINE_WIDTH 5
@@ -13,7 +13,7 @@
 
 namespace uc
 {
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {

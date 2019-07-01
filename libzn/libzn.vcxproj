@@ -75,6 +75,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\uc\libzn.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="DataLoader.h" />
     <ClInclude Include="Settings.h" />

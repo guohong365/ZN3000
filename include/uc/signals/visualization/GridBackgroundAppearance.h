@@ -4,12 +4,12 @@
 
 namespace uc
 {    
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {
 
-            struct LIB_UC_API GridBackgroundAppearance : drawing::Appearance
+            struct DRAWING_CLASS GridBackgroundAppearance : drawing::Appearance
             {
                 bool ShowThickGridLine;
                 bool ShowThinGridLine;

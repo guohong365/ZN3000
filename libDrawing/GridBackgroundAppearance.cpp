@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <uc/dsp/visualization/GridBackgroundAppearance.h>
+#include <uc/signals/visualization/GridBackgroundAppearance.h>
 
 #define DEFAULT_SHOW_THICK_GRID true
 #define DEFAULT_SHOW_THIN_GRID true
@@ -16,8 +16,8 @@
 
 namespace uc
 {    
-    using drawing::Appearance;
-    namespace dsp
+	using drawing::Appearance;
+    namespace signals
     {
         namespace visualization
         {

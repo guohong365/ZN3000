@@ -1,10 +1,11 @@
 #pragma once
+#include <uc/libdrawing.h>
 #include <uc/drawing/Appearance.h>
 
 using uc::drawing::Appearance;
 namespace uc
 {
-    namespace dsp
+    namespace signals
     {
         namespace visualization{
 
@@ -20,7 +21,7 @@ namespace uc
                 DRAW_ROLLING = 1,
                 DRAW_ERASURE = 2
             };
-            struct LIB_UC_API WaveDrawerAppearance : Appearance
+            struct AFX_EXT_CLASS WaveDrawerAppearance : Appearance
             {
 
                 bool ShowBaseline;

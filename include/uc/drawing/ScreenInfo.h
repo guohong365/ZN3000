@@ -1,12 +1,10 @@
 #pragma once
-
-#include <uc/libuc.h>
-
+#include <uc/libdrawing.h>
 namespace uc
 {
     namespace drawing{
 
-        class LIB_UC_API ScreenInfo
+        class DRAWING_CLASS ScreenInfo
         {
             int _physicalWidth;	//width in mm
             int _physicalHeight;	//height in mm

@@ -1,7 +1,8 @@
 #pragma once
+#include <uc/libdrawing.h>
 #include "WaveDrawer.h"
 
-class ActiveWaveDrawer : WaveDrawer
+class ActiveWaveDrawer : uc::signals::visualization::WaveDrawer
 {
 public:
 	ActiveWaveDrawer(void);

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <uc/libdrawing.h>
 #define GET_PIC_FLAG_CLIP    0x00000001    //原始大小，剪切
 #define GET_PIC_FLAG_STRETCH 0x00000002    //充满画布，x，y缩放不一致
 #define GET_PIC_FLAG_ASPECT  0x00000004    //x，y按比例缩放，一个方向充满画布
@@ -17,7 +17,7 @@ namespace uc
 {
     namespace drawing{
 
-        class LIB_UC_API Visualized
+        class DRAWING_CLASS Visualized
         {
         public:
             virtual ~Visualized(){}

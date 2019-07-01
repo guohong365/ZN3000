@@ -1,5 +1,5 @@
 #pragma once
-
+#include <uc/libdrawing.h>
 namespace uc
 {
     namespace drawing{
@@ -166,7 +166,7 @@ namespace uc
             VALUE_COLOR_MATRIX,
             VALUE_POLYLINE_NODE
         };
-        struct LIB_UC_API ATTR_VALUE
+        struct DRAWING_CLASS ATTR_VALUE
         {
             VALUE_TYPE _type;
             union

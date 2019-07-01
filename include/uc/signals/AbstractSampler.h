@@ -1,12 +1,12 @@
 #pragma once
-#include <uc/libuc.h>
+
 #include <uc/signals/Sampler.h>
 
 namespace uc
 {
     namespace signals
     {
-        class LIB_UC_API AbstractSampler : public Sampler
+        class LIB_CORE_API AbstractSampler : public Sampler
         {
         public:
             explicit AbstractSampler(size_t channelCount);

@@ -81,10 +81,10 @@
     <ClInclude Include="..\include\uc\signals\Annotation.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uc\signals\SignalSeries.h">
+    <ClInclude Include="FactoryRepository.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="FactoryRepository.h">
+    <ClInclude Include="..\include\uc\signals\SignalSeries.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

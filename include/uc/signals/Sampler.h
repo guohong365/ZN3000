@@ -1,20 +1,15 @@
 #pragma once
-#include <uc/libuc.h>
 #include <uc/signals/SignalBuffer.h>
-#include <vector>
-#include <map>
 
 namespace uc
 {
     namespace signals
     {
-
-
         /**采样线程类
         *
         *负责读取数据放入预先准备好的缓冲区
         */
-        class LIB_UC_API Sampler 
+        class LIB_CORE_API Sampler 
         {
         public:
             enum SamplerState

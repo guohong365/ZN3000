@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ZnRowFileSimSampler.h"
 #include <stdexcept>
-#include "SerialPortSampler.h"
+#include <uc/signals/SerialPortSampler.h>
 
 #define PACKET_SIZE sizeof(Packet)
 #define TEST_BUFFER_SIZE (PACKET_SIZE*3)

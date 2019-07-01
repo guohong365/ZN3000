@@ -1,18 +1,18 @@
 #pragma once
-#include <uc/libuc.h>
+#include <uc/libcore.h>
 namespace uc {
     namespace signals {        
         class Annotation;
         class SignalSeries;
         
-        LIB_UC_EXTERN template class LIB_UC_API std::allocator<Annotation*>;
-        LIB_UC_EXTERN template class LIB_UC_API std::vector<Annotation *>;
-        LIB_UC_EXTERN template class LIB_UC_API std::_Vector_val<Annotation *, std::allocator<Annotation*>>;
-        LIB_UC_EXTERN template class LIB_UC_API std::allocator<SignalSeries*>;
-        LIB_UC_EXTERN template class LIB_UC_API std::vector<SignalSeries *>;
-        LIB_UC_EXTERN template class LIB_UC_API std::_Vector_val<SignalSeries *, std::allocator<SignalSeries*>>;
+        LIB_CORE_EXTERN template class LIB_CORE_API std::allocator<Annotation*>;
+        LIB_CORE_EXTERN template class LIB_CORE_API std::vector<Annotation *>;
+        LIB_CORE_EXTERN template class LIB_CORE_API std::_Vector_val<Annotation *, std::allocator<Annotation*>>;
+        LIB_CORE_EXTERN template class LIB_CORE_API std::allocator<SignalSeries*>;
+        LIB_CORE_EXTERN template class LIB_CORE_API std::vector<SignalSeries *>;
+        LIB_CORE_EXTERN template class LIB_CORE_API std::_Vector_val<SignalSeries *, std::allocator<SignalSeries*>>;
         
-        class LIB_UC_API Record
+        class LIB_CORE_API Record
         {
         public:
             virtual ~Record(){}

@@ -5,7 +5,7 @@ namespace uc
 {
     namespace signals
     {
-        class LIB_UC_API RecordImpl : public Record
+        class LIB_CORE_API RecordImpl : public Record
         {
         public:
             RecordImpl(const TSTRING& name = _T(""), const TSTRING& desc = _T(""));

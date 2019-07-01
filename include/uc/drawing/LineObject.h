@@ -1,13 +1,12 @@
 #pragma once
-#include <uc/libuc.h>
+#include <uc/libdrawing.h>
 #include <uc/drawing/RectObject.h>
 
 namespace uc
 {
     namespace drawing{
 
-        class LIB_UC_API LineObject :
-            public RectObject
+        class DRAWING_CLASS LineObject : public RectObject
         {
         protected:
             LineObject();

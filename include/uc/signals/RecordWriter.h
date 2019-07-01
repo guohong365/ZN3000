@@ -3,7 +3,7 @@
 namespace uc
 {
     namespace signals{
-        class RecordWriter
+        class LIB_CORE_API RecordWriter
         {
         public:
             virtual ~RecordWriter(void);

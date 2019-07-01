@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include <uc/utils/utility.h>
 #include <time.h>
 #include <clocale>

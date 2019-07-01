@@ -3,13 +3,14 @@
 // Author : BAla
 //////////////////////////////////////////////////////////////////////////////////
 #pragma once
+#include <uc/libdrawing.h>
 #include <GdiPlus.h>
 namespace uc
 {
     namespace drawing{
 
         // Image Processing class
-        class LIB_UC_API CImageProcessor
+        class DRAWING_CLASS CImageProcessor
         {
         public:
             static double m_3DCorrectRatio;

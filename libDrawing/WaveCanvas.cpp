@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include <uc/dsp/visualization/WaveCanvas.h>
-#include <uc/dsp/visualization/GridBackgronud.h>
+#include <uc/signals/visualization/WaveCanvas.h>
+#include <uc/signals/visualization/GridBackgronud.h>
 #include <uc/drawing/UIHelper.h>
 #include <uc/image/ImageUtility.h>
 #define DEFAULT_PADDING_LEFT 50
@@ -13,7 +13,7 @@ namespace uc
 {    
     using drawing::UICoordinateHelper;
 
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {
@@ -54,7 +54,7 @@ namespace uc
                 Clear();
             }
 
-            void WaveCanvas::AddWave(Signal* pChannel, const double percent)
+            void WaveCanvas::AddWave(SignalSeries* pChannel, const double percent)
             {
                 WaveDrawer* pDrawer = new WaveDrawer(pChannel, percent);
                 pDrawer->SetAppearance(_waveAppearance);

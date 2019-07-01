@@ -1,9 +1,12 @@
 #include "stdafx.h"
-#include <uc/dsp/visualization/WaveDrawer.h>
-#include <uc/dsp/visualization/WaveDrawerAppearance.h>
+#include <uc/libdrawing.h>
+#include <uc/drawing/UIHelper.h>
+
+#include <uc/signals/visualization/WaveDrawer.h>
+#include <uc/signals/visualization/WaveDrawerAppearance.h>
 #include <uc/drawing/RectObject.h>
 #include <uc/image/ImageUtility.h>
-#include <uc/libdrawing.h>
+#include <uc/drawing/ScreenInfo.h>
 
 #define DEFAULT_WAVE_SCALE 0.8f
 
@@ -11,7 +14,7 @@ namespace uc
 {
     using drawing::UICoordinateHelper;
     using drawing::ScreenInfo;
-    namespace dsp
+    namespace signals
     {
         namespace visualization
         {
@@ -35,7 +38,7 @@ WaveDrawer::WaveDrawer()
 	_initialize();
 }
 
-WaveDrawer::WaveDrawer(Signal* pChannel, const double layoutPercent)
+WaveDrawer::WaveDrawer(SignalSeries* pChannel, const double layoutPercent)
 	:DrawObject(pChannel->name().c_str(), Gdiplus::Point(0,0), Gdiplus::Size(0,0))
 {
 
@@ -47,12 +50,12 @@ WaveDrawer::~WaveDrawer()
 {	
 }
 
-Signal* WaveDrawer::getChannelBuffer() const
+SignalSeries* WaveDrawer::getChannelBuffer() const
 {
 	return _pSignal;
 }
 
-void WaveDrawer::setChannelBuffer(Signal* pBuffer)
+void WaveDrawer::setChannelBuffer(SignalSeries* pBuffer)
 {
 	_pSignal = pBuffer;
 }

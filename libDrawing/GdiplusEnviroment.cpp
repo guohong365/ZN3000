@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include <uc/drawing/GdiplusEnviroment.h>
 namespace uc
 {
