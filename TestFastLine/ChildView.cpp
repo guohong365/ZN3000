@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "TestFastLine.h"
 #include "ChildView.h"
+#include "../include/uc/libuc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,9 +18,10 @@ CChildView::CChildView()
     : CFormView(IDD_MAIN_FRAME_VIEW)
       , m_nTopGap(0)
       , m_nLeftGap(0)
-      , _nTimer(0)
+      , _count(0)
 {
     _brush.CreateSolidBrush(RGB(227, 238, 255));
+    memset(_data, 0, sizeof(EcgDataItem) * (MAX_SAMPLE_COUNT + 1));
 }
 
 CChildView::~CChildView()
@@ -30,6 +32,10 @@ void CChildView::OnInitialUpdate()
 {
     CFormView::OnInitialUpdate();
     ModifyStyle(0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
+
+    _wndGroupBox.SubclassDlgItem(IDC_STATIC_LABELS, this);
+    _wndGroupBox.SetTheme(xtpControlThemeResource);
+
     CXTPWindowRect rc(_wndChartControl);
     ScreenToClient(rc);
     m_nTopGap = rc.top;
@@ -45,7 +51,6 @@ void CChildView::OnInitialUpdate()
     pSubTitle->SetTextColor(CXTPChartColor::Gray);
 
     CreateChart();
-    SetTimer(_nTimer, 100, nullptr);
 }
 
 
@@ -53,8 +58,9 @@ BEGIN_MESSAGE_MAP(CChildView, CFormView)
         ON_WM_CTLCOLOR()
         ON_WM_SIZE()
         ON_WM_ERASEBKGND()
-        ON_WM_TIMER()
-        ON_WM_DESTROY()
+        ON_BN_CLICKED(IDC_BTN_CAL, &CChildView::OnBnClickedBtnCal)
+        ON_BN_CLICKED(IDC_BTN_LOAD_ANN, &CChildView::OnBnClickedBtnLoadAnn)
+        ON_BN_CLICKED(IDC_BTN_LOAD_DATA, &CChildView::OnBnClickedBtnLoadData)
 END_MESSAGE_MAP()
 
 HBRUSH CChildView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -92,12 +98,15 @@ void CChildView::DoDataExchange(CDataExchange* pDX)
 void CChildView::OnSize(UINT nType, int cx, int cy)
 {
     CFormView::OnSize(nType, cx, cy);
-    if (!_wndChartControl.GetSafeHwnd())
+    if (!_wndGroupBox.GetSafeHwnd() ||
+        !_wndChartControl.GetSafeHwnd())
     {
         return;
     }
+    CXTPWindowRect rc(_wndGroupBox);
     const int nWidth = max(m_totalDev.cx, cx);
     const int nHeight = max(m_totalDev.cy, cy);
+    _wndGroupBox.SetWindowPos(nullptr,0,0,nWidth - 2*m_nLeftGap, rc.Height(), SWP_NOMOVE | SWP_NOZORDER);
     _wndChartControl.SetWindowPos(nullptr, 0, 0, nWidth - 2 * m_nLeftGap, nHeight - m_nTopGap - m_nLeftGap,
                                   SWP_NOMOVE | SWP_NOZORDER);
 }
@@ -112,9 +121,8 @@ void CChildView::AddPoints()
     CXTPChartContent* pContent = _wndChartControl.GetContent();
 
     CXTPChartSeriesCollection* pCollection = pContent->GetSeries();
-
-    int nCount = 0;
-
+    double maxV=0;
+    double minV=0;
     if (pCollection)
     {
         for (int s = 0; s < pCollection->GetCount(); s++)
@@ -122,19 +130,15 @@ void CChildView::AddPoints()
             CXTPChartSeries* pSeries = pCollection->GetAt(s);
             if (pSeries)
             {
-                int nValue = 50;
+                pSeries->GetPoints()->RemoveAll();
 
-                nCount = pSeries->GetPoints()->GetCount();
-
-                if (nCount)
-                    nValue = static_cast<int>(pSeries->GetPoints()->GetAt(nCount - 1)->GetValue(0));
-
-                nValue = nValue + (rand() % 20) - 10;
-
-                if (nValue < 0) nValue = 0;
-                if (nValue > 100) nValue = 100;
-
-                pSeries->GetPoints()->Add(new CXTPChartSeriesPoint(nCount, nValue));
+                for(long i=0; i<_count; i++)
+                {
+                    double value= s== 0 ? _data[i].s1 : _data[i].s2;
+                    if(value < minV) minV = value;
+                    if(value > maxV) maxV = value;
+                    pSeries->GetPoints()->Add(new CXTPChartSeriesPoint(_data[i].index, value));
+                }
             }
         }
     }
@@ -143,35 +147,23 @@ void CChildView::AddPoints()
         _wndChartControl.GetContent()->GetPanels()->GetAt(0));
     ASSERT (pDiagram);
 
-
-    if (nCount > 100)
+    CXTPChartAxisRange* pRange = pDiagram->GetAxisX()->GetRange();
+    if (_count > 1000)
     {
-        CXTPChartAxisRange* pRange = pDiagram->GetAxisX()->GetRange();
-
         const BOOL bAutoScroll = pRange->GetViewMaxValue() == pRange->GetMaxValue();
-
-        pRange->SetMaxValue(nCount);
-
+        pRange->SetMaxValue(_count);
         if (bAutoScroll)
         {
-            const double delta = pRange->GetViewMaxValue() - pRange->GetViewMinValue();
-
             pRange->SetViewAutoRange(FALSE);
-            pRange->SetViewMaxValue(nCount);
-            pRange->SetViewMinValue(nCount - delta);
+            pRange->SetViewMaxValue(1000);
+            pRange->SetViewMinValue(0);
         }
     }
-}
+    pRange = pDiagram->GetAxisY()->GetRange();
+    pRange->SetMaxValue(maxV);
+    pRange->SetMinValue(minV);
 
 
-void CChildView::OnTimer(UINT_PTR nIDEvent)
-{
-    AddPoints();
-}
-
-void CChildView::OnDestroy()
-{
-    KillTimer(_nTimer);
 }
 
 void CChildView::CreateChart()
@@ -197,11 +189,12 @@ void CChildView::CreateChart()
     ASSERT (pDiagram);
 
     pDiagram->SetAllowZoom(TRUE);
-    pDiagram->GetAxisY()->GetRange()->SetMaxValue(100.1);
+    pDiagram->GetAxisY()->GetRange()->SetMaxValue(1.0);
+    pDiagram->GetAxisY()->GetRange()->SetMinValue(-1.0);
     pDiagram->GetAxisY()->GetRange()->SetAutoRange(FALSE);
-    pDiagram->GetAxisY()->SetAllowZoom(FALSE);
+    //pDiagram->GetAxisY()->SetAllowZoom(FALSE);
 
-    pDiagram->GetAxisX()->GetRange()->SetMaxValue(100.1);
+    pDiagram->GetAxisX()->GetRange()->SetMaxValue(1000.1);
     pDiagram->GetAxisX()->GetRange()->SetAutoRange(FALSE);
     pDiagram->GetAxisX()->GetRange()->SetZoomLimit(10);
 
@@ -209,4 +202,52 @@ void CChildView::CreateChart()
     pDiagram->GetAxisY()->SetInterlaced(FALSE);
 
     pDiagram->GetPane()->GetFillStyle()->SetFillMode(xtpChartFillSolid);
+}
+
+
+void CChildView::OnBnClickedBtnCal()
+{
+    
+}
+
+
+void CChildView::OnBnClickedBtnLoadAnn()
+{
+   
+}
+
+
+void CChildView::OnBnClickedBtnLoadData()
+{
+    CFileDialog dlg(TRUE, nullptr, nullptr, 6, _T("All Files (*.*)|*.*|Text Files (*.txt)|*.txt|Data Files (*.dat)|*.dat||"));
+    if(dlg.DoModal()!=IDOK) return;
+
+    const CString file=dlg.GetPathName();
+
+    FILE * fp =nullptr;
+    char buffer[4096];
+    _tfopen_s(&fp, file, _T("rt"));
+    _count=0;
+    if(fp)
+    {
+        fgets(buffer, 4096, fp);
+        fgets(buffer, 4096, fp);
+        char* p = fgets(buffer, 4096, fp);
+        while(p && !feof(fp) && _count < MAX_SAMPLE_COUNT)
+        {
+            if(sscanf_s(buffer, "%15lf\t%15lf\t%15lf", &(_data[_count].time), &(_data[_count].s1), &(_data[_count].s2))==3)
+            {
+                _data[_count].index = _count;
+                _count++;
+                p=fgets(buffer, 4096, fp);
+            }
+            else
+            {
+                break;
+            }
+        }
+        fclose(fp);
+    }
+    AddPoints();
+
 }

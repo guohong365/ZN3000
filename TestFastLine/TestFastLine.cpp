@@ -123,6 +123,8 @@ protected:
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -145,6 +147,7 @@ void CTestFastLineApp::OnAppAbout()
 }
 
 // CTestFastLineApp 消息处理程序
+
 
 
 

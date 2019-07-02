@@ -27,7 +27,7 @@ namespace uc
             char buffer[256];
             fgets(buffer,BUFSIZ, fp);
             char *context;
-            const char* delim=",";
+            const char* delim="\t ,";
             char* token = strtok_s(buffer, delim, &context);
             int count =0;
             while(token)

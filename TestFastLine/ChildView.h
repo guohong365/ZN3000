@@ -6,6 +6,8 @@
 #pragma once
 #include <Common/XTPDrawHelpers.h>
 
+#define MAX_SAMPLE_COUNT 10000
+
 template <class TBase>
 class CChartBorder : public TBase
 {
@@ -18,6 +20,13 @@ public:
 	}
 };
 
+struct EcgDataItem
+{
+    long index;
+    double time;
+    double s1;
+    double s2;
+};
 // CChildView ´°¿Ú
 
 class CChildView : public CFormView
@@ -51,15 +60,20 @@ protected:
 
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void AddPoints();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	afx_msg void OnDestroy();
 protected:
 	CString _caption;
 	CBrush _brush;
     CChartBorder<CXTPChartControl> _wndChartControl;
+    CXTPButton _wndGroupBox;
 
 	int m_nTopGap;
 	int m_nLeftGap;
-	UINT _nTimer;
+    EcgDataItem _data[MAX_SAMPLE_COUNT + 1];
+    LONG _count;
+
+public:
+    afx_msg void OnBnClickedBtnCal();
+    afx_msg void OnBnClickedBtnLoadAnn();
+    afx_msg void OnBnClickedBtnLoadData();
 };
 
